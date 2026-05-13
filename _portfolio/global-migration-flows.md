@@ -1,0 +1,10 @@
+---
+title: "Global Migration Flows"
+excerpt: "Estimates of international migration patterns derived from anonymized, aggregated platform data; an open dataset and interactive visualization."
+collection: portfolio
+---
+
+A cross-institutional project producing estimates of international migration flows, derived from anonymized, aggregated platform data. The work powers a public dataset on the Humanitarian Data Exchange and an interactive visualization at The New York Times.
+
+- [Dataset on HDX](https://data.humdata.org/dataset/international-migration-flows)
+- [NYT interactive (April 2025)](https://www.nytimes.com/interactive/2025/04/17/opinion/global-migration-facebook-data-interactive-tool.html)

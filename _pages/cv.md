@@ -9,56 +9,33 @@ redirect_from:
 
 {% include base_path %}
 
+[Download CV (PDF)](/files/Michael_Bailey_CV.pdf){: .btn}
+
 Education
 ======
-* Ph.D in Version Control Theory, GitHub University, 2018 (expected)
-* M.S. in Jekyll, GitHub University, 2014
-* B.S. in GitHub, GitHub University, 2012
+* **Ph.D., Economics** &mdash; Stanford University, 2007&ndash;2012. Economic History, Behavioral & Experimental Economics. Economics Department Graduate Fellowship.
+* **B.A., Mathematics; B.S., Economics** &mdash; Utah State University, 2004&ndash;2007. 4.0 GPA. 2007 Scholar of the Year. 2025 Huntsman School of Business Professional Achievement Award.
 
-Work experience
+Experience
 ======
-* Spring 2024: Academic Pages Collaborator
-  * GitHub University
-  * Duties includes: Updates and improvements to template
-  * Supervisor: The Users
+* **Founder, Social Capital Lab** | Meta &mdash; Apr 2020&ndash;present.
+  Founded and led a social science research group partnering with academics, nonprofits, and NGOs to study how social networks shape economic opportunity and well-being. Co-created the [Social Capital Atlas](https://socialcapital.org) with Opportunity Insights, built the Social Connectedness Index with NYU, and released the UK Social Capital Atlas, Cross-Gender Ties dataset, Migration Atlas, and Networks & Long Ties dataset.
+* **Founder & Manager, Political Science Research Team** | Meta &mdash; Jan 2018&ndash;Apr 2020.
+* **Founder & Manager, News Feed Science Team** | Meta &mdash; Jun 2016&ndash;Jan 2018. Best Paper Award at EC for recommender systems work; built early fake-news detection algorithms launched in 2016.
+* **Founder & Manager, Economics Research Team** | Meta &mdash; Jan 2014&ndash;Jun 2016. Founded Facebook's first economics team, focused on advertising marketplace modeling, auction theory, pricing, and revenue forecasting.
+* **Research Scientist / Economist** | Facebook &mdash; Feb 2012&ndash;Jan 2014. Designed Facebook's first model-based revenue forecast.
+* **Research Intern** | Facebook &mdash; Oct 2011&ndash;Jan 2012.
+* **Research Intern** | Yahoo! &mdash; Apr 2011&ndash;Oct 2011.
+* **Lecturer & Research Assistant** | Stanford University &mdash; Sep 2007&ndash;Feb 2012.
 
-* Fall 2015: Research Assistant
-  * GitHub University
-  * Duties included: Merging pull requests
-  * Supervisor: Professor Hub
-
-* Summer 2015: Research Assistant
-  * GitHub University
-  * Duties included: Tagging issues
-  * Supervisor: Professor Git
-  
-Skills
-======
-* Skill 1
-* Skill 2
-  * Sub-skill 2.1
-  * Sub-skill 2.2
-  * Sub-skill 2.3
-* Skill 3
-
-Publications
+Selected Publications
 ======
   <ul>{% for post in site.publications reversed %}
     {% include archive-single-cv.html %}
   {% endfor %}</ul>
-  
-Talks
+
+Patents
 ======
-  <ul>{% for post in site.talks reversed %}
-    {% include archive-single-talk-cv.html  %}
-  {% endfor %}</ul>
-  
-Teaching
-======
-  <ul>{% for post in site.teaching reversed %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
-  
-Service and leadership
-======
-* Currently signed in to 43 different slack teams
+* Simulating Advertising Campaigns &mdash; US Patent 10,565,613 (2020).
+* Systems and Methods for Providing Feed Preference Surveys &mdash; US Patent 10,496,720 (2019).
+* Selecting Content with an External Link for Presentation Based on User Interaction with External Content &mdash; US Patent 10,387,516 (2019).
