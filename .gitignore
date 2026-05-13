@@ -21,3 +21,6 @@ package-lock.json
 
 # Ignore files created by MacOS
 .DS_Store
+
+# Source images (keep local for re-cropping; processed versions are committed)
+images/headshot-original.*
