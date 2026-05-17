@@ -333,8 +333,18 @@
 
     img {
       display: block;
-      margin: 0 auto;
       float: none;
+      margin: 0 auto;
+      max-width: 200px;                       // a touch larger than the template's 175px
+      border-radius: 50%;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);  // soft drop shadow
+
+      // Clean circle: drop the template's hard 1px ring + 5px padding
+      // that the block above adds at this breakpoint.
+      @include breakpoint($large) {
+        padding: 0;
+        border: 0;
+      }
     }
   }
 
@@ -352,8 +362,40 @@
   .author__urls {
     text-align: center;
 
+    // Center the whole block under the bio, but left-align the items so the
+    // fixed-width icons form a tidy aligned column.
+    @include breakpoint($large) {
+      display: inline-block;
+      margin-top: 0.5em;
+      text-align: left;
+    }
+
     li {
       white-space: normal;
+    }
+
+    // Links read as body text, then warm to the accent color on hover
+    // instead of the template's plain underline.
+    a {
+      margin-bottom: 0.35em;                  // tighter than the template's 5px
+      color: var(--global-text-color);
+      text-decoration: none;
+      transition: color 0.15s ease-in-out;
+
+      &:hover {
+        color: var(--global-link-color);
+        text-decoration: none;
+      }
+
+      &:hover .icon-pad-right {
+        color: var(--global-link-color);
+      }
+    }
+
+    // Icons carry a subtle accent tint at rest.
+    .icon-pad-right {
+      color: var(--global-link-color);
+      transition: color 0.15s ease-in-out;
     }
   }
 }
