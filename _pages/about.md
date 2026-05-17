@@ -1,13 +1,14 @@
 ---
 permalink: /
 title: "Mike Bailey, Computational Social Scientist"
+hide_title: true
 author_profile: true
 redirect_from:
   - /about/
   - /about.html
 ---
 
-I'm **Mike Bailey** (Michael Bailey), a computational social scientist working at the intersection of AI and social science. I founded the [Social Capital Lab](https://socialcapital.org), which partners with academics, NGOs, and nonprofits to study how social networks shape economic opportunity and well-being. My research has appeared in *Nature*, *PNAS*, the *Journal of Political Economy*, and the *Review of Economic Studies*, and has been covered by *The New York Times*, *The Economist*, and *The Wall Street Journal*. I hold a Ph.D. in Economics from Stanford University.
+I'm a computational social scientist and economist studying how social connection impacts people and society. Previously I worked at Facebook where I founded several research teams including the Social Capital Lab, the economics team, and the Facebook and Society team.
 
 Featured Projects
 ======
@@ -18,10 +19,10 @@ Featured Projects
 
 **Global Migration Flows** &mdash; estimates of international migration patterns derived from anonymized, aggregated platform data. [[NYT interactive](https://www.nytimes.com/interactive/2025/04/17/opinion/global-migration-facebook-data-interactive-tool.html)] [[Dataset on HDX](https://data.humdata.org/dataset/international-migration-flows)]
 
-Selected Publications
+Featured Publications
 ======
 
-A full list is on [Google Scholar](https://scholar.google.com/citations?user=CF6_E90AAAAJ). See also the [Publications](/publications/) page.
+A full list is on [Google Scholar](https://scholar.google.com/citations?user=CF6_E90AAAAJ). See also the [Research](/publications/) page.
 
 - **Social Capital I: Measurement and Associations with Economic Mobility.** *Nature* 608(7921), 2022.
 - **Social Capital II: Determinants of Economic Connectedness.** *Nature* 608(7921), 2022.

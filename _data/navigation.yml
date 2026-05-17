@@ -3,8 +3,5 @@ main:
   - title: "Projects"
     url: /portfolio/
 
-  - title: "Publications"
+  - title: "Research"
     url: /publications/
-
-  - title: "CV"
-    url: /cv/

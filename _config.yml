@@ -15,11 +15,11 @@ repository               : "mikebailey/mikebailey.github.io"
 # Site Author - controls what appears in the left sidebar.
 author:
   avatar           : "profile.jpg"
-  name             : "Michael Bailey"
+  name             : "Mike Bailey"
   pronouns         :
-  bio              : "Computational social scientist working at the intersection of AI and social science."
-  location         : "Menlo Park, CA"
-  employer         : "Founder, Social Capital Lab"
+  bio              : "Founder, Social Capital Lab<br>Computational Social Scientist &amp; Economist"
+  location         :
+  employer         :
   uri              :
   email            : "mikebailey@alumni.stanford.edu"
 
@@ -29,9 +29,9 @@ author:
   googlescholar    : "https://scholar.google.com/citations?user=CF6_E90AAAAJ"
   inspire-hep      :
   impactstory      :
-  orcid            : "https://orcid.org/0009-0003-6574-4553"
+  orcid            :
   semantic         :
-  ssrn             : "https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=7501847"
+  ssrn             :
   pubmed           :
   researchgate     :
   scopus           :
@@ -41,7 +41,7 @@ author:
   bitbucket        :
   codepen          :
   dribbble         :
-  github           : "mikebailey"
+  github           :
   kaggle           :
   stackoverflow    :
 
@@ -74,10 +74,10 @@ author:
 
 # Publication categories shown on the /publications/ page.
 publication_category:
-  featured:
-    title: 'Selected Publications'
-  other:
-    title: 'Other Publications'
+  working:
+    title: 'Working Papers'
+  published:
+    title: 'Published Research'
 
 # Site Settings
 teaser                   :
