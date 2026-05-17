@@ -397,5 +397,14 @@
       color: var(--global-link-color);
       transition: color 0.15s ease-in-out;
     }
+
+    // Custom image icon (e.g. Social Capital Lab) sized to sit inline with
+    // the link text — overrides the sidebar's broad `img { width: 100% }`.
+    .sidebar-custom-icon {
+      width: auto;
+      height: 1.1em;
+      vertical-align: -0.18em;
+      border-radius: 3px;
+    }
   }
 }
