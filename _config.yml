@@ -7,7 +7,7 @@ site_theme               : "default" # options: "default", "air", "sunrise", "mi
 title                    : "Michael Bailey"
 title_separator          : "|"
 name                     : &name "Michael Bailey"
-description              : &description "Computational social scientist working at the intersection of AI and social science."
+description              : &description "Mike Bailey (Michael Bailey) is a computational social scientist working at the intersection of AI and social science — founder of the Social Capital Lab."
 url                      : https://michaelbailey.org
 baseurl                  : ""
 repository               : "mikebailey/mikebailey.github.io"
@@ -29,9 +29,9 @@ author:
   googlescholar    : "https://scholar.google.com/citations?user=CF6_E90AAAAJ"
   inspire-hep      :
   impactstory      :
-  orcid            :
+  orcid            : "https://orcid.org/0009-0003-6574-4553"
   semantic         :
-  ssrn             :
+  ssrn             : "https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=7501847"
   pubmed           :
   researchgate     :
   scopus           :
@@ -93,7 +93,7 @@ atom_feed:
   path                   :
 
 # SEO
-google_site_verification :
+google_site_verification : "KmlR65vWO32b-cRm0-ILmXNtp3yQiSyjidjGwWKs8iY"
 bing_site_verification   :
 alexa_site_verification  :
 yandex_site_verification :
@@ -105,12 +105,17 @@ facebook:
   username               :
   app_id                 :
   publisher              :
-og_image                 :
-og_description           :
+og_image                 : "profile.jpg"
+og_description           : "Mike Bailey (Michael Bailey) is a computational social scientist working at the intersection of AI and social science — founder of the Social Capital Lab."
 social:
-  type                   :
-  name                   :
+  type                   : Person
+  name                   : "Michael Bailey"
   links:
+    - "https://scholar.google.com/citations?user=CF6_E90AAAAJ"
+    - "https://www.linkedin.com/in/michael-bailey-a2653521"
+    - "https://github.com/mikebailey"
+    - "https://orcid.org/0009-0003-6574-4553"
+    - "https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=7501847"
 
 # Analytics
 analytics:

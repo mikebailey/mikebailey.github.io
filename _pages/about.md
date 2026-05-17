@@ -1,13 +1,13 @@
 ---
 permalink: /
-title: ""
+title: "Mike Bailey, Computational Social Scientist"
 author_profile: true
 redirect_from:
   - /about/
   - /about.html
 ---
 
-I am a computational social scientist working at the intersection of AI and social science. I founded the [Social Capital Lab](https://socialcapital.org), which partners with academics, NGOs, and nonprofits to study how social networks shape economic opportunity and well-being. My research has appeared in *Nature*, *PNAS*, the *Journal of Political Economy*, and the *Review of Economic Studies*, and has been covered by *The New York Times*, *The Economist*, and *The Wall Street Journal*. I hold a Ph.D. in Economics from Stanford University.
+I'm **Mike Bailey** (Michael Bailey), a computational social scientist working at the intersection of AI and social science. I founded the [Social Capital Lab](https://socialcapital.org), which partners with academics, NGOs, and nonprofits to study how social networks shape economic opportunity and well-being. My research has appeared in *Nature*, *PNAS*, the *Journal of Political Economy*, and the *Review of Economic Studies*, and has been covered by *The New York Times*, *The Economist*, and *The Wall Street Journal*. I hold a Ph.D. in Economics from Stanford University.
 
 Featured Projects
 ======

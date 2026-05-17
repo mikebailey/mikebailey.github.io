@@ -3,6 +3,7 @@ title: "The Economic Effects of Social Networks: Evidence from the Housing Marke
 collection: publications
 category: featured
 permalink: /publication/2018-economic-effects-social-networks
+description: "Bailey, Cao, Kuchler, and Stroebel (Journal of Political Economy, 2018) show how friends' house price experiences shape individuals' housing market beliefs and home purchase decisions."
 date: 2018-12-01
 venue: 'Journal of Political Economy'
 paperurl: 'https://www.journals.uchicago.edu/doi/10.1086/700073'

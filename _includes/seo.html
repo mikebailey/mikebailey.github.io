@@ -89,11 +89,31 @@
 {% if site.social %}
   <script type="application/ld+json">
     {
-      "@context" : "http://schema.org",
-      "@type" : "{% if site.social.type %}{{ site.social.type }}{% else %}Person{% endif %}",
-      "name" : "{{ site.social.name | default: site.name }}",
-      "url" : {{ seo_url | jsonify }},
-      "sameAs" : {{ site.social.links | jsonify }}
+      "@context": "https://schema.org",
+      "@type": "{% if site.social.type %}{{ site.social.type }}{% else %}Person{% endif %}",
+      "name": "{{ site.social.name | default: site.name }}",
+      "alternateName": "Mike Bailey",
+      "url": {{ seo_url | jsonify }},
+      {% if site.og_image %}"image": "{{ site.og_image | prepend: '/images/' | prepend: seo_url }}",{% endif %}
+      "jobTitle": "Computational Social Scientist",
+      "description": {{ site.description | jsonify }},
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Social Capital Lab",
+        "url": "https://socialcapital.org"
+      },
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "Stanford University"
+      },
+      "knowsAbout": [
+        "Computational Social Science",
+        "Economics",
+        "Social Networks",
+        "Social Capital",
+        "Artificial Intelligence"
+      ],
+      "sameAs": {{ site.social.links | jsonify }}
     }
   </script>
 {% endif %}
@@ -143,5 +163,7 @@
   <meta property="og:image" content="{% if page.header.image contains "://" %}{{ page.header.image }}{% else %}{{ page.header.image | prepend: "/images/" | prepend: base_path }}{% endif %}">
 {% elsif page.header.overlay_image %}
   <meta property="og:image" content="{% if page.header.overlay_image contains "://" %}{{ page.header.overlay_image }}{% else %}{{ page.header.overlay_image | prepend: "/images/" | prepend: base_path }}{% endif %}">
+{% elsif site.og_image %}
+  <meta property="og:image" content="{{ site.og_image | prepend: "/images/" | prepend: base_path }}">
 {% endif %}
 <!-- end Open Graph protocol -->
