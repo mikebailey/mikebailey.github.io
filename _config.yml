@@ -4,10 +4,10 @@
 # Basic Site Settings
 locale                   : "en-US"
 site_theme               : "default" # options: "default", "air", "sunrise", "mint", "dirt", "contrast"
-title                    : "Michael Bailey"
+title                    : "Mike Bailey"
 title_separator          : "–"
 name                     : &name "Michael Bailey"
-description              : &description "Mike Bailey (Michael Bailey) is a computational social scientist working at the intersection of AI and social science — founder of the Social Capital Lab."
+description              : &description "Mike Bailey is a computational social scientist working at the intersection of AI and social science — founder of the Social Capital Lab."
 url                      : https://michaelbailey.org
 baseurl                  : ""
 repository               : "mikebailey/mikebailey.github.io"
@@ -22,6 +22,7 @@ author:
   employer         :
   uri              :
   email            : "mikebailey@alumni.stanford.edu"
+  socialcapitallab : "https://linktr.ee/social_capital_lab"
 
   # Academic
   academia         :
@@ -106,7 +107,7 @@ facebook:
   app_id                 :
   publisher              :
 og_image                 : "profile.jpg"
-og_description           : "Mike Bailey (Michael Bailey) is a computational social scientist working at the intersection of AI and social science — founder of the Social Capital Lab."
+og_description           : "Mike Bailey is a computational social scientist working at the intersection of AI and social science — founder of the Social Capital Lab."
 social:
   type                   : Person
   name                   : "Michael Bailey"

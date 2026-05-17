@@ -8,7 +8,7 @@ redirect_from:
   - /about.html
 ---
 
-I'm a computational social scientist and economist studying how social connection impacts people and society. Previously I worked at Facebook where I founded several research teams including the Social Capital Lab, the economics team, and the Facebook and Society team.
+I'm a computational social scientist studying how social connection impacts people and society. At Facebook I founded the Social Capital Lab research group to advance the science of social connection and we produced several open datasets and research papers measuring social connectedness, social capital, and migration for researchers and policymakers.
 
 Featured Projects
 ======
