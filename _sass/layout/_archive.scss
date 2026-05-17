@@ -243,3 +243,83 @@
     }
   }
 }
+
+/* ==========================================================================
+   PUBLICATION ENTRIES  (Research page + home "Featured Publications")
+   The only vertical gap is BETWEEN papers; within a paper the title sits on
+   its own line and authors/venue/press/links flow as one block. The abstract
+   is hidden behind a small "Abstract" toggle (native <details>, no JS).
+   ========================================================================== */
+
+.publication-entry {
+  margin: 0 0 1.6em;
+
+  .archive__item-title {
+    margin: 0 0 0.15em;
+    font-size: $type-size-5;
+    line-height: 1.3;
+
+    a {
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .publication-entry__meta {
+    margin: 0;
+    font-size: $type-size-6;
+    line-height: 1.5;
+    color: var(--global-text-color);
+
+    a {
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .publication-entry__abstract {
+    margin-top: 0.4em;
+    font-size: $type-size-6;
+
+    > summary {
+      display: inline-block;
+      list-style: none;                 // hide the default disclosure marker
+      font-weight: bold;
+      color: var(--global-link-color);
+      cursor: pointer;
+      user-select: none;
+
+      &::-webkit-details-marker {       // hide the marker on WebKit/Blink
+        display: none;
+      }
+
+      &::before {
+        content: "\25B8";               // ▸ caret, rotates when expanded
+        display: inline-block;
+        margin-right: 0.4em;
+        font-size: 0.85em;
+        transition: transform 0.15s ease-in-out;
+      }
+
+      &:hover {
+        color: var(--global-link-color-hover);
+      }
+    }
+
+    &[open] > summary::before {
+      transform: rotate(90deg);
+    }
+
+    p {
+      margin: 0.4em 0 0;
+      line-height: 1.6;
+      color: var(--global-text-color);
+    }
+  }
+}

@@ -1,8 +1,10 @@
 {% include base_path %}
 
 {% comment %}
-  Drew-Johnston-style publication entry:
-  title (linked) -> "with [coauthors]" -> venue/status -> Press -> resource links -> abstract (always shown)
+  Compact publication entry (Research + Featured Publications):
+  linked title on its own line, then authors / venue / press / resource
+  links flowing together with NO internal line breaks, then the abstract
+  hidden behind a small "Abstract" toggle (native <details>, no JS).
 {% endcomment %}
 
 <div class="list__item">
@@ -16,25 +18,32 @@
       {% endif %}
     </h3>
 
-    {% if post.authors %}
-      <p class="publication-entry__authors">with {{ post.authors }}</p>
-    {% endif %}
-
-    {% if post.venue %}
-      <p class="publication-entry__venue">{{ post.venue }}</p>
-    {% endif %}
-
-    {% if post.press %}
-      <p class="publication-entry__links">Press: {% for p in post.press %}<a href="{{ p.url }}">{{ p.label }}</a>{% unless forloop.last %} | {% endunless %}{% endfor %}</p>
-    {% endif %}
-
-    {% if post.links %}
-      <p class="publication-entry__links">{% for l in post.links %}<a href="{{ l.url }}">{{ l.label }}</a>{% unless forloop.last %} | {% endunless %}{% endfor %}</p>
+    {% if post.authors or post.venue or post.press or post.links %}
+      <p class="publication-entry__meta">
+        {%- if post.authors -%}
+          with {{ post.authors }}
+        {%- endif -%}
+        {%- if post.venue -%}
+          {%- if post.authors %} &middot; {% endif -%}
+          {{ post.venue }}
+        {%- endif -%}
+        {%- if post.press -%}
+          {%- if post.authors or post.venue %} &middot; {% endif -%}
+          Press: {% for p in post.press %}<a href="{{ p.url }}">{{ p.label }}</a>{% unless forloop.last %} | {% endunless %}{% endfor %}
+        {%- endif -%}
+        {%- if post.links -%}
+          {%- if post.authors or post.venue or post.press %} &middot; {% endif -%}
+          {% for l in post.links %}<a href="{{ l.url }}">{{ l.label }}</a>{% unless forloop.last %} | {% endunless %}{% endfor %}
+        {%- endif -%}
+      </p>
     {% endif %}
 
     {% assign abstract_text = post.content | strip_html | strip_newlines | strip %}
     {% if abstract_text != "" %}
-      <p class="publication-entry__abstract archive__item-excerpt" itemprop="description"><strong>Abstract.</strong> {{ abstract_text }}</p>
+      <details class="publication-entry__abstract">
+        <summary>Abstract</summary>
+        <p itemprop="description">{{ abstract_text }}</p>
+      </details>
     {% endif %}
 
   </article>
