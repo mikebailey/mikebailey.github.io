@@ -5,7 +5,7 @@
 locale                   : "en-US"
 site_theme               : "default" # options: "default", "air", "sunrise", "mint", "dirt", "contrast"
 title                    : "Michael Bailey"
-title_separator          : "|"
+title_separator          : "–"
 name                     : &name "Michael Bailey"
 description              : &description "Mike Bailey (Michael Bailey) is a computational social scientist working at the intersection of AI and social science — founder of the Social Capital Lab."
 url                      : https://michaelbailey.org
