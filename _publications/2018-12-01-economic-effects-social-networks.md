@@ -8,6 +8,13 @@ authors: "Ruiqing Cao, Theresa Kuchler, and Johannes Stroebel"
 venue: "Journal of Political Economy, 126(6), 2224–2276, 2018"
 paperurl: "https://doi.org/10.1086/700073"
 description: "Using Facebook data, we show how friends' house price experiences shape individuals' housing market expectations and investment decisions."
+press:
+  - label: "CNBC"
+    url: "https://www.cnbc.com/2016/07/29/real-estate-buying-habits-linked-to-peoples-facebook-behavior.html"
+  - label: "CityLab"
+    url: "https://www.citylab.com/housing/2016/05/what-your-facebook-friendships-say-about-your-housing-status/484094/"
+  - label: "The Conversation"
+    url: "https://theconversation.com/can-your-facebook-friends-influence-your-decision-to-buy-a-house-60758"
 featured: true
 featured_order: 3
 ---

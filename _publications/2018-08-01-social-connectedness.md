@@ -11,6 +11,13 @@ description: "Introduces the Social Connectedness Index (SCI), a measure of frie
 links:
   - label: "Social Connectedness Index data"
     url: "https://data.humdata.org/dataset/social-connectedness-index"
+press:
+  - label: "New York Times"
+    url: "https://www.nytimes.com/interactive/2018/09/19/upshot/facebook-county-friendships.html"
+  - label: "The Economist"
+    url: "https://www.economist.com/graphic-detail/2018/08/08/far-flung-facebook-friends-may-be-good-for-your-health"
+  - label: "Bloomberg"
+    url: "https://www.bloomberg.com/news/articles/2017-07-25/facebook-friends-from-far-away-are-a-trait-of-rich-communities"
 featured: true
 featured_order: 4
 ---

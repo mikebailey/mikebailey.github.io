@@ -5,6 +5,9 @@ collection: portfolio
 ---
 
 A cross-institutional project producing estimates of international migration flows, derived from anonymized, aggregated platform data. The work powers a public dataset on the Humanitarian Data Exchange and an interactive visualization at The New York Times.
+{: .project-desc}
 
-- [Dataset on HDX](https://data.humdata.org/dataset/international-migration-flows)
-- [NYT interactive (April 2025)](https://www.nytimes.com/interactive/2025/04/17/opinion/global-migration-facebook-data-interactive-tool.html)
+**Data:** [Data on HDX](https://data.humdata.org/dataset/international-migration-flows)<br>
+**Research:** [PNAS 2025](https://www.pnas.org/doi/10.1073/pnas.2409418122)<br>
+**Media Coverage:** [New York Times](https://www.nytimes.com/interactive/2025/04/17/opinion/global-migration-facebook-data.html) &middot; [NYT interactive tool](https://www.nytimes.com/interactive/2025/04/17/opinion/global-migration-facebook-data-interactive-tool.html)
+{: .project-links}

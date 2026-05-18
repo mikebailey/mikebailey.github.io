@@ -283,6 +283,28 @@
     }
   }
 
+  // "Data & Materials:" and "Media Coverage:" each on their own line,
+  // below the authors/venue meta line.
+  .publication-entry__links {
+    margin: 0.15em 0 0;
+    font-size: $type-size-6;
+    line-height: 1.5;
+    color: var(--global-text-color);
+
+    strong {
+      margin-right: 0.15em;
+    }
+
+    a {
+      color: var(--global-link-color);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
   .publication-entry__abstract {
     margin-top: 0.4em;
     font-size: $type-size-6;
@@ -320,6 +342,32 @@
       margin: 0.4em 0 0;
       line-height: 1.6;
       color: var(--global-text-color);
+    }
+  }
+}
+
+/* ==========================================================================
+   PROJECT BLOCKS  (home Featured Projects + /portfolio/ project bodies)
+   A bold title + description line, then tight labeled Data / Research /
+   Media Coverage link lines.
+   ========================================================================== */
+
+.project-desc {
+  margin: 1.15em 0 0.25em;
+}
+
+.project-links {
+  margin: 0 0 0.35em;
+  font-size: $type-size-6;
+  line-height: 1.9;
+  color: var(--global-text-color);
+
+  a {
+    color: var(--global-link-color);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
     }
   }
 }

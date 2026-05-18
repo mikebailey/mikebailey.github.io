@@ -18,7 +18,7 @@
       {% endif %}
     </h3>
 
-    {% if post.authors or post.venue or post.press or post.links %}
+    {% if post.authors or post.venue %}
       <p class="publication-entry__meta">
         {%- if post.authors -%}
           with {{ post.authors }}
@@ -27,16 +27,16 @@
           {%- if post.authors %} &middot; {% endif -%}
           {{ post.venue }}
         {%- endif -%}
-        {%- if post.press -%}
-          {%- if post.authors or post.venue %} &middot; {% endif -%}
-          Press: {% for p in post.press %}<a href="{{ p.url }}">{{ p.label }}</a>{% unless forloop.last %} | {% endunless %}{% endfor %}
-        {%- endif -%}
-        {%- if post.links -%}
-          {%- if post.authors or post.venue or post.press %} &middot; {% endif -%}
-          {% for l in post.links %}<a href="{{ l.url }}">{{ l.label }}</a>{% unless forloop.last %} | {% endunless %}{% endfor %}
-        {%- endif -%}
       </p>
     {% endif %}
+
+    {%- if post.links -%}
+      <p class="publication-entry__links"><strong>Data &amp; Materials:</strong> {% for l in post.links %}<a href="{{ l.url }}">{{ l.label }}</a>{% unless forloop.last %} &middot; {% endunless %}{% endfor %}</p>
+    {%- endif -%}
+
+    {%- if post.press -%}
+      <p class="publication-entry__links"><strong>Media Coverage:</strong> {% for p in post.press %}<a href="{{ p.url }}">{{ p.label }}</a>{% unless forloop.last %} &middot; {% endunless %}{% endfor %}</p>
+    {%- endif -%}
 
     {% assign abstract_text = post.content | strip_html | strip_newlines | strip %}
     {% if abstract_text != "" %}

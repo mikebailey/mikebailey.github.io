@@ -363,3 +363,35 @@ b, i, strong, em, blockquote, p, q, span, figure, img, h1, h2, header, input, a,
       display: none;
     }
   }
+
+/* ==========================================================================
+   NETWORK BACKGROUND
+   A soft, faded network watermark fills the empty page margins. The centered
+   content container carries its own solid-white backdrop plus a wide,
+   feathered white halo, so the network gradually fades out toward the text
+   and never sits behind it.
+   ========================================================================== */
+
+// Faded full-page network, fixed behind the page. The ~0.2 white veil keeps
+// the already-pale art subtle.
+body {
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.2),
+      rgba(255, 255, 255, 0.2)),
+    url('/images/network_bg_sparse.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+// The centered content container (#main — holds the sidebar + all body text,
+// max ~1280px) gets its own solid-white backdrop and a wide soft white halo
+// that feathers gradually into the network in the outer margins. Painted
+// with the element itself, so it is always behind its own text and above the
+// page background — no fragile z-index / stacking-context tricks.
+#main {
+  background-color: #fff;
+  box-shadow: 0 0 90px 75px #fff;
+}

@@ -376,6 +376,16 @@
 
     // Links read as body text, then warm to the accent color on hover
     // instead of the template's plain underline.
+    // Every row is laid out as [ fixed-width icon column | label ] so that
+    // BOTH the icons and the labels share a common left edge — regardless of
+    // whether the icon is a font glyph (fa-fw / ai-fw) or the custom image
+    // icon, which have different intrinsic widths.
+    li > a,
+    li.author__desktop {
+      display: flex;
+      align-items: center;
+    }
+
     a {
       margin-bottom: 0.35em;                  // tighter than the template's 5px
       color: var(--global-text-color);
@@ -392,18 +402,26 @@
       }
     }
 
-    // Icons carry a subtle accent tint at rest.
+    // Shared icon column: one fixed width, centered contents, one consistent
+    // gap before the label (overrides the util's split padding+margin so the
+    // label start is identical on every row). Icons carry a subtle accent tint.
     .icon-pad-right {
+      flex: 0 0 1.5em;
+      width: 1.5em;
+      padding-right: 0;
+      margin-right: 0.55em;
+      text-align: center;
       color: var(--global-link-color);
       transition: color 0.15s ease-in-out;
     }
 
-    // Custom image icon (e.g. Social Capital Lab) sized to sit inline with
-    // the link text — overrides the sidebar's broad `img { width: 100% }`.
+    // Custom image icon (e.g. Social Capital Lab): the square logo is scaled
+    // to fit inside the same icon column without distortion, vertically
+    // centered with the label by the flex row.
     .sidebar-custom-icon {
-      width: auto;
-      height: 1.1em;
-      vertical-align: -0.18em;
+      height: 1.15em;
+      object-fit: contain;
+      vertical-align: middle;
       border-radius: 3px;
     }
   }
