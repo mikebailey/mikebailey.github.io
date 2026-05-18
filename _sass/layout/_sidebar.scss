@@ -17,11 +17,12 @@
     margin-top: 1em;
   }
 
+  // Stick (not fix) on large screens: stays in normal flow as a flex item,
+  // so it can never overlap the content the way position:fixed did.
   @media screen and (min-width: $sidebar-screen-min-width) {
-    height: 100vh;
-    overflow-y: auto;               // Add scrollbar if the sidebar is too long
-    position: fixed;
-    padding-top: $masthead-height;
+    position: sticky;
+    top: $masthead-height;
+    align-self: flex-start;
   }
 
   @include breakpoint($large) {
@@ -423,6 +424,88 @@
       object-fit: contain;
       vertical-align: middle;
       border-radius: 3px;
+    }
+  }
+}
+
+/* ==========================================================================
+   #main TWO-COLUMN LAYOUT (sidebar + content)
+   One predictable layout at EVERY width via flexbox: the author profile is a
+   bounded narrow LEFT column, the content takes the rest, and a fixed flex
+   `gap` always guarantees the gutter between them. Replaces the template's
+   Susy-float + position:fixed scheme, which overlapped the content once the
+   content column was narrowed (and turned into a top "banner" on mobile).
+   ========================================================================== */
+#main {
+  display: flex;
+  align-items: flex-start;
+  gap: 2.5em;
+}
+
+// Bounded fluid sidebar: never wide enough to crowd text, never a banner.
+.sidebar {
+  flex: 0 0 auto;
+  width: clamp(115px, 19%, 225px);
+  float: none;
+  margin-right: 0;
+  clear: none;
+}
+
+// Content takes the remaining space; min-width:0 lets long content shrink
+// instead of overflowing. Width/float/margins from Susy are neutralised —
+// the #main gap now provides the gutter.
+.page,
+.archive {
+  flex: 1 1 auto;
+  min-width: 0;
+  float: none;
+  width: auto;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+}
+
+// The author profile always stacks vertically and stays visible. The
+// template's table-cell "banner" + links-behind-a-button behaviour only
+// applied when the sidebar went full-width on small screens, which it no
+// longer does.
+.sidebar {
+  .author__avatar,
+  .author__content,
+  .author__urls-wrapper {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .author__avatar img {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 200px;
+    border-radius: 50%;
+  }
+
+  .author__urls-wrapper button {
+    display: none;
+  }
+
+  .author__urls {
+    display: inline-block;
+    position: relative;
+    right: auto;
+    margin: 0.5em 0 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    text-align: left;
+
+    &:before,
+    &:after {
+      display: none;
     }
   }
 }

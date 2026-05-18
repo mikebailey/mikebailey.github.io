@@ -14,4 +14,12 @@
 <link rel="icon" href="/images/favicon.ico"/>
 <meta name="theme-color" content="#ffffff"/>
 
+<!-- Light theme only: the appearance toggle was removed. Pin the saved
+     preference to "light" so the prebuilt main.min.js (which otherwise
+     auto-applies dark for OS-dark visitors) keeps the site light. -->
+<script>
+  try { localStorage.setItem('theme', 'light'); } catch (e) {}
+  document.documentElement.removeAttribute('data-theme');
+</script>
+
 <!-- end custom head snippets -->
