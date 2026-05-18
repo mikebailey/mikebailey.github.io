@@ -54,6 +54,11 @@ $medium                     : 768px !default;
 $medium-wide                : 900px !default;
 $large                      : 925px !default;
 $x-large                    : 1280px !default;
+// Centered site-column cap (content + masthead + nav + footer). Narrower
+// than the $x-large breakpoint so real side margins exist on laptops for
+// the network background. $x-large stays the BREAKPOINT trigger; this is
+// only the width cap.
+$site-max-width             : 1040px !default;
 
 /* ==========================================================================
    Grid
