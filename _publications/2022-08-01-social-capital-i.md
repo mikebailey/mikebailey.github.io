@@ -3,6 +3,7 @@ title: "Social Capital I: Measurement and Associations with Economic Mobility"
 collection: publications
 category: published
 permalink: /publication/2022-social-capital-i
+selected: true
 date: 2022-08-01
 authors: "Raj Chetty, Matthew O. Jackson, Theresa Kuchler, Johannes Stroebel, and the Opportunity Insights & Meta team"
 venue: "Nature, 608(7921), 108–121, 2022"

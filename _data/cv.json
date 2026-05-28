@@ -1,152 +1,150 @@
 {
   "basics": {
-    "name": "Your Sidebar Name",
-    "email": "none@example.org",
-    "phone": "",
-    "website": "https://academicpages.github.io",
-    "summary": "Currently employed at Red Brick University. Short biography for the left-hand sidebar",
+    "name": "Michael Bailey",
+    "label": "Founder, Social Capital Lab | Computational Social Scientist & Economist",
+    "email": "mikebailey@alumni.stanford.edu",
+    "summary": "Computational social scientist and economist with 14+ years of experience leading research teams at the intersection of economics and technology. Founded and led the economics, political science, and social science research teams at Meta, including the Social Capital Lab, which partners with academics, NGOs, and nonprofits to leverage Meta's data to advance the science of social connection and improve society. My work on social networks has received 4,000+ citations in top journals such as Nature, PNAS, and the Journal of Political Economy, and has received widespread news coverage in outlets such as the New York Times and The Economist.",
     "location": {
-      "address": "",
-      "postalCode": "",
-      "city": "Earth",
-      "countryCode": "US",
-      "region": ""
+      "city": "Menlo Park",
+      "region": "CA"
     },
     "profiles": [
       {
         "network": "Google Scholar",
-        "username": "",
-        "url": "https://scholar.google.com/citations?user=PS_CX0AAAAAJ"
+        "url": "https://scholar.google.com/citations?user=CF6_E90AAAAJ"
       },
       {
         "network": "ORCID",
-        "username": "",
-        "url": "https://orcid.org/yourorcidurl"
+        "url": "https://orcid.org/0009-0003-6574-4553"
       },
       {
-        "network": "GitHub",
-        "username": "academicpages",
-        "url": "https://github.com/academicpages"
+        "network": "LinkedIn",
+        "url": "https://www.linkedin.com/in/michael-bailey-a2653521"
       }
     ]
   },
-  "work": [],
+  "work": [
+    {
+      "position": "Founder, Social Capital Lab",
+      "company": "Meta",
+      "startDate": "Apr 2020",
+      "endDate": "Present",
+      "highlights": [
+        "Founded and lead a social science research group partnering with academics, nonprofits, and NGOs to study how social networks impact economic opportunity and well-being.",
+        "Built and released the Social Connectedness Index (with NYU), now a widely-used public dataset for researchers studying migration, trade, COVID-19, and inequality.",
+        "Co-created the Social Capital Atlas with Opportunity Insights (socialcapital.org), mapping social capital across U.S. communities; covered by the New York Times and The Economist.",
+        "Led cross-institutional collaborations producing the UK Social Capital Atlas, Cross-Gender Ties dataset, Migration Atlas, and Networks & Long Ties dataset.",
+        "Research published in Nature (2), PNAS, the Journal of Political Economy, and other leading journals.",
+        "Widespread press coverage of our work on social networks in the New York Times, The Economist, The Wall Street Journal, and several international outlets."
+      ]
+    },
+    {
+      "position": "Founder and Manager, Political Science Research Team",
+      "company": "Meta",
+      "startDate": "Jan 2018",
+      "endDate": "Apr 2020",
+      "highlights": [
+        "Founded a team of research scientists and computational social scientists studying the impact of social media on elections, migration, well-being, and economic mobility.",
+        "Established partnerships with external academic institutions and NGOs to create public policy solutions to reduce misinformation on social media."
+      ]
+    },
+    {
+      "position": "Founder and Manager, News Feed Science Team",
+      "company": "Meta",
+      "startDate": "Jun 2016",
+      "endDate": "Jan 2018",
+      "highlights": [
+        "Co-created and led a team of research scientists and engineers studying long-term dynamics within the News Feed ecosystem and implications for recommender systems.",
+        "Built some of the first fake-news detection algorithms, launched in production in 2016.",
+        "Our team created leading AI solutions for improving News Feed recommendations and won a best-paper award at EC for our recommender systems paper."
+      ]
+    },
+    {
+      "position": "Founder and Manager, Economics Research Team",
+      "company": "Meta",
+      "startDate": "Jan 2014",
+      "endDate": "Jun 2016",
+      "highlights": [
+        "Founded Facebook's first economics team: a multidisciplinary group of PhDs, researchers, and engineers focused on advertising marketplace modeling, auction theory, pricing, and revenue forecasting.",
+        "Built tools and methodology for financial and behavioral modeling adopted across the company.",
+        "Our research was published in several leading outlets on economics and computation, including EC, WWW, WSDM, ICWSM, and IC2S2."
+      ]
+    },
+    {
+      "position": "Research Scientist / Economist",
+      "company": "Facebook",
+      "startDate": "Feb 2012",
+      "endDate": "Jan 2014",
+      "highlights": [
+        "Studied computational economics problems through experimentation, simulation, and econometric models focused on advertising markets, ad auctions, and financial forecasting.",
+        "Designed and created Facebook's first model-based revenue forecast incorporating novel demand and supply elasticity measurements, improving forecast accuracy by over 20%."
+      ]
+    },
+    {
+      "position": "Research Intern",
+      "company": "Facebook",
+      "startDate": "Oct 2011",
+      "endDate": "Jan 2012",
+      "highlights": [
+        "Investigated competitive externalities of advertising; built an auction simulation algorithm to evaluate site-wide impact on key metrics."
+      ]
+    },
+    {
+      "position": "Research Intern",
+      "company": "Yahoo!",
+      "startDate": "Apr 2011",
+      "endDate": "Oct 2011",
+      "highlights": [
+        "Developed a theoretical and statistical model for targeted advertising effectiveness; paper accepted at WWW 2012."
+      ]
+    },
+    {
+      "position": "Lecturer & Research Assistant",
+      "company": "Stanford University",
+      "startDate": "Sep 2007",
+      "endDate": "Feb 2012",
+      "highlights": [
+        "Taught intermediate economics (2010–2011) with a performance rating of 4.4/5. Mentored undergraduate honors theses."
+      ]
+    }
+  ],
   "education": [
     {
-      "institution": "GitHub University",
-      "area": "Ph.D in Version Control Theory",
-      "studyType": "",
-      "startDate": "",
-      "endDate": "2018",
-      "gpa": null,
-      "courses": []
-    },
-    {
-      "institution": "GitHub University",
-      "area": "M.S. in Jekyll",
-      "studyType": "",
-      "startDate": "",
-      "endDate": "2014",
-      "gpa": null,
-      "courses": []
-    },
-    {
-      "institution": "GitHub University",
-      "area": "B.S. in GitHub",
-      "studyType": "",
-      "startDate": "",
+      "area": "Ph.D., Economics",
+      "institution": "Stanford University",
       "endDate": "2012",
-      "gpa": null,
-      "courses": []
+      "summary": "Fields: Economic History, Behavioral & Experimental Economics. Economics Department Graduate Fellowship."
+    },
+    {
+      "area": "B.A. Mathematics & B.S. Economics",
+      "institution": "Utah State University",
+      "endDate": "2007",
+      "summary": "2007 Scholar of the Year. 2025 Huntsman School of Business Professional Achievement Award."
+    }
+  ],
+  "publications": [],
+  "patents": [
+    {
+      "name": "Simulating Advertising Campaigns",
+      "number": "US Patent 10,565,613",
+      "date": "2020"
+    },
+    {
+      "name": "Systems and Methods for Providing Feed Preference Surveys",
+      "number": "US Patent 10,496,720",
+      "date": "2019"
+    },
+    {
+      "name": "Selecting Content with an External Link for Presentation Based on User Interaction with External Content",
+      "number": "US Patent 10,387,516",
+      "date": "2019"
     }
   ],
   "skills": [],
+  "presentations": [],
+  "teaching": [],
+  "portfolio": [],
   "languages": [],
   "interests": [],
-  "references": [],
-  "publications": [
-    {
-      "name": "Paper Title Number 1",
-      "publisher": "Journal 1",
-      "releaseDate": "2009-10-01",
-      "website": "https://academicpages.github.io/files/paper1.pdf",
-      "summary": "This paper is about the number 1. The number 2 is left for future work."
-    },
-    {
-      "name": "Paper Title Number 2",
-      "publisher": "Journal 1",
-      "releaseDate": "2010-10-01",
-      "website": "https://academicpages.github.io/files/paper2.pdf",
-      "summary": "This paper is about the number 2. The number 3 is left for future work."
-    },
-    {
-      "name": "Paper Title Number 3",
-      "publisher": "Journal 1",
-      "releaseDate": "2015-10-01",
-      "website": "https://academicpages.github.io/files/paper3.pdf",
-      "summary": "This paper is about the number 3. The number 4 is left for future work."
-    },
-    {
-      "name": "Paper Title Number 4",
-      "publisher": "GitHub Journal of Bugs",
-      "releaseDate": "2024-02-17",
-      "website": "https://academicpages.github.io/files/paper3.pdf",
-      "summary": "This paper is about fixing template issue #693."
-    }
-  ],
-  "presentations": [
-    {
-      "name": "Talk 1 on Relevant Topic in Your Field",
-      "event": "UC San Francisco, Department of Testing",
-      "date": "2012-03-01",
-      "location": "San Francisco, CA, USA",
-      "description": ""
-    },
-    {
-      "name": "Tutorial 1 on Relevant Topic in Your Field",
-      "event": "UC-Berkeley Institute for Testing Science",
-      "date": "2013-03-01",
-      "location": "Berkeley, CA, USA",
-      "description": ""
-    },
-    {
-      "name": "Talk 2 on Relevant Topic in Your Field",
-      "event": "London School of Testing",
-      "date": "2014-02-01",
-      "location": "London, UK",
-      "description": ""
-    },
-    {
-      "name": "Conference Proceeding talk 3 on Relevant Topic in Your Field",
-      "event": "Testing Institute of America 2014 Annual Conference",
-      "date": "2014-03-01",
-      "location": "Los Angeles, CA, USA",
-      "description": ""
-    }
-  ],
-  "teaching": [
-    {
-      "course": "Teaching experience 1",
-      "institution": "University 1, Department",
-      "date": "2014-01-01",
-      "role": "Undergraduate course",
-      "description": ""
-    },
-    {
-      "course": "Teaching experience 2",
-      "institution": "University 1, Department",
-      "date": "2015-01-01",
-      "role": "Workshop",
-      "description": ""
-    }
-  ],
-  "portfolio": [
-    {
-      "name": "Portfolio item number 1",
-      "category": "portfolio",
-      "date": "",
-      "url": "",
-      "description": "Short description of portfolio item number 1<br/><img src='/images/500x300.png'>"
-    }
-  ]
+  "references": []
 }

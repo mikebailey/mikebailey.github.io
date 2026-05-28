@@ -3,6 +3,7 @@ title: "How Effective Is Targeted Advertising?"
 collection: publications
 category: published
 permalink: /publication/2012-targeted-advertising
+selected: true
 date: 2012-04-16
 authors: "Ayman Farahat"
 venue: "Proceedings of the 21st International Conference on World Wide Web (WWW '12), 111–120, 2012"

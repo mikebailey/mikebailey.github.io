@@ -3,6 +3,7 @@ title: "The Economic Effects of Social Networks: Evidence from the Housing Marke
 collection: publications
 category: published
 permalink: /publication/2018-economic-effects-social-networks
+selected: true
 date: 2018-12-01
 authors: "Ruiqing Cao, Theresa Kuchler, and Johannes Stroebel"
 venue: "Journal of Political Economy, 126(6), 2224–2276, 2018"

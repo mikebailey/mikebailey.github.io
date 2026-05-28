@@ -3,6 +3,7 @@ title: "Social Connectedness: Measurement, Determinants, and Effects"
 collection: publications
 category: published
 permalink: /publication/2018-social-connectedness
+selected: true
 date: 2018-08-01
 authors: "Ruiqing Cao, Theresa Kuchler, Johannes Stroebel, and Arlene Wong"
 venue: "Journal of Economic Perspectives, 32(3), 259–280, 2018"

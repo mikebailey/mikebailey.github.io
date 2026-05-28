@@ -23,37 +23,35 @@
   color: var(--global-text-color );
 }
 
-.cv-contact-info {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+/* Single-line contact row: email | location | Scholar | ORCID | LinkedIn */
+.cv-contact {
   margin-bottom: 0.5rem;
+  font-size: 0.95rem;
 }
 
-.cv-contact-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.cv-profiles {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-
-.cv-profile-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.cv-profile-item a {
+.cv-contact a {
   color: var(--global-link-color);
   text-decoration: none;
 }
 
-.cv-profile-item a:hover {
+.cv-contact a:hover {
+  text-decoration: underline;
+}
+
+.cv-sep {
+  color: var(--global-border-color);
+  margin: 0 0.5rem;
+}
+
+/* "(Google Scholar)" link next to the Selected Publications heading */
+.cv-scholar-link {
+  font-size: 0.85rem;
+  font-weight: normal;
+  color: var(--global-link-color);
+  text-decoration: none;
+}
+
+.cv-scholar-link:hover {
   text-decoration: underline;
 }
 

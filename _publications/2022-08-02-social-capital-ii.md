@@ -3,6 +3,7 @@ title: "Social Capital II: Determinants of Economic Connectedness"
 collection: publications
 category: published
 permalink: /publication/2022-social-capital-ii
+selected: true
 date: 2022-08-02
 authors: "Raj Chetty, Matthew O. Jackson, Theresa Kuchler, Johannes Stroebel, and the Opportunity Insights & Meta team"
 venue: "Nature, 608(7921), 122–134, 2022"

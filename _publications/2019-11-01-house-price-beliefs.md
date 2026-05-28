@@ -3,6 +3,7 @@ title: "House Price Beliefs and Mortgage Leverage Choice"
 collection: publications
 category: published
 permalink: /publication/2019-house-price-beliefs
+selected: true
 date: 2019-11-01
 authors: "Eduardo Dávila, Theresa Kuchler, and Johannes Stroebel"
 venue: "Review of Economic Studies, 86(6), 2403–2452, 2019"

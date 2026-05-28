@@ -23,41 +23,20 @@
     <h2>{{ cv.basics.label }}</h2>
     {% endif %}
     
-    <div class="cv-contact">
-      {% if cv.basics.email %}
-      <div class="cv-contact-item">
-        <i class="fas fa-envelope"></i> {{ cv.basics.email }}
-      </div>
-      {% endif %}
-      
-      {% if cv.basics.phone %}
-      <div class="cv-contact-item">
-        <i class="fas fa-phone"></i> {{ cv.basics.phone }}
-      </div>
-      {% endif %}
-      
-      {% if cv.basics.website %}
-      <div class="cv-contact-item">
-        <i class="fas fa-globe"></i> <a href="{{ cv.basics.website }}" target="_blank">{{ cv.basics.website }}</a>
-      </div>
-      {% endif %}
-      
-      {% if cv.basics.location.city %}
-      <div class="cv-contact-item">
-        <i class="fas fa-map-marker-alt"></i> {{ cv.basics.location.city }}{% if cv.basics.location.region %}, {{ cv.basics.location.region }}{% endif %}{% if cv.basics.location.countryCode %}, {{ cv.basics.location.countryCode }}{% endif %}
-      </div>
-      {% endif %}
-    </div>
-    
-    {% if cv.basics.profiles.size > 0 %}
-    <div class="cv-profiles">
-      {% for profile in cv.basics.profiles %}
-      <a href="{{ profile.url }}" target="_blank" class="cv-profile-link">
-        <i class="fab fa-{{ profile.network | downcase }}"></i> {{ profile.network }}
-      </a>
-      {% endfor %}
-    </div>
-    {% endif %}
+    <p class="cv-contact">
+      {%- if cv.basics.email -%}
+        <a href="mailto:{{ cv.basics.email }}">{{ cv.basics.email }}</a>
+      {%- endif -%}
+      {%- if cv.basics.website -%}
+        <span class="cv-sep">|</span><a href="{{ cv.basics.website }}" target="_blank" rel="noopener">{{ cv.basics.website }}</a>
+      {%- endif -%}
+      {%- if cv.basics.location.city -%}
+        <span class="cv-sep">|</span>{{ cv.basics.location.city }}{% if cv.basics.location.region %}, {{ cv.basics.location.region }}{% endif %}{% if cv.basics.location.countryCode %}, {{ cv.basics.location.countryCode }}{% endif %}
+      {%- endif -%}
+      {%- for profile in cv.basics.profiles -%}
+        <span class="cv-sep">|</span><a href="{{ profile.url }}" target="_blank" rel="noopener">{{ profile.network }}</a>
+      {%- endfor -%}
+    </p>
   </div>
   
   {% if cv.basics.summary %}
@@ -81,6 +60,9 @@
         </div>
         <div class="cv-item-content">
           <div class="cv-item-subtitle">{{ education.institution }}</div>
+          {% if education.summary %}
+          <div class="cv-item-detail">{{ education.summary }}</div>
+          {% endif %}
           {% if education.gpa %}
           <div class="cv-item-detail">GPA: {{ education.gpa }}</div>
           {% endif %}
@@ -145,34 +127,35 @@
   </div>
   {% endif %}
   
-  {% if cv.publications.size > 0 %}
-  <!-- Publications -->
+  {% assign selected_pubs = site.publications | where: "selected", true | sort: "date" | reverse %}
+  {% if selected_pubs.size > 0 %}
+  <!-- Selected Publications (mirrors the /publications/ page formatting) -->
+  <div class="cv-section cv-publications">
+    <h2>Selected Publications{% if site.author.googlescholar %} <a class="cv-scholar-link" href="{{ site.author.googlescholar }}" target="_blank" rel="noopener">(Google Scholar)</a>{% endif %}</h2>
+    {% for post in selected_pubs %}{% include archive-single-pub.html %}{% endfor %}
+  </div>
+  {% endif %}
+  
+  {% if cv.patents.size > 0 %}
+  <!-- Patents -->
   <div class="cv-section">
-    <h2>Publications</h2>
+    <h2>Patents</h2>
     <ul class="cv-list">
-      {% for publication in cv.publications %}
+      {% for patent in cv.patents %}
       <li class="cv-item">
         <div class="cv-item-header">
-          <div class="cv-item-title">{{ publication.name }}</div>
-          <div class="cv-item-date">{{ publication.releaseDate | slice: 0, 4 }}</div>
+          <div class="cv-item-title">{{ patent.name }}</div>
+          <div class="cv-item-date">{{ patent.date }}</div>
         </div>
         <div class="cv-item-content">
-          <div class="cv-item-subtitle">{{ publication.publisher }}</div>
-          {% if publication.summary %}
-          <div class="cv-item-detail">{{ publication.summary }}</div>
-          {% endif %}
-          {% if publication.website %}
-          <div class="cv-item-detail">
-            <a href="{{ publication.website }}" target="_blank">View Publication</a>
-          </div>
-          {% endif %}
+          <div class="cv-item-subtitle">{{ patent.number }}</div>
         </div>
       </li>
       {% endfor %}
     </ul>
   </div>
   {% endif %}
-  
+
   {% if cv.presentations.size > 0 %}
   <!-- Presentations/Talks -->
   <div class="cv-section">
