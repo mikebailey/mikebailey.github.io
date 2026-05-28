@@ -2,6 +2,8 @@
 title: "Social Connectedness Index"
 excerpt: "A public measure of social connectedness between geographies. Used widely to study migration, trade, COVID-19, and inequality."
 collection: portfolio
+link: https://data.humdata.org/dataset/social-connectedness-index
+image: portfolio/social-connectedness-index.webp
 ---
 
 The Social Connectedness Index (SCI) measures the relative probability of friendship between people in different locations. The dataset has been used by researchers across economics, political science, public health, and sociology to study migration, trade, the spread of COVID-19, knowledge diffusion, and inequality.

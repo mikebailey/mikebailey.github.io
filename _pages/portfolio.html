@@ -7,8 +7,29 @@ author_profile: true
 
 {% include base_path %}
 
-
 {% for post in site.portfolio %}
-  {% include archive-single.html %}
-{% endfor %}
+  <div class="list__item">
+    <article class="archive__item project-item" itemscope itemtype="https://schema.org/CreativeWork">
 
+      {% if post.image %}
+      <div class="project-item__image">
+        <a href="{{ post.link | default: post.url | relative_url }}">
+          <img src="{% if post.image contains '://' %}{{ post.image }}{% else %}{{ post.image | prepend: '/images/' | prepend: base_path }}{% endif %}" alt="{{ post.title | escape }}">
+        </a>
+      </div>
+      {% endif %}
+
+      <div class="project-item__body">
+        <h2 class="archive__item-title" itemprop="headline">
+          {% if post.link %}
+            <a href="{{ post.link }}">{{ post.title }}</a>
+          {% else %}
+            <a href="{{ base_path }}{{ post.url }}" rel="permalink">{{ post.title }}</a>
+          {% endif %}
+        </h2>
+        {{ post.content }}
+      </div>
+
+    </article>
+  </div>
+{% endfor %}

@@ -2,6 +2,8 @@
 title: "UK Social Capital Atlas"
 excerpt: "Mapping social capital across the United Kingdom from around six billion friendships, with the Behavioural Insights Team and partners."
 collection: portfolio
+link: https://data.humdata.org/dataset/uk-social-capital-atlas
+image: portfolio/uk-social-capital.webp
 ---
 
 The **UK Social Capital Atlas** maps social capital across the United Kingdom &mdash; including *economic connectedness*, the extent to which lower- and higher-income people are friends &mdash; built from the friendship networks of roughly 20 million UK adults (around six billion friendships) on Facebook. It is the UK counterpart to the US [Social Capital Atlas](https://www.socialcapital.org), produced with the [Behavioural Insights Team](https://www.bi.team/) and partners including Meta, the RSA, the Neighbourly Lab, Opportunity Insights, and Stripe Partners, with funding from the Nuffield Foundation.
