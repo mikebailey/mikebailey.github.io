@@ -11,3 +11,7 @@ end
 
 gem 'github-pages'
 gem 'connection_pool', '2.5.0'
+
+# Windows and JRuby ship no zoneinfo database; bundle the tz data locally.
+# Platform-guarded, so this is a no-op on the Linux GitHub Pages build.
+gem 'tzinfo-data', platforms: [:mingw, :x64_mingw, :mswin, :jruby]
