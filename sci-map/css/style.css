@@ -1,0 +1,409 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+
+}
+
+
+#map {
+  position: fixed;
+  top: 0;
+  left:0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#loading-icon {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 8px solid #f3f3f3; /* Light gray */
+  border-top: 8px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  z-index: 9999; /* Keep it above everything */
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+
+.popup{
+  font-family: 'Poppins', sans-serif;
+ 
+}
+
+.mapboxgl-popup-content{
+ background-color:#ffffff;
+ padding:20px 20px;
+ border-radius:20px;
+ border-color:#dde1ed;
+ border-style:solid;
+ border-width:3px;
+ 
+}
+#level2{
+  display:none
+}
+
+#notFound{
+position:fixed;
+  left:46%;
+  top:46%;
+  font-size:25px;
+  font-weight:600;
+    color: #1879d5;
+}
+
+
+.propPopA-0{
+font-weight:700;
+  font-size:15px;
+line-height:13px;
+  color: #080e2d;
+  margin-bottom:4px;
+}
+
+.propPopA-1{
+
+   margin-bottom:14px;
+  font-size:12px;
+ color: #080e2d;
+ line-height:13px;
+  font-weight:500;
+
+}
+
+#top-10-container{
+  height:520px;
+  overflow-y:scroll;
+}
+
+
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+  border-bottom-color: #080a0d00;
+}
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+  border-top-color: #080a0d00;
+}
+.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+  border-right-color: #080a0d00;
+}
+.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+  border-left-color: #080a0d00;
+}
+
+.legend-container {
+  font-family: 'Poppins', sans-serif;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.85); /* Slight transparency */
+  padding: 12px;
+  border-radius: 0px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Soft shadow */
+
+  font-size: 14px;
+  line-height: 1.4;
+   color: #3b464f;
+}
+
+.legend-title {
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.legend-scale {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+}
+
+.legend-color {
+  width: 52px;
+  height: 12px;
+  margin-right: 8px;
+  border-radius: 4px; /* Rounded color boxes */
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Subtle border */
+}
+
+
+
+
+.table-container {
+  position: relative;;
+  
+ margin-top:30px;
+  background: rgb(255 255 255 / 0%);
+  padding: 0px;
+  border-radius: 0px;
+  box-shadow: 0 0px 0px rgba(0, 0, 0, 0.2);
+  width: 250px;
+  color: #3b464f;
+  width:100%;
+}
+
+.table-title {
+  text-transform:uppercase;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+  font-size:13px;
+}
+
+table {
+  text-transform:uppercase;
+  width: 100%;
+  border-collapse: collapse;
+
+}
+
+th, td {
+  padding: 5px;
+  text-align: left;
+  font-size:13px;
+  
+  
+}
+
+th {
+  background-color: #ffffff00;
+ 
+}
+
+td {
+  border-bottom: 1px solid #ddd;
+  line-height:13px;
+   font-size:12px;
+    padding-bottom: 17px;
+  
+}
+
+tr:last-child td {
+  border-bottom: none;
+  
+}
+
+
+tr {
+ line-height:35px;
+}
+.rank-circle {
+  display: inline-block;
+  width: 21px;
+  height: 22px;
+  line-height: 20px;
+  border-radius: 50%;
+  background-color: #cfcfcf;
+  color: white;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  
+}
+
+#console{
+  position:fixed;
+  right:0px;
+  background: linear-gradient(to left, white 85%, transparent 100%);
+  height:100%;
+    width:450px;
+  padding: 60px 30px 30px 90px;
+  color: #3b464f;
+}
+
+#title{
+  font-size:22px;
+  margin-bottom:20px;
+  font-weight:700;
+}
+
+#paragraph{
+  font-size:12px;
+    padding: 0px 0px 40px 0px;
+  font-weight:400;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Subtle border */
+}
+
+#tot-box{
+  position:fixed;
+}
+
+#image-text-container{
+  top:20px;
+  left:42px;
+  position:fixed;
+  background:#ffffff00;
+text-transform:uppercase;
+}
+
+#image-text-container>img{
+ float:left;
+  width:160px;
+  margin-right:0px;
+  
+}
+#soc{
+  margin-top:28px;
+  font-size:18px;
+  font-weight:bold;
+  color: #3b464f;
+}
+
+#reloadIcon{
+  margin-left:5px !important;
+  margin-top:2px;
+  font-size:15px;
+  color: #87d0c9;
+position:absolute;
+}
+
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #ffffff;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #eaeaea;
+  border-radius: 10px;
+  height: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #dadada;
+}
+
+
+.button-container {
+  position:fixed;
+  top:90px;
+  left:40px;
+}
+
+.button-container>button {
+  padding: 3px 35px;
+  font-size: 12px;
+  font-weight:500;
+
+  margin: 0px;
+  border: solid;
+  border-color:#b8b8b8;
+  cursor: pointer;
+  border-radius: 5px !important;
+  transition: background 0.3s, transform 0.2s;
+  background-color: #ddd;
+  color: #666;
+  
+}
+
+/* Active button */
+button.active {
+  background-color: #525252;
+  color: white;
+}
+
+/* Hover effect for non-active buttons */
+button:not(.active):hover {
+  background-color: #c3c3c3;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* ------------------------------------------------------------------
+   michaelbailey.org additions
+   ------------------------------------------------------------------ */
+
+/* "Back to mikebailey.org" link, top-left, sits above the map. */
+#site-back {
+  position: fixed;
+  top: 18px;
+  left: 22px;
+  z-index: 10;
+  padding: 6px 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #3b464f;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+#site-back:hover {
+  background: #fff;
+  color: #1879d5;
+  text-decoration: none;
+}
+
+/* Title block sits below the back link. */
+#image-text-container {
+  top: 56px;
+}
+
+#soc-sub {
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 400;
+  color: #6a7480;
+  text-transform: none;
+  letter-spacing: 0.01em;
+}
+
+/* Credit/citation footer, bottom-right of the map. */
+#credits {
+  position: fixed;
+  bottom: 14px;
+  right: 14px;
+  z-index: 9;
+  max-width: 420px;
+  padding: 8px 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #3b464f;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  text-align: right;
+}
+#credits .credit-line {
+  display: block;
+}
+#credits a {
+  color: #1879d5;
+  text-decoration: none;
+}
+#credits a:hover {
+  text-decoration: underline;
+}
+
