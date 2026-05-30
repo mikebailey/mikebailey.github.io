@@ -78,15 +78,17 @@ async function loadGeoJSON(url) {
   const response = await fetch(url);
   return await response.json();
 }
-const geojsonUrlC = "data/continents.geojson";
-const csvUrlC = "data/continent_aggregation.csv";
+// Level 0 — countries worldwide (~565 KB CSV, 2.2 MB boundaries).
 const geojsonUrl0 = "data/WORLDCOUNTRIES.geojson";
-const csvUrl0 = "data/country.csv"; // 2026 HDX release
+const csvUrl0     = "data/country.csv";
 
-const geojsonUrl1 = "data/merged_1.geojson";
-const csvUrl1 = "data/gadm1_nuts2-gadm1_nuts2-fb-social-connectedness-index-october-2021.csv";
+// Level 1 — Europe NUTS2 (~1.6 MB simplified boundaries, ~1.8 MB CSV; 2026 HDX, NUTS 2024 codes).
+const geojsonUrl1 = "data/nuts2_2024.geojson";
+const csvUrl1     = "data/nuts2_2024.csv";
 
-const geojsonUrl2 = "data/merged_1+2.geojson";
+// Level 2 — US states (~270 KB simplified GADM USA L1 boundaries, ~680 KB CSV; user_region keyed USA.X_1).
+const geojsonUrl2 = "data/us_states.geojson";
+const csvUrl2     = "data/us_states.csv";
 
 function getColor(value) {
   if (!value) return "#cccccc"; // Default gray if no data
@@ -342,96 +344,66 @@ map.on("load", async function () {
     // a country. The click handler above does all of the highlight work.)
   }
 
-  // const geojsonC = await loadGeoJSON(geojsonUrlC);
-  // const csvDataC = await loadCSV(csvUrlC);
-
+  // Level 0 — countries (visible by default; click handler wires up).
   const geojson0 = await loadGeoJSON(geojsonUrl0);
   const csvData0 = await loadCSV(csvUrl0);
-  // const csvDataCont = await loadCSV(csvUrlCont);
-
-  console.log(csvData0);
   colorAllLevelA("level0", geojson0, csvData0, "ISO_A2", "ADMIN", 100, "user_country", "friend_country");
 
-  // Button event listener
-  const buttons = document.querySelectorAll("button");
+  // Level 1 — Europe NUTS2.
+  const geojson1 = await loadGeoJSON(geojsonUrl1);
+  const csvData1 = await loadCSV(csvUrl1);
+  colorAllLevelA("level1", geojson1, csvData1, "NUTS_ID", "NUTS_NAME", 100, "user_region", "friend_region");
 
-  var glob2 = "enabled"; // Initial state
+  // Level 2 — US states (GADM USA L1, codes USA.N_1).
+  const geojson2 = await loadGeoJSON(geojsonUrl2);
+  const csvData2 = await loadCSV(csvUrl2);
+  colorAllLevelA("level2", geojson2, csvData2, "GID_1", "NAME_1", 100, "user_region", "friend_region");
 
+  // Show only the active layer; reset its fills (clears any choropleth from
+  // the previous layer). Skips layers that haven't been added yet so this is
+  // safe to call before all loaders finish.
+  function setActiveLayer(activeId) {
+    ["level0", "level1", "level2"].forEach((id) => {
+      if (!map.getLayer(id)) return;
+      const vis = id === activeId ? "visible" : "none";
+      map.setLayoutProperty(id, "visibility", vis);
+      if (map.getLayer(id + "borders")) {
+        map.setLayoutProperty(id + "borders", "visibility", vis);
+      }
+    });
+    if (map.getLayer(activeId)) {
+      map.setPaintProperty(activeId, "fill-color", "#F7F7F7");
+      if (map.getLayer(activeId + "borders")) {
+        map.setPaintProperty(activeId + "borders", "line-color", "#CCCCCC");
+      }
+    }
+  }
+
+  // Default camera for each level (used when the user switches layers).
+  const LEVEL_VIEWS = {
+    level0: { center: DEFAULT_CENTER, zoom: DEFAULT_ZOOM },
+    level1: { center: [12, 52], zoom: 3.3 },   // Europe
+    level2: { center: [-98, 39], zoom: 3.4 },  // continental US
+  };
+
+  const buttons = document.querySelectorAll(".button-container button");
   buttons.forEach((button) => {
     button.addEventListener("click", function () {
-      document.getElementById("console").style.display = "none"; // Show the top 10 table
+      document.getElementById("console").style.display = "none";
+      document.getElementById("legend").style.display = "none";
 
-      // Remove "active" class from all buttons
       buttons.forEach((btn) => btn.classList.remove("active"));
-
-      // Add "active" class to the clicked button
       this.classList.add("active");
 
-      glob2 = "enabled";
+      gSel = this.id;
+      setActiveLayer(this.id);
 
-      console.log(glob2);
-
-      gSel = this.id; // Store the ID of the clicked button
-
-      if (this.id === "level0") {
-        map.setLayoutProperty("level0", "visibility", "visible");
-        map.setLayoutProperty("level0" + "borders", "visibility", "visible");
-
-        map.setLayoutProperty("level1", "visibility", "none");
-        map.setLayoutProperty("level1" + "borders", "visibility", "none");
-
-        map.setLayoutProperty("level2", "visibility", "none");
-        map.setLayoutProperty("level2" + "borders", "visibility", "none");
-        map.setLayoutProperty("level2" + "Viz", "visibility", "none");
-        map.setLayoutProperty("level2" + "borders" + "Viz", "visibility", "none");
-
-        //borders
-        map.setPaintProperty("level0" + "borders", "line-color", "#CCCCCC");
-        map.setPaintProperty("level0", "fill-color", "#F7F7F7");
-      } else if (this.id === "level1") {
-        map.setLayoutProperty("level0", "visibility", "none");
-        map.setLayoutProperty("level0" + "borders", "visibility", "none");
-
-        map.setLayoutProperty("level1", "visibility", "visible");
-        map.setLayoutProperty("level1" + "borders", "visibility", "visible");
-
-        map.setLayoutProperty("level2", "visibility", "none");
-        map.setLayoutProperty("level2" + "borders", "visibility", "none");
-        map.setLayoutProperty("level2" + "Viz", "visibility", "none");
-        map.setLayoutProperty("level2" + "borders" + "Viz", "visibility", "none");
-
-        //borders
-        map.setPaintProperty("level1" + "borders", "line-color", "#CCCCCC");
-        map.setPaintProperty("level1", "fill-color", "#F7F7F7");
-      } else if (this.id === "level2") {
-        clikedLevel2();
+      const view = LEVEL_VIEWS[this.id];
+      if (view) {
+        map.flyTo({ ...view, essential: true, duration: 1200 });
       }
     });
   });
-
-  function clikedLevel2() {
-    map.setLayoutProperty("level0", "visibility", "none");
-    map.setLayoutProperty("level0" + "borders", "visibility", "none");
-
-    map.setLayoutProperty("level1", "visibility", "none");
-    map.setLayoutProperty("level1" + "borders", "visibility", "none");
-
-    map.setLayoutProperty("level2", "visibility", "visible");
-    map.setLayoutProperty("level2" + "borders", "visibility", "visible");
-    map.setLayoutProperty("level2" + "Viz", "visibility", "none");
-    map.setLayoutProperty("level2" + "borders" + "Viz", "visibility", "none");
-
-    //borders
-    map.setPaintProperty("level2" + "borders", "line-color", "#CCCCCC");
-    map.setPaintProperty("level2", "fill-color", "#F7F7F7");
-    map.setPaintProperty("level2" + "Viz", "fill-color", "#F7F7F7");
-  }
-
-  // const geojson1 = await loadGeoJSON(geojsonUrl1);
-  // const csvData1 = await loadCSV(csvUrl1);
-  // v2 wiring (Europe NUTS2 + continents) — keep call signature with the new CSV column names:
-  // colorAllLevelA("level1", geojson1, csvData1, "NUTS_ID", "NAME_1", 100, "user_region", "friend_region");
-  // colorAllLevelA("level2", geojsonC, csvDataC, "CONTINENT", "CONTINENT", 100, "user_country", "friend_country");
 
   ////////////////////////////////////////functions
 
@@ -477,13 +449,14 @@ map.on("load", async function () {
   var gSel = "level0";
 
   function updateTop10Table(sortedCountries, refSci, top) {
-    if (gSel === "level0") {
-      document.getElementById("table-title").innerHTML = "Top 10 Connected Countries";
-      document.getElementById("tab-lab").innerHTML = "Country";
-    } else {
-      document.getElementById("table-title").innerHTML = "Top 10 Connected Regions";
-      document.getElementById("tab-lab").innerHTML = "Region";
-    }
+    const LABELS = {
+      level0: { title: "Top 10 Connected Countries", col: "Country" },
+      level1: { title: "Top 10 Connected Regions",   col: "Region"  },
+      level2: { title: "Top 10 Connected States",    col: "State"   },
+    };
+    const meta = LABELS[gSel] || LABELS.level0;
+    document.getElementById("table-title").innerHTML = meta.title;
+    document.getElementById("tab-lab").innerHTML = meta.col;
 
     const tableBody = document.querySelector("#top-10-table tbody");
     tableBody.innerHTML = ""; // Clear previous rows
