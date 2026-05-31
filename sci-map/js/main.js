@@ -102,9 +102,14 @@ const colorSequence = [
   "#43A2CA", // 10x - 25x
   "#0868AC", // 25x - 100x
   "#084081", // >= 100x
-  "rgba(0, 0, 0, 0)", // No data transparent
-  // "#CFCFCF", // No data
+  "rgba(0, 0, 0, 0)", // No data transparent (kept for compatibility with the legend "NA" row)
 ];
+
+// Default fill for an in-sample feature before any click highlights it.
+// Distinct from the out-of-sample grey, which signals "this region exists in
+// the boundary file but has no SCI data, so it cannot be clicked".
+const DEFAULT_FILL = "#F7F7F7";
+const NO_DATA_FILL = "#dedede";
 
 map.on("load", async function () {
   function colorAllLevelA(layerName, geojson, csvData, labelGeo, nameGeo, topLeveled, userCol, frCol) {
@@ -133,12 +138,18 @@ map.on("load", async function () {
       document.getElementById("loading-icon").style.display = "none";
     }
 
+    // Tag each feature with has_data so:
+    //   (a) the paint expression can render out-of-sample features in a
+    //       distinct "not clickable" light grey rather than NaN-out the map,
+    //   (b) the click handler can ignore clicks on out-of-sample regions
+    //       (a click with no row in csvDataMap used to break the choropleth
+    //       paint expression and turn the whole map white).
     geojson.features = geojson.features.map(function (d, index) {
-      d.id = index + 1; // Assign a unique ID
+      d.id = index + 1;
+      const key = d.properties[labelGeo];
+      d.properties.has_data = !!(key && csvDataMap[key]);
       return d;
     });
-
-    console.log(geojson);
 
     // Add source to the map
     map.addSource(layerName, {
@@ -156,9 +167,12 @@ map.on("load", async function () {
           visibility: "none",
         },
         paint: {
-          "fill-color": "#F7F7F7", // Default color
-          //"fill-color": "#E5483C", // Default color
-
+          "fill-color": [
+            "case",
+            ["==", ["get", "has_data"], false],
+            NO_DATA_FILL,         // out-of-sample (e.g. Liechtenstein on NUTS map)
+            DEFAULT_FILL,         // in-sample, not yet highlighted by a click
+          ],
           "fill-opacity": ["case", ["boolean", ["feature-state", "hover"], false], 0.8, 0.9],
         },
       },
@@ -192,16 +206,21 @@ map.on("load", async function () {
     }
 
     map.on("click", layerName, function (e) {
-      document.getElementById("console").style.display = "block"; // Show the top 10 table
+      var clickedISO = e.features[0].properties[labelGeo];
+
+      // Out-of-sample click — no SCI row to anchor the choropleth on.
+      // Doing nothing here keeps the previous highlight on the map; without
+      // this guard the percentile math produced NaN thresholds and the whole
+      // map went white (the bug surfaced on UK NUTS clicks, since UK isn't
+      // in NUTS-2024 / not in the SCI 2026 release).
+      if (!csvDataMap[clickedISO]) {
+        return;
+      }
+
+      document.getElementById("console").style.display = "block";
       document.getElementById("legend").style.display = "block";
 
-      console.log(e.features[0]);
-
-      var clickedISO = e.features[0].properties[labelGeo];
-      var clickedAdmin = e.features[0].properties[nameGeo]; // Get country name
-
-      console.log("Clicked ISO:", clickedISO);
-      console.log("Clicked Admin:", clickedAdmin);
+      var clickedAdmin = e.features[0].properties[nameGeo];
 
       document.getElementById("title").innerText = clickedAdmin; // Update the country name
 
@@ -273,32 +292,36 @@ map.on("load", async function () {
       // Update the GeoJSON source
       map.getSource(layerName).setData(geojson);
 
-      // Apply the new **range-based** coloring dynamically
+      // Apply the new range-based colouring. Out-of-sample features are
+      // checked first so they always stay light grey, regardless of click
+      // state.
       map.setPaintProperty(layerName, "fill-color", [
         "case",
+        ["==", ["get", "has_data"], false],
+        NO_DATA_FILL,
         ["has", "sci"],
         [
           "step",
           ["coalesce", ["get", "sci"], 0],
-          colorSequence[8],
+          colorSequence[0],
           0.1,
-          colorSequence[0], // <1x (Very low)
+          colorSequence[0],
           thresholds[0],
-          colorSequence[1], // 1x - 2x (Low)
+          colorSequence[1],
           thresholds[1],
-          colorSequence[2], // 2x - 3x (Moderate Low)
+          colorSequence[2],
           thresholds[2],
-          colorSequence[3], // 3x - 5x (Mid)
+          colorSequence[3],
           thresholds[3],
-          colorSequence[4], // 5x - 10x (Moderate High)
+          colorSequence[4],
           thresholds[4],
-          colorSequence[5], // 10x - 25x (High)
+          colorSequence[5],
           thresholds[5],
-          colorSequence[6], // 25x - 100x (Very High)
+          colorSequence[6],
           thresholds[6],
-          colorSequence[7], // >100x (Extreme)
+          colorSequence[7],
         ],
-        colorSequence[8], // Default fallback color
+        DEFAULT_FILL,
       ]);
 
       // Update the legend dynamically
@@ -314,17 +337,22 @@ map.on("load", async function () {
     });
 
     map.on("mousemove", layerName, function (e) {
-      map.getCanvas().style.cursor = "pointer";
+      if (e.features.length === 0) return;
+      const hovered = e.features[0];
+      const clickable = hovered.properties.has_data !== false;
+      map.getCanvas().style.cursor = clickable ? "pointer" : "not-allowed";
 
-      if (e.features.length > 0) {
+      // Only apply the hover-highlight feature state to clickable features.
+      if (clickable) {
         if (hoveredStateId) {
           map.setFeatureState({ source: layerName, id: hoveredStateId }, { hover: false });
         }
-        hoveredStateId = e.features[0].id;
+        hoveredStateId = hovered.id;
         map.setFeatureState({ source: layerName, id: hoveredStateId }, { hover: true });
+      } else if (hoveredStateId) {
+        map.setFeatureState({ source: layerName, id: hoveredStateId }, { hover: false });
+        hoveredStateId = null;
       }
-
-      var callP = e.features[0].properties;
     });
 
     map.on("mouseleave", layerName, function () {
@@ -370,7 +398,14 @@ map.on("load", async function () {
       }
     });
     if (map.getLayer(activeId)) {
-      map.setPaintProperty(activeId, "fill-color", "#F7F7F7");
+      // Reset to the has_data-aware default fill so out-of-sample regions
+      // stay grey across level switches.
+      map.setPaintProperty(activeId, "fill-color", [
+        "case",
+        ["==", ["get", "has_data"], false],
+        NO_DATA_FILL,
+        DEFAULT_FILL,
+      ]);
       if (map.getLayer(activeId + "borders")) {
         map.setPaintProperty(activeId + "borders", "line-color", "#CCCCCC");
       }
