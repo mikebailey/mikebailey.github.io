@@ -2,7 +2,7 @@
 layout: null
 permalink: /sci-map/
 title: "Interactive Social Connectedness Index"
-description: "Interactive map of Facebook's Social Connectedness Index (SCI), measuring the strength of social ties between countries from Facebook friendship data. Mike Bailey, computational social scientist."
+description: "Interactive map of Facebook's Social Connectedness Index (SCI), measuring the strength of social ties between geographies from Facebook friendship data. Mike Bailey, computational social scientist."
 sitemap: true
 ---
 <!DOCTYPE html>
@@ -29,28 +29,42 @@ sitemap: true
   <div id="notFound" style="display: none; opacity: 0;">Data not available</div>
   <div id="loading-icon"></div>
 
-  <div class="button-container">
-    <button id="level0" class="active">Countries</button>
-    <button id="level1">Europe</button>
-    <button id="level2">US states</button>
+  <!-- Top-left stack: title + subtitle, then the level switcher, then "About this map". -->
+  <div id="top-controls">
+    <div id="image-text-container">
+      <p id="soc">Social Connectedness Index</p>
+      <p id="soc-sub">Click any country</p>
+    </div>
+
+    <div class="button-container">
+      <button type="button" id="level0" class="active">Countries</button>
+      <button type="button" id="level1">Europe</button>
+      <button type="button" id="level2">US states</button>
+    </div>
+
+    <button type="button" id="data-explanation-btn" aria-expanded="false" aria-controls="data-explanation">
+      <span class="info-icon" aria-hidden="true">i</span> About this map
+    </button>
   </div>
 
-  <div id="image-text-container">
-    <p id="soc">Social Connectedness Index</p>
-    <p id="soc-sub">Click any country</p>
+  <!-- Expandable explanation, anchored top-left and floats above the map when open. -->
+  <div id="data-explanation" hidden>
+    <button type="button" class="close-btn" aria-label="Close">×</button>
+    <h3>About the Social Connectedness Index</h3>
+    <p>The map shows the relative probability that a Facebook user in the selected location has a friendship link to a Facebook user in every other location at the same level.</p>
+    <p>The Social Connectedness Index is the number of Facebook friendship links between two locations divided by the product of their Facebook user populations, scaled so only relative values matter (e.g. if the SCI between location A and location B is twice as large as the SCI between location A and location C, then a randomly chosen Facebook user in location A is twice as likely to be friends with a randomly chosen Facebook user in location B than with a user in location C).</p>
+    <p>More details, including the full data download, are available at the <a href="https://data.humdata.org/dataset/social-connectedness-index" target="_blank" rel="noopener">Humanitarian Data Exchange</a>.</p>
   </div>
 
-  <div id="legend" class="legend-container" style="display: none;">
-    <div class="legend-title">Social Connectedness Index</div>
-    <div class="legend-scale" id="legend-scale"></div>
-  </div>
-
+  <!-- Right-side panel: bold-centered title, then legend, then top-10 table. -->
   <div id="console" style="display: none;">
     <h1 id="title">Selected country</h1>
-    <h2 id="paragraph">
-      The map shows the relative probability that a Facebook user in the selected country has a friendship link to a Facebook user in every other country.<br><br>
-      The Social Connectedness Index is computed as the number of Facebook friendship links between two locations divided by the product of their Facebook user populations, then scaled so only relative values matter (Xx higher SCI = X times more likely to be friends compared to the reference).
-    </h2>
+
+    <div id="legend" class="console-legend">
+      <div class="legend-title">Likelihood of Friendship</div>
+      <div class="legend-scale" id="legend-scale"></div>
+    </div>
+
     <div id="top-10-container" class="table-container">
       <div class="table-title" id="table-title">Top 10 Connected Countries</div>
       <table id="top-10-table">
@@ -67,8 +81,9 @@ sitemap: true
   </div>
 
   <div id="credits">
-    <span class="credit-line">Data: <a href="https://data.humdata.org/dataset/social-connectedness-index" target="_blank" rel="noopener">Facebook Social Connectedness Index</a> (HDX, 2026 release; Johnston, Kuchler, Kulkarni, Stroebel; original SCI: Bailey, Cao, Kuchler, Stroebel, Wong, <em>JEP</em> 2018)</span>
-    <span class="credit-line">Map design adapted from <a href="https://www.deepmoire.com/" target="_blank" rel="noopener">DeepMoiré</a></span>
+    Data: <a href="https://data.humdata.org/dataset/social-connectedness-index" target="_blank" rel="noopener">Facebook Social Connectedness Index</a>
+    &nbsp;|&nbsp;
+    Map design adapted from <a href="https://www.deepmoire.com/" target="_blank" rel="noopener">Deepmoire.com</a>
   </div>
 
   <script src="js/main.js"></script>

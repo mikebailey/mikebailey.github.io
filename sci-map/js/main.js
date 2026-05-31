@@ -18,11 +18,9 @@ const map = new mapboxgl.Map({
 var nav = new mapboxgl.NavigationControl();
 map.addControl(nav, "top-right");
 
-map.addControl(new mapboxgl.AttributionControl({
-  customAttribution:
-    'Data: <a href="https://data.humdata.org/dataset/social-connectedness-index" target="_blank" rel="noopener">FB SCI on HDX</a> &middot; ' +
-    'Map design adapted from <a href="https://www.deepmoire.com/" target="_blank" rel="noopener">DeepMoiré</a>',
-}));
+// Mapbox-required attribution only (compact); SCI + DeepMoiré attribution
+// lives in the #credits panel.
+map.addControl(new mapboxgl.AttributionControl({ compact: true }));
 var hoveredStateId = null;
 
 var popup = new mapboxgl.Popup({
@@ -386,17 +384,41 @@ map.on("load", async function () {
     level2: { center: [-98, 39], zoom: 3.4 },  // continental US
   };
 
+  // Per-level wording for the subtitle + top-10 table header.
+  const LAYER_META = {
+    level0: { unit: "country", title: "Top 10 Connected Countries", col: "Country" },
+    level1: { unit: "region",  title: "Top 10 Connected Regions",   col: "Region"  },
+    level2: { unit: "state",   title: "Top 10 Connected States",    col: "State"   },
+  };
+
+  function setLayerSubtitle(id) {
+    const meta = LAYER_META[id] || LAYER_META.level0;
+    const sub = document.getElementById("soc-sub");
+    if (sub) sub.textContent = "Click any " + meta.unit;
+  }
+  setLayerSubtitle(gSel); // initial — matches default-active "Countries" button
+
   const buttons = document.querySelectorAll(".button-container button");
   buttons.forEach((button) => {
     button.addEventListener("click", function () {
-      document.getElementById("console").style.display = "none";
-      document.getElementById("legend").style.display = "none";
+      // Diagnostic — surfaces in DevTools console if a button does nothing.
+      console.log("[SCI] level switch ->", this.id, {
+        l0: !!map.getLayer("level0"),
+        l1: !!map.getLayer("level1"),
+        l2: !!map.getLayer("level2"),
+      });
+
+      const consoleEl = document.getElementById("console");
+      if (consoleEl) consoleEl.style.display = "none";
+      const legendEl = document.getElementById("legend");
+      if (legendEl) legendEl.style.display = "none";
 
       buttons.forEach((btn) => btn.classList.remove("active"));
       this.classList.add("active");
 
       gSel = this.id;
       setActiveLayer(this.id);
+      setLayerSubtitle(this.id);
 
       const view = LEVEL_VIEWS[this.id];
       if (view) {
@@ -404,6 +426,19 @@ map.on("load", async function () {
       }
     });
   });
+
+  // "About this map" expandable panel.
+  (function setupExplanationToggle() {
+    const btn = document.getElementById("data-explanation-btn");
+    const panel = document.getElementById("data-explanation");
+    if (!btn || !panel) return;
+    const open = () => { panel.removeAttribute("hidden"); btn.setAttribute("aria-expanded", "true"); };
+    const shut = () => { panel.setAttribute("hidden", ""); btn.setAttribute("aria-expanded", "false"); };
+    btn.addEventListener("click", () => panel.hasAttribute("hidden") ? open() : shut());
+    const close = panel.querySelector(".close-btn");
+    if (close) close.addEventListener("click", shut);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") shut(); });
+  })();
 
   ////////////////////////////////////////functions
 
@@ -449,12 +484,7 @@ map.on("load", async function () {
   var gSel = "level0";
 
   function updateTop10Table(sortedCountries, refSci, top) {
-    const LABELS = {
-      level0: { title: "Top 10 Connected Countries", col: "Country" },
-      level1: { title: "Top 10 Connected Regions",   col: "Region"  },
-      level2: { title: "Top 10 Connected States",    col: "State"   },
-    };
-    const meta = LABELS[gSel] || LABELS.level0;
+    const meta = LAYER_META[gSel] || LAYER_META.level0;
     document.getElementById("table-title").innerHTML = meta.title;
     document.getElementById("tab-lab").innerHTML = meta.col;
 
@@ -484,7 +514,7 @@ map.on("load", async function () {
       return `${roundedMultiplier.toLocaleString()}`; // Format number with commas
     }
 
-    sortedCountries.slice(0, 20).forEach((item, index) => {
+    sortedCountries.slice(0, 10).forEach((item, index) => {
       const row = document.createElement("tr");
       row.innerHTML = `
             <td><span class="rank-circle">${index + 1}</span></td> <!-- Add ranking circle -->

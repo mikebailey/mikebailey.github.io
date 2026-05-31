@@ -25,7 +25,7 @@ Featured Projects
 {: .project-desc}
 
 **Data:** [Social Connectedness Index data](https://data.humdata.org/dataset/social-connectedness-index)<br>
-**Map:** [Interactive explorer](/sci-map/)<br>
+**Map:** [Interactive explorer](/sci-map/) &mdash; countries, Europe (NUTS2), US states<br>
 **Research:** [JPE 2018](https://doi.org/10.1086/700073) &middot; [RES 2019](https://doi.org/10.1093/restud/rdy068) &middot; [JEP 2018](https://www.aeaweb.org/articles?id=10.1257/jep.32.3.259)<br>
 **Media Coverage:** [New York Times](https://www.nytimes.com/interactive/2018/09/19/upshot/facebook-county-friendships.html) &middot; [The Economist](https://www.economist.com/graphic-detail/2018/08/08/far-flung-facebook-friends-may-be-good-for-your-health) &middot; [Bloomberg](https://www.bloomberg.com/news/articles/2017-07-25/facebook-friends-from-far-away-are-a-trait-of-rich-communities)
 {: .project-links}
