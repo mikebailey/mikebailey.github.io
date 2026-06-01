@@ -435,6 +435,35 @@ button:not(.active):hover {
   transform: none;
 }
 
+/* Projection switcher (Globe / Flat) — same look as the level switcher
+   but slightly tighter so it reads as a secondary control. */
+.projection-container {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+}
+.projection-container > button {
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid #c8c8c8;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #f6f6f6;
+  color: #555;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+.projection-container > button.active {
+  background-color: #3b464f;
+  color: #fff;
+  border-color: #3b464f;
+  cursor: default;
+}
+.projection-container > button:not(.active):hover {
+  background-color: #d6dade;
+  color: #3b464f;
+}
+
 /* "About this map" toggle button (sits below the level switcher). */
 #data-explanation-btn {
   padding: 4px 10px;

@@ -433,6 +433,43 @@ map.on("load", async function () {
   }
   setLayerSubtitle(gSel); // initial — matches default-active "Countries" button
 
+  // ----- Projection toggle (Globe / Flat) -----
+  // Flat mode picks the most flattering projection per active layer:
+  //   - level0 (Countries):   equalEarth — accurate areas for a world choropleth.
+  //   - level1 (EU regions):  mercator   — straightforward, good at this zoom.
+  //   - level2 (US states):   albers     — purpose-built USA conic.
+  // Globe mode forces the 3D globe regardless of zoom (overrides Mapbox's
+  // adaptive globe-below-zoom-5 default).
+  const FLAT_PROJECTION_BY_LEVEL = {
+    level0: "equalEarth",
+    level1: "mercator",
+    level2: "albers",
+  };
+  let projMode = "globe";
+
+  function applyProjection() {
+    try {
+      if (projMode === "globe") {
+        map.setProjection("globe");
+      } else {
+        map.setProjection(FLAT_PROJECTION_BY_LEVEL[gSel] || "mercator");
+      }
+    } catch (e) {
+      console.warn("[SCI] setProjection failed:", e);
+    }
+  }
+  applyProjection(); // explicit initial state
+
+  const projButtons = document.querySelectorAll(".projection-container button");
+  projButtons.forEach((btn) => {
+    btn.addEventListener("click", function () {
+      projButtons.forEach((b) => b.classList.remove("active"));
+      this.classList.add("active");
+      projMode = this.id === "proj-globe" ? "globe" : "flat";
+      applyProjection();
+    });
+  });
+
   const buttons = document.querySelectorAll(".button-container button");
   buttons.forEach((button) => {
     button.addEventListener("click", function () {
@@ -454,6 +491,7 @@ map.on("load", async function () {
       gSel = this.id;
       setActiveLayer(this.id);
       setLayerSubtitle(this.id);
+      applyProjection(); // re-pick flat per level if we're in Flat mode
 
       const view = LEVEL_VIEWS[this.id];
       if (view) {
