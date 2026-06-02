@@ -721,16 +721,17 @@ map.on("load", async function () {
 
   // ----- Projection toggle (Globe / Flat) -----
   // Flat mode picks the most flattering projection per active layer:
-  //   - level0 (Countries):   equalEarth — accurate areas for a world choropleth.
-  //   - level1 (EU regions):  mercator   — straightforward, good at this zoom.
-  //   - level2 (US states):   albers     — purpose-built USA conic.
+  //   - level0 (Countries):    naturalEarth — Robinson-like compromise.
+  //   - level1 (EU regions):   mercator     — straightforward, good at this zoom.
+  //   - level2 (US states):    albers       — purpose-built USA conic.
+  //   - level3 (World regions): naturalEarth — Robinson-like compromise.
   // Globe mode forces the 3D globe regardless of zoom (overrides Mapbox's
   // adaptive globe-below-zoom-5 default).
   const FLAT_PROJECTION_BY_LEVEL = {
-    level0: "equalEarth",
+    level0: "naturalEarth",
     level1: "mercator",
     level2: "albers",
-    level3: "equalEarth",
+    level3: "naturalEarth",
   };
   let projMode = "globe";
 
