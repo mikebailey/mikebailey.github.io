@@ -334,29 +334,6 @@ button:not(.active):hover {
   transform: scale(1.05);
 }
 
-/* ==========================================================================
-   michaelbailey.org overrides
-   ========================================================================== */
-
-/* Back-to-site link, top-left. */
-#site-back {
-  position: fixed;
-  top: 14px;
-  left: 14px;
-  z-index: 30;
-  padding: 5px 10px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  color: #3b464f;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 4px;
-  text-decoration: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-#site-back:hover { background: #fff; color: #1879d5; text-decoration: none; }
-
 /* Top-left control stack: title -> level switcher -> About-this-map.
    Vertical stack so nothing overlaps anything else. */
 #top-controls {
@@ -706,3 +683,26 @@ button:not(.active):hover {
   font-size: 11px;
 }
 
+
+/* ==========================================================================
+   michaelbailey.org overrides (appended by sync-from-canonical.sh)
+   ========================================================================== */
+
+/* Back-to-site link, top-left. */
+#site-back {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 30;
+  padding: 5px 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #3b464f;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+#site-back:hover { background: #fff; color: #1879d5; text-decoration: none; }

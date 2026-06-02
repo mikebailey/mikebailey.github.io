@@ -1,19 +1,76 @@
-// PUBLIC Mapbox access token (safe to commit; client-side use is what it is for).
-// Configure URL allowlist on the Mapbox account for michaelbailey.org.
-mapboxgl.accessToken = "pk.eyJ1IjoibWlrZXRoZWNoYW1waW9uIiwiYSI6ImNtcHJycGVwMzEyNGUyc29lbDg3MjRubGUifQ.W5gn-AZzwLAc0W3Mhftx9Q";
+// All user-configurable values live in js/config.js (loaded by index.html
+// before this file). Adopters editing a fork should only need to touch
+// config.js — see README.md "Fork & deploy your own".
+if (!window.SCI_CONFIG) {
+  throw new Error("[SCI] window.SCI_CONFIG is missing — check that index.html loads js/config.js *before* js/main.js.");
+}
+mapboxgl.accessToken = window.SCI_CONFIG.MAPBOX_TOKEN;
 
 // Default world view, US visible, nothing pre-highlighted.
 const DEFAULT_CENTER = [-30, 28];
 const DEFAULT_ZOOM = 1.6;
 
+// Empty Mapbox style — no tiles, no labels, no basemap. Used when the
+// basemap is disabled (manually via config or automatically after a Mapbox
+// 401/403/429). The choropleth polygons still render on top; the page
+// looks like a flat-colour world map with the SCI fills drawn on it.
+const EMPTY_STYLE = {
+  version: 8,
+  name: "no-basemap",
+  sources: {},
+  layers: [
+    { id: "bg", type: "background", paint: { "background-color": "#e8ecef" } },
+  ],
+};
+
+// Decide whether to skip the basemap. Three independent sources, any of
+// which is enough to flip the switch:
+//   1. SCI_CONFIG.DISABLE_BASEMAP — manual kill-switch in the deployed
+//      config.js. Hardcoded; flipping it requires a redeploy.
+//   2. SCI_RUNTIME_FLAGS.disable_basemap — runtime flag fetched from
+//      r2:sci-data/feature-flags.json before this file loaded. Written
+//      by the worker/ cron when Mapbox usage crosses the critical
+//      threshold. The page picks up changes on the next load (no redeploy).
+//   3. NO_BASEMAP_SESSION_KEY in sessionStorage — set by the error handler
+//      below after this same tab hit a Mapbox 401/403/429. Stops the page
+//      from re-pinging a known-failing endpoint on every reload within
+//      the tab's lifetime.
+const NO_BASEMAP_SESSION_KEY = "sciMapBasemapFailedThisSession";
+const runtimeFlags = window.SCI_RUNTIME_FLAGS || {};
+const forceNoBasemap =
+  !!window.SCI_CONFIG.DISABLE_BASEMAP ||
+  !!runtimeFlags.disable_basemap ||
+  sessionStorage.getItem(NO_BASEMAP_SESSION_KEY) === "1";
+
 const map = new mapboxgl.Map({
   attributionControl: false,
   container: "map",
-  style: "mapbox://styles/mapbox/light-v11",
+  style: forceNoBasemap ? EMPTY_STYLE : "mapbox://styles/mapbox/light-v11",
   center: DEFAULT_CENTER,
   zoom: DEFAULT_ZOOM,
   maxZoom: 8,
 });
+
+// Auto-fallback. Mapbox surfaces tile/style HTTP failures as `error` events
+// on the map. 401 = bad/invalid token, 403 = URL-restricted token used on
+// the wrong origin, 429 = monthly quota exhausted. In any of those cases
+// the basemap will be unusable for the rest of the calendar month (token
+// problems) or until billing rolls over (quota), so we mark the session
+// and reload into no-basemap mode. The reload is the cheapest way to
+// teardown Mapbox's broken tile layers; rebuilding the level0-3 sources
+// would require duplicating setActiveLayer's reset logic.
+if (!forceNoBasemap) {
+  map.on("error", function (e) {
+    if (!e || !e.error) return;
+    const err = e.error;
+    const status = err.status || (err.message && (err.message.match(/HTTP (\d+)/) || [])[1]);
+    if (status == 401 || status == 403 || status == 429) {
+      console.warn("[SCI] Mapbox basemap failure (HTTP " + status + ") — falling back to no-basemap mode.", err);
+      try { sessionStorage.setItem(NO_BASEMAP_SESSION_KEY, "1"); } catch (_) {}
+      window.location.reload();
+    }
+  });
+}
 
 var nav = new mapboxgl.NavigationControl();
 map.addControl(nav, "top-right");
@@ -90,18 +147,12 @@ const csvUrl2     = "data/us_states.csv";
 
 // Level 3 — World GADM2 (47k polygons + per-source pre-binned lookups on R2).
 // SCI is NOT loaded upfront like levels 0-2 (the full pairs table is >40 GB);
-// instead each click fetches one ~70 KB gzipped JSON from R2.
-const R2_BASE      = "https://pub-5433ddd592ff4ca4829ed8c8b77d58d6.r2.dev";
-// Versioned boundary URL so any prior cached copy is bypassed cleanly when
-// we re-publish. v5 = pre-clean + snap + simplify + final clean with 20 km²
-// gap-fill (v3 still had visible sliver gaps; v4 mis-specified the threshold
-// as sqm instead of km²).
-const geojsonUrl3  = R2_BASE + "/gadm2_world_v5.geojson";
-// /gadm2_v2/ ships dual-binned payloads (Method A = user-suggested ratios,
-// Method B = global-quantile cuts) + raw-SCI-ranked top-N, replacing the
-// v1 schema which only stored integer bins under one fixed threshold set.
-const sciUrl3Base  = R2_BASE + "/gadm2_v2/";  // <GID_2>.json.gz appended at click time
-const sciUrl3Meta  = R2_BASE + "/gadm2_v2/_meta.json";
+// instead each click fetches one ~190 KB gzipped JSON from R2.
+const R2_BASE      = window.SCI_CONFIG.R2_BASE.replace(/\/$/, "");
+const R2_GADM2     = window.SCI_CONFIG.R2_GADM2_PATH.replace(/\/?$/, "/");
+const geojsonUrl3  = R2_BASE + "/" + window.SCI_CONFIG.R2_BOUNDARY_NAME;
+const sciUrl3Base  = R2_BASE + R2_GADM2;            // <GID_2>.json.gz appended at click time
+const sciUrl3Meta  = R2_BASE + R2_GADM2 + "_meta.json";
 
 function getColor(value) {
   if (!value) return "#cccccc"; // Default gray if no data
@@ -191,7 +242,7 @@ map.on("load", async function () {
           "fill-opacity": ["case", ["boolean", ["feature-state", "hover"], false], 0.8, 0.9],
         },
       },
-      "waterway-label"
+      map.getLayer("waterway-label") ? "waterway-label" : undefined
     );
 
     map.addLayer(
@@ -212,7 +263,7 @@ map.on("load", async function () {
           "line-opacity": 1,
         },
       },
-      "waterway-label"
+      map.getLayer("waterway-label") ? "waterway-label" : undefined
     );
 
     if (layerName === "level0") {

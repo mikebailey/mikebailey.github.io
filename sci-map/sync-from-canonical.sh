@@ -23,22 +23,29 @@ fi
 
 # --- rsync everything except files that are personal-site-specific ----------
 # Exclusions:
-#   index.html  — needs Jekyll frontmatter + back-link; rebuilt below.
-#   etl/        — out-of-band data prep, not shipped on the site.
-#   .nojekyll   — Jekyll IS what serves this site; we WANT it to process the directory.
-#   CNAME       — root site's CNAME, not /sci-map/'s.
-#   .git/       — never pull the canonical repo's git tree.
-#   LICENSE README.md .gitignore — repo-level docs, irrelevant inside Jekyll.
+#   index.html               — needs Jekyll frontmatter + back-link; rebuilt below.
+#   etl/                     — out-of-band data prep, not shipped on the site.
+#   bin/                     — operational scripts (kill switches) live in canonical only.
+#   .nojekyll                — Jekyll IS what serves this site; we WANT it to process the directory.
+#   CNAME                    — root site's CNAME, not /sci-map/'s.
+#   .git/                    — never pull the canonical repo's git tree.
+#   LICENSE README.md
+#   CLAUDE.md .gitignore     — repo-level docs, irrelevant (and confusing) inside Jekyll.
+#   sync-from-canonical.sh   — the script can't be allowed to delete itself
+#                              (it only exists in the mirror, not the canonical).
 
 rsync -av --delete \
   --exclude='index.html' \
   --exclude='etl/' \
+  --exclude='bin/' \
   --exclude='.nojekyll' \
   --exclude='CNAME' \
   --exclude='.git/' \
   --exclude='LICENSE' \
   --exclude='README.md' \
+  --exclude='CLAUDE.md' \
   --exclude='.gitignore' \
+  --exclude='sync-from-canonical.sh' \
   "$CANONICAL/" "$DEST_ROOT/"
 
 # --- Rebuild sci-map/index.html with Jekyll frontmatter + back-link ---------
