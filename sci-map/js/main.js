@@ -97,7 +97,11 @@ const R2_BASE      = "https://pub-5433ddd592ff4ca4829ed8c8b77d58d6.r2.dev";
 // gap-fill (v3 still had visible sliver gaps; v4 mis-specified the threshold
 // as sqm instead of km²).
 const geojsonUrl3  = R2_BASE + "/gadm2_world_v5.geojson";
-const sciUrl3Base  = R2_BASE + "/gadm2/";  // <GID_2>.json.gz appended at click time
+// /gadm2_v2/ ships dual-binned payloads (Method A = user-suggested ratios,
+// Method B = global-quantile cuts) + raw-SCI-ranked top-N, replacing the
+// v1 schema which only stored integer bins under one fixed threshold set.
+const sciUrl3Base  = R2_BASE + "/gadm2_v2/";  // <GID_2>.json.gz appended at click time
+const sciUrl3Meta  = R2_BASE + "/gadm2_v2/_meta.json";
 
 function getColor(value) {
   if (!value) return "#cccccc"; // Default gray if no data
@@ -400,16 +404,37 @@ map.on("load", async function () {
   // Level 3 — World GADM2 (47k polygons; per-source SCI lookups on Cloudflare R2)
   // -------------------------------------------------------------------------
   // The full SCI pairs table at GADM2 is too big to ship inline (>40 GB raw,
-  // ~900M rows). The ETL pre-bins the data per source region into ~30k
-  // gzipped JSONs of shape { "FRIEND_GID_2": bin_0_to_7, ... }, hosted on R2.
-  // On click we fetch ONE file (~70 KB compressed), stamp `sci_bin` onto each
-  // boundary feature, and re-paint. Out-of-sample regions (file 404s) just
-  // do nothing — same UX as the early-return guard on levels 0-2.
+  // ~900M rows). The ETL pre-bins each (source, friend) pair under two
+  // threshold sets and writes one gzipped JSON per source region of shape:
+  //   { ref, a: {FRIEND_GID: bin0..7}, b: {FRIEND_GID: bin0..7},
+  //     top: [{g, s, a, b}, ...] }   — top sorted by raw scaled_sci DESC.
+  // The bin-method toggle below switches the choropleth between `a` (user
+  // ratios) and `b` (global quantiles). Out-of-sample regions (file 404s)
+  // just do nothing — same UX as the early-return guard on levels 0-2.
   let level3Boundary = null;
+  // _meta.json carries the bin thresholds for both methods; fetched once at
+  // setup time so the legend can render with real numbers ("1x - 5x" for A,
+  // "1x - 5x", "5x - 12x", ... for B's quantile cuts).
+  let level3Meta = null;
+  // Last-fetched payload, retained so the binning-method toggle can re-paint
+  // without refetching the JSON.
+  let level3LastPayload = null;
+  let level3LastName = null;
+  let level3LastGid = null;
+  // Binning method choice; persists across sessions.
+  let level3BinMethod = localStorage.getItem("sciBinMethod") === "b" ? "b" : "a";
+
   async function setupLevel3() {
     console.log("[SCI level3] setup start");
     try {
-      level3Boundary = await loadGeoJSON(geojsonUrl3);
+      // Boundary + meta in parallel — meta is tiny so it lands first.
+      const [boundary, metaResp] = await Promise.all([
+        loadGeoJSON(geojsonUrl3),
+        fetch(sciUrl3Meta),
+      ]);
+      try { level3Meta = await metaResp.json(); }
+      catch (e) { console.warn("[SCI level3] meta.json parse failed:", e); }
+      level3Boundary = boundary;
       console.log("[SCI level3] boundary loaded:", level3Boundary.features.length, "features");
       level3Boundary.features = level3Boundary.features.map(function (d, i) {
         d.id = i + 1;
@@ -454,30 +479,40 @@ map.on("load", async function () {
         const gid = f.properties.GID_2;
         const name = f.properties.NAME_2;
 
-        let bins;
+        let payload;
         try {
           const resp = await fetch(sciUrl3Base + gid + ".json.gz");
           if (!resp.ok) {
-            // Out-of-sample (no SCI data for this region) — keep current
-            // paint unchanged so the click feels like a no-op rather than
-            // wiping the previous selection.
             console.log("[SCI level3] no data for", gid, "(HTTP " + resp.status + ")");
             return;
           }
-          // Cloudflare R2 auto-transcodes our gzipped objects to plain JSON
-          // when they're served with Content-Type: application/json, so we
-          // can use the normal .json() path even though the stored object
-          // has a .json.gz extension.
-          bins = await resp.json();
+          // R2 auto-transcodes gzipped objects when Content-Type is
+          // application/json; the .json.gz extension is just a storage hint.
+          payload = await resp.json();
         } catch (err) {
           console.warn("[SCI level3] fetch failed for", gid, err);
           return;
         }
 
-        // Stamp each feature's bin (or -1 = not in this source's lookup).
+        level3LastPayload = payload;
+        level3LastName = name;
+        level3LastGid = gid;
+        applyLevel3();
+      });
+
+      // Apply the currently-selected binning method to the cached payload.
+      // Called from the click handler and from the bin-method toggle so the
+      // user can flip Method A/B without re-downloading the per-source JSON.
+      function applyLevel3() {
+        if (!level3LastPayload) return;
+        const p = level3LastPayload;
+        const bins = level3BinMethod === "b" ? p.b : p.a;
+
+        // Stamp each feature with the chosen method's bin (or -1 = out of
+        // this source's lookup).
         level3Boundary.features.forEach(function (feat) {
           const g = feat.properties.GID_2;
-          feat.properties.sci_bin = (bins.hasOwnProperty(g)) ? bins[g] : -1;
+          feat.properties.sci_bin = (bins && bins.hasOwnProperty(g)) ? bins[g] : -1;
         });
         map.getSource("level3").setData(level3Boundary);
 
@@ -499,40 +534,32 @@ map.on("load", async function () {
 
         document.getElementById("console").style.display = "block";
         document.getElementById("legend").style.display = "block";
-        document.getElementById("title").innerText = name;
+        document.getElementById("title").innerText = level3LastName || "";
 
-        // Top-10 (by bin DESC, then hash-shuffled tiebreak so we don't just
-        // surface alphabetically-first names every click). The current ETL's
-        // top bin (100×+) typically contains thousands of regions per source,
-        // so an alphabetical tiebreak made the same names ("'S-GRAVENHAGE",
-        // "A Coruña", "1 Decembrie", etc.) dominate every top-10. The hash
-        // gives a deterministic-per-source spread without privileging the
-        // alphabet. Names are augmented with COUNTRY so duplicate place
-        // names (4× "ABASOLO" in Mexico, 31× "Washington" in the US) are
-        // distinguishable, and rows with no/placeholder NAME_2 are dropped.
-        function gidHash(s) {
-          let h = 2166136261;
-          for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; }
-          return h;
+        // Top-10 from the precomputed `top` array (already ranked by raw
+        // scaled_sci by the ETL). Look up NAME_2/COUNTRY from boundary geo
+        // by GID_2; drop entries without a real name. The chosen method
+        // decides which bin label each entry's SCI value gets.
+        const top10 = [];
+        if (Array.isArray(p.top)) {
+          for (const t of p.top) {
+            const feat = level3Boundary.features.find(function (ff) { return ff.properties.GID_2 === t.g; });
+            if (!feat) continue;
+            const props = feat.properties;
+            const nm = (props.NAME_2 || "").trim();
+            if (!nm || nm === "?") continue;
+            const label = props.COUNTRY ? nm + ", " + props.COUNTRY : nm;
+            const bin = level3BinMethod === "b" ? t.b : t.a;
+            top10.push({ admin: label, sci: bin });
+            if (top10.length >= 10) break;
+          }
         }
-        const ranked = level3Boundary.features
-          .filter(function (ff) {
-            const p = ff.properties;
-            if (p.sci_bin <= 0 || p.GID_2 === gid) return false;
-            const nm = (p.NAME_2 || "").trim();
-            return nm && nm !== "?";
-          })
-          .map(function (ff) {
-            const p = ff.properties;
-            const label = p.COUNTRY ? p.NAME_2 + ", " + p.COUNTRY : p.NAME_2;
-            return { admin: label, sci: p.sci_bin, _h: gidHash(p.GID_2) };
-          })
-          .sort(function (a, b) { return b.sci - a.sci || a._h - b._h; })
-          .slice(0, 10);
 
         updateLegendForLevel3();
-        updateTop10ForLevel3(ranked);
-      });
+        updateTop10ForLevel3(top10);
+      }
+      // Make available to the toggle handler defined further down.
+      window.__applyLevel3 = applyLevel3;
 
       map.on("mousemove", "level3", function (e) {
         if (e.features.length === 0) return;
@@ -556,20 +583,36 @@ map.on("load", async function () {
   }
   await setupLevel3();
 
-  // Static legend + top-10 helpers used only by level3 (data is pre-binned
-  // by the ETL, so the bin thresholds are fixed and known).
-  // Match the level0-2 legend style ("< 1x", "1x - 2x", "> 100x") so all four
-  // tabs look consistent. The short labels (used in the top-10 SCI column) use
-  // the same range strings rather than just the bin-floor.
-  const BIN_LABELS = ["< 1x", "1x - 2x", "2x - 3x", "3x - 5x", "5x - 10x", "10x - 25x", "25x - 100x", "> 100x"];
-  const BIN_LABELS_SHORT = BIN_LABELS;
+  // Level3 legend labels are derived from _meta.json thresholds at runtime
+  // because the chosen method (A = user-suggested ratios, B = global quantile
+  // cuts) changes the numbers. Method A: [1, 5, 10, 25, 50, 100, 250]. Method
+  // B example: [1, 5, 12, 23, 47, 119, 528] (from the ETL's quantile pass).
+  function level3BinLabels() {
+    const thresholds = (level3Meta && (level3BinMethod === "b" ? level3Meta.thresholds_b : level3Meta.thresholds_a)) || [];
+    if (thresholds.length !== 7) {
+      // Defensive fallback if meta hasn't loaded — show the Method A defaults.
+      return ["< 1x", "1x - 5x", "5x - 10x", "10x - 25x", "25x - 50x", "50x - 100x", "100x - 250x", "> 250x"];
+    }
+    const fmt = function (n) {
+      if (n >= 100) return Math.round(n) + "x";
+      if (n >= 10)  return Math.round(n) + "x";
+      return (Math.round(n * 10) / 10) + "x";
+    };
+    const labels = ["< " + fmt(thresholds[0])];
+    for (let i = 0; i < thresholds.length - 1; i++) {
+      labels.push(fmt(thresholds[i]) + " - " + fmt(thresholds[i + 1]));
+    }
+    labels.push("> " + fmt(thresholds[thresholds.length - 1]));
+    return labels;
+  }
   function updateLegendForLevel3() {
     const legendScale = document.getElementById("legend-scale");
     legendScale.innerHTML = "";
+    const labels = level3BinLabels();
     for (let i = 0; i < 8; i++) {
       const item = document.createElement("div");
       item.className = "legend-item";
-      item.innerHTML = '<span class="legend-color" style="background-color: ' + colorSequence[i] + ';"></span> ' + BIN_LABELS[i];
+      item.innerHTML = '<span class="legend-color" style="background-color: ' + colorSequence[i] + ';"></span> ' + labels[i];
       legendScale.appendChild(item);
     }
   }
@@ -579,13 +622,38 @@ map.on("load", async function () {
     document.getElementById("tab-lab").innerHTML = meta.col;
     const tableBody = document.querySelector("#top-10-table tbody");
     tableBody.innerHTML = "";
+    const labels = level3BinLabels();
     items.forEach(function (item, idx) {
       const row = tableBody.insertRow();
       const c1 = row.insertCell(); c1.innerHTML = '<span class="rank-circle">' + (idx + 1) + "</span>";
       const c2 = row.insertCell(); c2.textContent = item.admin;
-      const c3 = row.insertCell(); c3.textContent = BIN_LABELS_SHORT[item.sci] || "";
+      const c3 = row.insertCell(); c3.textContent = labels[item.sci] || "";
     });
   }
+
+  // ----- Bin-method toggle (Custom / Even), level3 only -----
+  // Two pill buttons that switch between Method A (user-suggested ratio
+  // thresholds) and Method B (global quantile cuts on >1× ratios). Choice
+  // persists in localStorage; re-applies to whatever payload is currently
+  // cached without re-fetching.
+  (function setupBinMethodToggle() {
+    const buttons = document.querySelectorAll("#bin-method-container button");
+    if (!buttons.length) return;
+    buttons.forEach(function (b) {
+      b.classList.toggle("active", b.id === ("bin-" + level3BinMethod));
+    });
+    buttons.forEach(function (b) {
+      b.addEventListener("click", function () {
+        if (this.classList.contains("active")) return;
+        buttons.forEach(function (x) { x.classList.remove("active"); });
+        this.classList.add("active");
+        level3BinMethod = this.id === "bin-b" ? "b" : "a";
+        localStorage.setItem("sciBinMethod", level3BinMethod);
+        if (typeof window.__applyLevel3 === "function") window.__applyLevel3();
+        else updateLegendForLevel3();
+      });
+    });
+  })();
 
   // Show only the active layer; reset its fills (clears any choropleth from
   // the previous layer). Skips layers that haven't been added yet so this is
@@ -599,6 +667,10 @@ map.on("load", async function () {
         map.setLayoutProperty(id + "borders", "visibility", vis);
       }
     });
+    // Bin-method toggle is hidden in the shipped UI — Method A (Custom bins)
+    // is the default and only visible option. The Method B code path stays
+    // wired up so we can re-enable the toggle later by setting display:flex
+    // here for activeId === "level3".
     if (map.getLayer(activeId)) {
       if (activeId === "level3") {
         // World regions has its own distinct default styling (tinted fill

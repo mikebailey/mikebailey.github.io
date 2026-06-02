@@ -586,6 +586,39 @@ button:not(.active):hover {
   border-radius: 2px;
 }
 
+/* World-regions binning-method toggle (Custom / Even). Sits inside the
+   legend panel and only renders on the level3 tab. */
+#bin-method-container {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #e4e7ea;
+}
+#bin-method-container > button {
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid #c8c8c8;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #f6f6f6;
+  color: #555;
+  font-family: inherit;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+#bin-method-container > button.active {
+  background-color: #3b464f;
+  color: #fff;
+  border-color: #3b464f;
+  cursor: default;
+}
+#bin-method-container > button:not(.active):hover {
+  background-color: #d6dade;
+  color: #3b464f;
+}
+
 /* Top-10 area — let it size to viewport instead of a fixed 520 px. */
 #top-10-container {
   height: auto;

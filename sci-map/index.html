@@ -69,6 +69,13 @@ sitemap: true
     <div id="legend" class="console-legend">
       <div class="legend-title">Likelihood of Friendship</div>
       <div class="legend-scale" id="legend-scale"></div>
+      <!-- World-regions-only: switch between "Custom" (user-suggested ratio
+           bins: 1, 5, 10, 25, 50, 100, 250×) and "Even" (global-quantile bins
+           with roughly equal mass per bucket). Hidden on the other tabs. -->
+      <div id="bin-method-container" style="display: none;">
+        <button type="button" id="bin-a">Custom bins</button>
+        <button type="button" id="bin-b">Even bins</button>
+      </div>
     </div>
 
     <div id="top-10-container" class="table-container">
