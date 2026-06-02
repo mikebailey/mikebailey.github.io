@@ -413,7 +413,7 @@ button:not(.active):hover {
   margin: 0;
 }
 .button-container > button {
-  padding: 4px 12px;
+  padding: 4px 10px;
   font-size: 12px;
   font-weight: 500;
   border: 1px solid #b8b8b8;
@@ -422,6 +422,7 @@ button:not(.active):hover {
   background-color: #f2f2f2;
   color: #555;
   transition: background-color 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+  white-space: nowrap;
 }
 .button-container > button.active {
   background-color: #3b464f;

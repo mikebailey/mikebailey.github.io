@@ -88,6 +88,17 @@ const csvUrl1     = "data/nuts2_2024.csv";
 const geojsonUrl2 = "data/us_states.geojson";
 const csvUrl2     = "data/us_states.csv";
 
+// Level 3 — World GADM2 (47k polygons + per-source pre-binned lookups on R2).
+// SCI is NOT loaded upfront like levels 0-2 (the full pairs table is >40 GB);
+// instead each click fetches one ~70 KB gzipped JSON from R2.
+const R2_BASE      = "https://pub-5433ddd592ff4ca4829ed8c8b77d58d6.r2.dev";
+// Versioned boundary URL so any prior cached copy is bypassed cleanly when
+// we re-publish. v5 = pre-clean + snap + simplify + final clean with 20 km²
+// gap-fill (v3 still had visible sliver gaps; v4 mis-specified the threshold
+// as sqm instead of km²).
+const geojsonUrl3  = R2_BASE + "/gadm2_world_v5.geojson";
+const sciUrl3Base  = R2_BASE + "/gadm2/";  // <GID_2>.json.gz appended at click time
+
 function getColor(value) {
   if (!value) return "#cccccc"; // Default gray if no data
   return `rgba(0, 128, 255, ${Math.min(value / 100, 1)})`; // Adjust opacity based on scaled_sci
@@ -385,11 +396,202 @@ map.on("load", async function () {
   const csvData2 = await loadCSV(csvUrl2);
   colorAllLevelA("level2", geojson2, csvData2, "GID_1", "NAME_1", 100, "user_region", "friend_region");
 
+  // -------------------------------------------------------------------------
+  // Level 3 — World GADM2 (47k polygons; per-source SCI lookups on Cloudflare R2)
+  // -------------------------------------------------------------------------
+  // The full SCI pairs table at GADM2 is too big to ship inline (>40 GB raw,
+  // ~900M rows). The ETL pre-bins the data per source region into ~30k
+  // gzipped JSONs of shape { "FRIEND_GID_2": bin_0_to_7, ... }, hosted on R2.
+  // On click we fetch ONE file (~70 KB compressed), stamp `sci_bin` onto each
+  // boundary feature, and re-paint. Out-of-sample regions (file 404s) just
+  // do nothing — same UX as the early-return guard on levels 0-2.
+  let level3Boundary = null;
+  async function setupLevel3() {
+    console.log("[SCI level3] setup start");
+    try {
+      level3Boundary = await loadGeoJSON(geojsonUrl3);
+      console.log("[SCI level3] boundary loaded:", level3Boundary.features.length, "features");
+      level3Boundary.features = level3Boundary.features.map(function (d, i) {
+        d.id = i + 1;
+        // has_data is *unknown* until click; treat all as clickable. The
+        // click handler returns early on 404 and the fill stays default.
+        d.properties.has_data = true;
+        d.properties.sci_bin = -1;
+        return d;
+      });
+
+      map.addSource("level3", { type: "geojson", data: level3Boundary });
+      console.log("[SCI level3] source added");
+      // Use whichever before-layer the existing levels used; fall back to
+      // appending at the top if the style doesn't have it (some Mapbox
+      // styles drop "waterway-label" — silently failing addLayer in that
+      // case would leave the level invisible).
+      const beforeId = map.getLayer("waterway-label") ? "waterway-label" : undefined;
+      map.addLayer({
+        id: "level3",
+        type: "fill",
+        source: "level3",
+        layout: { visibility: "none" },
+        paint: {
+          // Slight blue tint so the world-region mesh is visibly distinct
+          // from the near-white Mapbox light-v11 basemap even before the
+          // user clicks any region.
+          "fill-color": "#e7eef5",
+          "fill-opacity": ["case", ["boolean", ["feature-state", "hover"], false], 0.7, 0.85],
+        },
+      }, beforeId);
+      map.addLayer({
+        id: "level3borders",
+        type: "line",
+        source: "level3",
+        layout: { visibility: "none", "line-join": "round" },
+        paint: { "line-color": "#9aa6b3", "line-width": 0.35, "line-opacity": 0.8 },
+      }, beforeId);
+      console.log("[SCI level3] layers added; getLayer level3 =", !!map.getLayer("level3"));
+
+      map.on("click", "level3", async function (e) {
+        const f = e.features[0];
+        const gid = f.properties.GID_2;
+        const name = f.properties.NAME_2;
+
+        let bins;
+        try {
+          const resp = await fetch(sciUrl3Base + gid + ".json.gz");
+          if (!resp.ok) {
+            // Out-of-sample (no SCI data for this region) — keep current
+            // paint unchanged so the click feels like a no-op rather than
+            // wiping the previous selection.
+            console.log("[SCI level3] no data for", gid, "(HTTP " + resp.status + ")");
+            return;
+          }
+          // Cloudflare R2 auto-transcodes our gzipped objects to plain JSON
+          // when they're served with Content-Type: application/json, so we
+          // can use the normal .json() path even though the stored object
+          // has a .json.gz extension.
+          bins = await resp.json();
+        } catch (err) {
+          console.warn("[SCI level3] fetch failed for", gid, err);
+          return;
+        }
+
+        // Stamp each feature's bin (or -1 = not in this source's lookup).
+        level3Boundary.features.forEach(function (feat) {
+          const g = feat.properties.GID_2;
+          feat.properties.sci_bin = (bins.hasOwnProperty(g)) ? bins[g] : -1;
+        });
+        map.getSource("level3").setData(level3Boundary);
+
+        map.setPaintProperty("level3", "fill-color", [
+          "case",
+          ["<", ["get", "sci_bin"], 0], NO_DATA_FILL,
+          [
+            "step", ["get", "sci_bin"],
+            colorSequence[0],
+            1, colorSequence[1],
+            2, colorSequence[2],
+            3, colorSequence[3],
+            4, colorSequence[4],
+            5, colorSequence[5],
+            6, colorSequence[6],
+            7, colorSequence[7],
+          ],
+        ]);
+
+        document.getElementById("console").style.display = "block";
+        document.getElementById("legend").style.display = "block";
+        document.getElementById("title").innerText = name;
+
+        // Top-10 (by bin DESC, then hash-shuffled tiebreak so we don't just
+        // surface alphabetically-first names every click). The current ETL's
+        // top bin (100×+) typically contains thousands of regions per source,
+        // so an alphabetical tiebreak made the same names ("'S-GRAVENHAGE",
+        // "A Coruña", "1 Decembrie", etc.) dominate every top-10. The hash
+        // gives a deterministic-per-source spread without privileging the
+        // alphabet. Names are augmented with COUNTRY so duplicate place
+        // names (4× "ABASOLO" in Mexico, 31× "Washington" in the US) are
+        // distinguishable, and rows with no/placeholder NAME_2 are dropped.
+        function gidHash(s) {
+          let h = 2166136261;
+          for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; }
+          return h;
+        }
+        const ranked = level3Boundary.features
+          .filter(function (ff) {
+            const p = ff.properties;
+            if (p.sci_bin <= 0 || p.GID_2 === gid) return false;
+            const nm = (p.NAME_2 || "").trim();
+            return nm && nm !== "?";
+          })
+          .map(function (ff) {
+            const p = ff.properties;
+            const label = p.COUNTRY ? p.NAME_2 + ", " + p.COUNTRY : p.NAME_2;
+            return { admin: label, sci: p.sci_bin, _h: gidHash(p.GID_2) };
+          })
+          .sort(function (a, b) { return b.sci - a.sci || a._h - b._h; })
+          .slice(0, 10);
+
+        updateLegendForLevel3();
+        updateTop10ForLevel3(ranked);
+      });
+
+      map.on("mousemove", "level3", function (e) {
+        if (e.features.length === 0) return;
+        map.getCanvas().style.cursor = "pointer";
+        if (hoveredStateId) {
+          map.setFeatureState({ source: "level3", id: hoveredStateId }, { hover: false });
+        }
+        hoveredStateId = e.features[0].id;
+        map.setFeatureState({ source: "level3", id: hoveredStateId }, { hover: true });
+      });
+      map.on("mouseleave", "level3", function () {
+        map.getCanvas().style.cursor = "";
+        if (hoveredStateId) {
+          map.setFeatureState({ source: "level3", id: hoveredStateId }, { hover: false });
+          hoveredStateId = null;
+        }
+      });
+    } catch (err) {
+      console.error("[SCI level3] setup failed:", err);
+    }
+  }
+  await setupLevel3();
+
+  // Static legend + top-10 helpers used only by level3 (data is pre-binned
+  // by the ETL, so the bin thresholds are fixed and known).
+  // Match the level0-2 legend style ("< 1x", "1x - 2x", "> 100x") so all four
+  // tabs look consistent. The short labels (used in the top-10 SCI column) use
+  // the same range strings rather than just the bin-floor.
+  const BIN_LABELS = ["< 1x", "1x - 2x", "2x - 3x", "3x - 5x", "5x - 10x", "10x - 25x", "25x - 100x", "> 100x"];
+  const BIN_LABELS_SHORT = BIN_LABELS;
+  function updateLegendForLevel3() {
+    const legendScale = document.getElementById("legend-scale");
+    legendScale.innerHTML = "";
+    for (let i = 0; i < 8; i++) {
+      const item = document.createElement("div");
+      item.className = "legend-item";
+      item.innerHTML = '<span class="legend-color" style="background-color: ' + colorSequence[i] + ';"></span> ' + BIN_LABELS[i];
+      legendScale.appendChild(item);
+    }
+  }
+  function updateTop10ForLevel3(items) {
+    const meta = LAYER_META.level3;
+    document.getElementById("table-title").innerHTML = meta.title;
+    document.getElementById("tab-lab").innerHTML = meta.col;
+    const tableBody = document.querySelector("#top-10-table tbody");
+    tableBody.innerHTML = "";
+    items.forEach(function (item, idx) {
+      const row = tableBody.insertRow();
+      const c1 = row.insertCell(); c1.innerHTML = '<span class="rank-circle">' + (idx + 1) + "</span>";
+      const c2 = row.insertCell(); c2.textContent = item.admin;
+      const c3 = row.insertCell(); c3.textContent = BIN_LABELS_SHORT[item.sci] || "";
+    });
+  }
+
   // Show only the active layer; reset its fills (clears any choropleth from
   // the previous layer). Skips layers that haven't been added yet so this is
   // safe to call before all loaders finish.
   function setActiveLayer(activeId) {
-    ["level0", "level1", "level2"].forEach((id) => {
+    ["level0", "level1", "level2", "level3"].forEach((id) => {
       if (!map.getLayer(id)) return;
       const vis = id === activeId ? "visible" : "none";
       map.setLayoutProperty(id, "visibility", vis);
@@ -398,16 +600,26 @@ map.on("load", async function () {
       }
     });
     if (map.getLayer(activeId)) {
-      // Reset to the has_data-aware default fill so out-of-sample regions
-      // stay grey across level switches.
-      map.setPaintProperty(activeId, "fill-color", [
-        "case",
-        ["==", ["get", "has_data"], false],
-        NO_DATA_FILL,
-        DEFAULT_FILL,
-      ]);
-      if (map.getLayer(activeId + "borders")) {
-        map.setPaintProperty(activeId + "borders", "line-color", "#CCCCCC");
+      if (activeId === "level3") {
+        // World regions has its own distinct default styling (tinted fill
+        // + darker borders) so the polygon mesh is visible against the
+        // light Mapbox basemap even before a click.
+        map.setPaintProperty("level3", "fill-color", "#e7eef5");
+        if (map.getLayer("level3borders")) {
+          map.setPaintProperty("level3borders", "line-color", "#9aa6b3");
+        }
+      } else {
+        // Reset to the has_data-aware default fill so out-of-sample
+        // regions stay grey across level switches.
+        map.setPaintProperty(activeId, "fill-color", [
+          "case",
+          ["==", ["get", "has_data"], false],
+          NO_DATA_FILL,
+          DEFAULT_FILL,
+        ]);
+        if (map.getLayer(activeId + "borders")) {
+          map.setPaintProperty(activeId + "borders", "line-color", "#CCCCCC");
+        }
       }
     }
   }
@@ -417,6 +629,7 @@ map.on("load", async function () {
     level0: { center: DEFAULT_CENTER, zoom: DEFAULT_ZOOM },
     level1: { center: [12, 52], zoom: 3.3 },   // Europe
     level2: { center: [-98, 39], zoom: 3.4 },  // continental US
+    level3: { center: DEFAULT_CENTER, zoom: DEFAULT_ZOOM }, // world (GADM2)
   };
 
   // Per-level wording for the subtitle + top-10 table header.
@@ -424,6 +637,7 @@ map.on("load", async function () {
     level0: { unit: "country", title: "Top 10 Connected Countries", col: "Country" },
     level1: { unit: "region",  title: "Top 10 Connected Regions",   col: "Region"  },
     level2: { unit: "state",   title: "Top 10 Connected States",    col: "State"   },
+    level3: { unit: "region",  title: "Top 10 Connected Regions",   col: "Region"  },
   };
 
   function setLayerSubtitle(id) {
@@ -444,6 +658,7 @@ map.on("load", async function () {
     level0: "equalEarth",
     level1: "mercator",
     level2: "albers",
+    level3: "equalEarth",
   };
   let projMode = "globe";
 
