@@ -5,8 +5,10 @@ Personal website / AcademicPages Jekyll site. Published at
 
 ## sci-map/ is a mirror, not the source
 
-The `sci-map/` directory is a copy of [mikebailey/sci-map](https://github.com/mikebailey/sci-map)
-(extracted 2026-06-02). The canonical version is deployed independently
+The `sci-map/` directory is a copy of [mikebailey/sci-world-map](https://github.com/mikebailey/sci-world-map)
+(extracted 2026-06-02; canonical repo was originally named `mikebailey/sci-map`
+but had to be renamed to avoid path-shadowing the Jekyll mirror at
+`michaelbailey.org/sci-map/`). The canonical version is deployed independently
 at [sci-map.michaelbailey.org](https://sci-map.michaelbailey.org); this
 mirror exists so the page also renders inside the AcademicPages layout
 at `michaelbailey.org/sci-map/`.
