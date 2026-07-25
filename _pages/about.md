@@ -8,9 +8,9 @@ redirect_from:
   - /about.html
 ---
 
-I'm a computational social scientist working at the intersection of AI and social science. I'm Senior Advisor at [J-PAL](https://www.povertyactionlab.org/) at MIT, where I work on the [Project on AI and Evidence (PAIE)](https://www.povertyactionlab.org/initiative/project-ai-evidence-paie) &mdash; identifying, evaluating, and scaling applications of AI for social good and in the fight against poverty, across education, health, labor markets, climate change, and financial inclusion.
+I'm a computational social scientist working on the intersection of AI and social good at [J-PAL](https://www.povertyactionlab.org/) (MIT). Our major initiative is the [Project on AI and Evidence (PAIE)](https://www.povertyactionlab.org/initiative/project-ai-evidence-paie) for identifying, evaluating, and scaling applications of AI for social good and in the fight against poverty, across education, health, labor markets, climate change, and financial inclusion.
 
-I also founded the Social Capital Lab, which studies how social connection shapes economic opportunity and well-being. It began at Facebook, where our team produced several open datasets and research papers measuring social connectedness, social capital, and migration for researchers and policymakers; it now continues as an independent effort.
+Previously founded the Social Capital Lab at Facebook measuring how social connection shapes economic opportunity and well-being. The Social Capital Lab produced several open datasets and research papers measuring social connectedness, social capital, and migration for researchers and policymakers.
 
 Featured Projects
 ======
