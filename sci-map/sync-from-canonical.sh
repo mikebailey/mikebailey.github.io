@@ -21,32 +21,23 @@ if [[ ! -d "$CANONICAL" ]]; then
   exit 1
 fi
 
-# --- rsync everything except files that are personal-site-specific ----------
-# Exclusions:
+# --- rsync the canonical site payload (docs/) --------------------------------
+# Since 2026-07 the canonical repo publishes from docs/ (repo-level files like
+# CLAUDE.md, etl/, bin/ live at its root, unpublished), so we sync from
+# $CANONICAL/docs/ and the old repo-level exclusions are gone.
+# Remaining exclusions:
 #   index.html               — needs Jekyll frontmatter + back-link; rebuilt below.
-#   etl/                     — out-of-band data prep, not shipped on the site.
-#   bin/                     — operational scripts (kill switches) live in canonical only.
 #   .nojekyll                — Jekyll IS what serves this site; we WANT it to process the directory.
-#   CNAME                    — root site's CNAME, not /sci-map/'s.
-#   .git/                    — never pull the canonical repo's git tree.
-#   LICENSE README.md
-#   CLAUDE.md .gitignore     — repo-level docs, irrelevant (and confusing) inside Jekyll.
+#   CNAME                    — canonical site's CNAME, not /sci-map/'s.
 #   sync-from-canonical.sh   — the script can't be allowed to delete itself
 #                              (it only exists in the mirror, not the canonical).
 
 rsync -av --delete \
   --exclude='index.html' \
-  --exclude='etl/' \
-  --exclude='bin/' \
   --exclude='.nojekyll' \
   --exclude='CNAME' \
-  --exclude='.git/' \
-  --exclude='LICENSE' \
-  --exclude='README.md' \
-  --exclude='CLAUDE.md' \
-  --exclude='.gitignore' \
   --exclude='sync-from-canonical.sh' \
-  "$CANONICAL/" "$DEST_ROOT/"
+  "$CANONICAL/docs/" "$DEST_ROOT/"
 
 # --- Rebuild sci-map/index.html with Jekyll frontmatter + back-link ---------
 # Strategy: prepend the frontmatter and the <a id="site-back"> element to the
@@ -68,7 +59,7 @@ FRONTMATTER
 # Append the canonical body, with two surgical patches:
 #   1. Inject <a id="site-back"> immediately after <body>
 #   2. Restore the Mike-branded <title>, <meta name=description>, and favicon
-python3 - "$CANONICAL/index.html" >> "$DEST_ROOT/index.html" <<'PY'
+python3 - "$CANONICAL/docs/index.html" >> "$DEST_ROOT/index.html" <<'PY'
 import sys, re
 src = open(sys.argv[1]).read()
 src = src.replace(

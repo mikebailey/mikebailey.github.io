@@ -24,9 +24,10 @@ git push
 ```
 
 The sync script:
-- rsyncs everything except `index.html`, `etl/`, `LICENSE`, `README.md`,
-  `.nojekyll`, `CNAME`, and `.gitignore` from `../sci-map/` into
-  `sci-map/`.
+- rsyncs the canonical repo's `docs/` payload (its Pages publishing root since
+  2026-07; repo-level files like CLAUDE.md, `etl/`, `bin/` live above it,
+  unpublished) into `sci-map/`, excluding `index.html`, `.nojekyll`, and
+  `CNAME`.
 - Re-stitches the Jekyll frontmatter (`layout: null`, `permalink: /sci-map/`,
   the Mike-branded `title`/`description`), the favicon link, the
   `← michaelbailey.org` back-link, and the `#site-back` CSS that the
