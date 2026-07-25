@@ -488,6 +488,10 @@
     border-radius: 50%;
   }
 
+  .author__urls-wrapper {
+    cursor: default; // template sets pointer for its mobile Follow button, which we hide
+  }
+
   .author__urls-wrapper button {
     display: none;
   }
@@ -496,6 +500,10 @@
     display: inline-block;
     position: relative;
     right: auto;
+    // The template's dropdown styling paints the list at z-index -1, BEHIND
+    // the wrapper (a stacking context at z-index 10) — the wrapper then
+    // swallows every click, so the links render fine but never navigate.
+    z-index: 1;
     margin: 0.5em 0 0;
     padding: 0;
     border: 0;
