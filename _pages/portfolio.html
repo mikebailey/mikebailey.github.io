@@ -12,7 +12,7 @@ author_profile: true
     <article class="archive__item project-item" itemscope itemtype="https://schema.org/CreativeWork">
 
       {% if post.image %}
-      <div class="project-item__image">
+      <div class="project-item__image{% if post.image_logo %} project-item__image--logo{% endif %}">
         <a href="{{ post.link | default: post.url | relative_url }}">
           <img src="{% if post.image contains '://' %}{{ post.image }}{% else %}{{ post.image | prepend: '/images/' | prepend: base_path }}{% endif %}" alt="{{ post.title | escape }}">
         </a>

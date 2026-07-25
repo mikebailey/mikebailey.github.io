@@ -7,7 +7,7 @@ site_theme               : "default" # options: "default", "air", "sunrise", "mi
 title                    : "Mike Bailey"
 title_separator          : "–"
 name                     : &name "Michael Bailey"
-description              : &description "Mike Bailey is a computational social scientist working at the intersection of AI and social science — founder of the Social Capital Lab."
+description              : &description "Mike Bailey is a computational social scientist working at the intersection of AI and social science — Senior Advisor at J-PAL (MIT) and founder of the Social Capital Lab."
 url                      : https://michaelbailey.org
 baseurl                  : ""
 repository               : "mikebailey/mikebailey.github.io"
@@ -17,11 +17,14 @@ author:
   avatar           : "profile.jpg"
   name             : "Mike Bailey"
   pronouns         :
-  bio              : "Founder, Social Capital Lab<br>Computational Social Scientist &amp; Economist"
+  bio              : "Senior Advisor, J-PAL (MIT)<br>Founder, Social Capital Lab<br>Computational Social Scientist &amp; Economist"
   location         :
   employer         :
   uri              :
   email            : "mikebailey@alumni.stanford.edu"
+  # Featured affiliations, rendered at the top of the sidebar list in this order.
+  jpal             : "https://www.povertyactionlab.org/"
+  paie             : "https://www.povertyactionlab.org/initiative/project-ai-evidence-paie"
   socialcapitallab : "https://www.instagram.com/social_capital_lab/"
 
   # Academic
@@ -107,11 +110,12 @@ facebook:
   app_id                 :
   publisher              :
 og_image                 : "profile.jpg"
-og_description           : "Mike Bailey is a computational social scientist working at the intersection of AI and social science — founder of the Social Capital Lab."
+og_description           : "Mike Bailey is a computational social scientist working at the intersection of AI and social science — Senior Advisor at J-PAL (MIT) and founder of the Social Capital Lab."
 social:
   type                   : Person
   name                   : "Michael Bailey"
   links:
+    - "https://www.povertyactionlab.org/initiative/project-ai-evidence-paie"
     - "https://scholar.google.com/citations?user=CF6_E90AAAAJ"
     - "https://www.linkedin.com/in/michael-bailey-a2653521"
     - "https://github.com/mikebailey"
@@ -156,6 +160,14 @@ exclude:
   - README
   - tmp
   - vendor
+  # Repo tooling and docs — not part of the published site.
+  - CLAUDE.md
+  - docker-compose.yaml
+  - pyproject.toml
+  - uv.lock
+  - scripts
+  - .venv
+  - __pycache__
 keep_files:
   - .git
   - .svn

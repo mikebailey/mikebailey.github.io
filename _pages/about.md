@@ -8,7 +8,9 @@ redirect_from:
   - /about.html
 ---
 
-I'm a computational social scientist studying how social connection impacts people and society. At Facebook I founded the Social Capital Lab research group to advance the science of social connection and we produced several open datasets and research papers measuring social connectedness, social capital, and migration for researchers and policymakers.
+I'm a computational social scientist working at the intersection of AI and social science. I'm Senior Advisor at [J-PAL](https://www.povertyactionlab.org/) at MIT, where I work on the [Project on AI and Evidence (PAIE)](https://www.povertyactionlab.org/initiative/project-ai-evidence-paie) &mdash; identifying, evaluating, and scaling applications of AI for social good and in the fight against poverty, across education, health, labor markets, climate change, and financial inclusion.
+
+I also founded the Social Capital Lab, which studies how social connection shapes economic opportunity and well-being. It began at Facebook, where our team produced several open datasets and research papers measuring social connectedness, social capital, and migration for researchers and policymakers; it now continues as an independent effort.
 
 Featured Projects
 ======

@@ -405,6 +405,17 @@
   }
 }
 
+/* Thumbnails that are logo artwork rather than screenshots. Logos are usually
+   dark-on-transparent, so they need an explicit light plate to stay legible
+   when the site is in dark mode, plus padding so they don't touch the border. */
+.project-item__image--logo {
+  img {
+    background-color: #fff;
+    padding: 1.25em 1em;
+    max-height: 120px;
+  }
+}
+
 .project-item__body {
   min-width: 0;
 

@@ -22,6 +22,16 @@
 
   <div class="author__urls-wrapper">
     <ul class="author__urls social-icons">
+      <!-- Featured: J-PAL (MIT) -->
+      {% if author.jpal %}
+        <li><a href="{{ author.jpal }}"><i class="fas fa-fw fa-building-columns icon-pad-right" aria-hidden="true"></i>J-PAL (MIT)</a></li>
+      {% endif %}
+
+      <!-- Featured: Project on AI and Evidence -->
+      {% if author.paie %}
+        <li><a href="{{ author.paie }}"><i class="fas fa-fw fa-diagram-project icon-pad-right" aria-hidden="true"></i>Project on AI &amp; Evidence</a></li>
+      {% endif %}
+
       <!-- Featured: Social Capital Lab -->
       {% if author.socialcapitallab %}
         <li><a href="{{ author.socialcapitallab }}"><img src="{{ 'social_capital_lab_icon_sm.jpg' | prepend: '/images/' | prepend: base_path }}" class="sidebar-custom-icon icon-pad-right" alt="" aria-hidden="true" />Social Capital Lab</a></li>
