@@ -1,0 +1,195 @@
+<!doctype html>
+{%- comment -%}
+  Print-optimised CV layout. Rendered to PDF by scripts/cv_to_pdf.py via
+  headless Chrome, and deliberately free of site chrome (no nav, sidebar,
+  footer, or theme CSS) so the PDF is a clean document.
+
+  Data comes from _data/cv.yml — the same source as the web CV at /cv/.
+
+  page.variant selects what gets included:
+    "full"   — every work entry, every highlight (the CV)
+    "resume" — only entries flagged `resume: true`, highlights capped (the resume)
+{%- endcomment -%}
+{%- assign cv = site.data.cv -%}
+{%- if page.variant == "resume" -%}
+  {%- assign jobs = cv.work | where: "resume", true -%}
+  {%- assign hl_limit = 2 -%}
+{%- else -%}
+  {%- assign jobs = cv.work -%}
+  {%- assign hl_limit = 99 -%}
+{%- endif -%}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<title>{{ cv.basics.name }} — {% if page.variant == "resume" %}Resume{% else %}CV{% endif %}</title>
+<style>
+  /* Page geometry. Chrome honours @page when printing to PDF. */
+  @page {
+    size: letter;
+    margin: 0.7in 0.75in;
+  }
+
+  /* Reset the browser default margin so @page controls all spacing. */
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.4;
+    color: #1a1a1a;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  a { color: #1a1a1a; text-decoration: none; }
+
+  /* ---- Header ---- */
+  .cv-name {
+    font-size: 22pt;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.1em;
+  }
+  .cv-label {
+    font-size: 11pt;
+    color: #444;
+    margin: 0 0 0.5em;
+  }
+  .cv-contact {
+    font-size: 9.5pt;
+    color: #444;
+    margin: 0 0 1.4em;
+  }
+  .cv-contact .sep { color: #bbb; padding: 0 0.45em; }
+
+  /* ---- Sections ---- */
+  .cv-section { margin-bottom: 1.3em; }
+  .cv-section > h2 {
+    font-size: 10.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: #b34700;
+    border-bottom: 1px solid #d8d8d8;
+    padding-bottom: 0.25em;
+    margin: 0 0 0.7em;
+  }
+
+  .cv-summary { margin: 0; text-align: justify; }
+
+  /* ---- Entries ---- */
+  .cv-entry {
+    margin-bottom: 0.95em;
+    /* Keep a role and its bullets together across a page break where possible. */
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .cv-entry:last-child { margin-bottom: 0; }
+
+  .cv-entry-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1em;
+  }
+  .cv-entry-title { font-weight: 700; }
+  .cv-entry-date {
+    font-size: 9.5pt;
+    color: #555;
+    white-space: nowrap;
+  }
+  .cv-entry-sub {
+    font-style: italic;
+    color: #444;
+    margin-bottom: 0.25em;
+  }
+  .cv-entry-detail { color: #333; }
+
+  ul.cv-bullets {
+    margin: 0.2em 0 0;
+    padding-left: 1.1em;
+  }
+  ul.cv-bullets li { margin-bottom: 0.15em; }
+
+  /* Patents render tighter than roles. */
+  .cv-compact { margin-bottom: 0.45em; }
+</style>
+</head>
+<body>
+
+  <header>
+    <h1 class="cv-name">{{ cv.basics.name }}</h1>
+    {%- if cv.basics.label %}
+    <div class="cv-label">{{ cv.basics.label }}</div>
+    {%- endif %}
+    <div class="cv-contact">
+      {%- capture sep %}<span class="sep">|</span>{% endcapture -%}
+      {%- if cv.basics.email %}<a href="mailto:{{ cv.basics.email }}">{{ cv.basics.email }}</a>{% endif -%}
+      {%- if cv.basics.location.city %}{{ sep }}{{ cv.basics.location.city }}{% if cv.basics.location.region %}, {{ cv.basics.location.region }}{% endif %}{% endif -%}
+      {%- for p in cv.basics.profiles %}{{ sep }}<a href="{{ p.url }}">{{ p.network }}</a>{% endfor -%}
+    </div>
+  </header>
+
+  {%- if cv.basics.summary and page.variant != "resume" %}
+  <section class="cv-section">
+    <h2>Summary</h2>
+    <p class="cv-summary">{{ cv.basics.summary }}</p>
+  </section>
+  {%- endif %}
+
+  {%- if jobs.size > 0 %}
+  <section class="cv-section">
+    <h2>Experience</h2>
+    {%- for job in jobs %}
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <span class="cv-entry-title">{{ job.position }}</span>
+        <span class="cv-entry-date">{{ job.startDate }} &ndash; {{ job.endDate }}</span>
+      </div>
+      <div class="cv-entry-sub">{{ job.company }}</div>
+      {%- if job.highlights.size > 0 %}
+      <ul class="cv-bullets">
+        {%- for h in job.highlights limit: hl_limit %}
+        <li>{{ h }}</li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </div>
+    {%- endfor %}
+  </section>
+  {%- endif %}
+
+  {%- if cv.education.size > 0 %}
+  <section class="cv-section">
+    <h2>Education</h2>
+    {%- for ed in cv.education %}
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <span class="cv-entry-title">{{ ed.area }}</span>
+        <span class="cv-entry-date">{{ ed.endDate }}</span>
+      </div>
+      <div class="cv-entry-sub">{{ ed.institution }}</div>
+      {%- if ed.summary %}<div class="cv-entry-detail">{{ ed.summary }}</div>{% endif %}
+    </div>
+    {%- endfor %}
+  </section>
+  {%- endif %}
+
+  {%- if cv.patents.size > 0 and page.variant != "resume" %}
+  <section class="cv-section">
+    <h2>Patents</h2>
+    {%- for pt in cv.patents %}
+    <div class="cv-entry cv-compact">
+      <div class="cv-entry-head">
+        <span class="cv-entry-title">{{ pt.name }}</span>
+        <span class="cv-entry-date">{{ pt.date }}</span>
+      </div>
+      <div class="cv-entry-sub">{{ pt.number }}</div>
+    </div>
+    {%- endfor %}
+  </section>
+  {%- endif %}
+
+</body>
+</html>

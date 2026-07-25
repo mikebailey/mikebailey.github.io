@@ -1,0 +1,248 @@
+# ---------------------------------------------------------------------------
+# CV / resume source of truth.
+#
+# This one file drives three outputs:
+#   /cv/              the web CV            (_includes/cv-template.html)
+#   /cv/print/        print layout -> PDF   (_layouts/cv-print.html)
+#   /cv/resume/print/ short resume -> PDF   (same layout, variant: resume)
+#
+# After editing, regenerate both PDFs with:
+#   uv run scripts/cv_to_pdf.py
+#
+# Structure follows the JSON Resume schema (jsonresume.org/schema). Sections
+# left as empty lists are simply not rendered.
+#
+# Work entries carry a `resume:` flag. `true` means the entry appears in the
+# short resume as well as the full CV; `false` means full CV only.
+# ---------------------------------------------------------------------------
+
+basics:
+  name: "Michael Bailey"
+  label: "Senior Advisor, J-PAL (MIT) | Computational Social Scientist & Economist"
+  email: "mikebailey@alumni.stanford.edu"
+  summary: >-
+    Computational social scientist and economist with 14+ years of experience
+    leading research teams at the intersection of economics and technology.
+    Currently Senior Advisor at J-PAL at MIT, working on the Project on AI and
+    Evidence (PAIE) to identify, evaluate, and scale applications of AI for
+    social good and in the fight against poverty. Previously founded and led the
+    economics, political science, and social science research teams at Meta,
+    including the Social Capital Lab, which partners with academics, NGOs, and
+    nonprofits to advance the science of social connection and improve society.
+    My work on social networks has received 4,000+ citations in top journals
+    such as Nature, PNAS, and the Journal of Political Economy, and has received
+    widespread news coverage in outlets such as the New York Times and The
+    Economist.
+  location:
+    city: "Palo Alto"
+    region: "CA"
+  profiles:
+    - network: "Google Scholar"
+      url: "https://scholar.google.com/citations?user=CF6_E90AAAAJ"
+    - network: "ORCID"
+      url: "https://orcid.org/0009-0003-6574-4553"
+    - network: "LinkedIn"
+      url: "https://www.linkedin.com/in/michael-bailey-a2653521"
+
+# ---------------------------------------------------------------------------
+# Experience, reverse chronological.
+# ---------------------------------------------------------------------------
+work:
+  - position: "Senior Advisor"
+    company: "J-PAL (Abdul Latif Jameel Poverty Action Lab), MIT"
+    startDate: "Jul 2026"
+    endDate: "Present"
+    resume: true
+    highlights:
+      - >-
+        Advise J-PAL's AI portfolio across research, policy, and practice,
+        working on the Project on AI and Evidence (PAIE).
+      - >-
+        PAIE identifies, evaluates, and scales innovative applications of AI for
+        social good and in the fight against poverty, bringing together AI
+        adopters, tech companies, and researchers.
+      - >-
+        Support rigorous evaluation of AI-based programs — largely randomized
+        evaluations — across education, health, labor markets, climate change,
+        and financial inclusion.
+      - >-
+        Build practical guidance and capacity for researchers, governments, and
+        NGOs evaluating AI interventions.
+
+  - position: "Founder, Social Capital Lab"
+    company: "Social Capital Lab (independent)"
+    startDate: "Mar 2026"
+    endDate: "Present"
+    resume: true
+    highlights:
+      - >-
+        Continue to lead the Social Capital Lab as an independent effort
+        following its time at Meta, studying how social connection shapes
+        economic opportunity and well-being.
+      - >-
+        Maintain and extend the public social capital and social connectedness
+        datasets used by researchers and policymakers worldwide.
+
+  - position: "Founder, Social Capital Lab"
+    company: "Meta"
+    startDate: "Apr 2020"
+    endDate: "Mar 2026"
+    resume: true
+    highlights:
+      - >-
+        Founded and led a social science research group partnering with
+        academics, nonprofits, and NGOs to study how social networks impact
+        economic opportunity and well-being.
+      - >-
+        Built and released the Social Connectedness Index (with NYU), now a
+        widely-used public dataset for researchers studying migration, trade,
+        COVID-19, and inequality.
+      - >-
+        Co-created the Social Capital Atlas with Opportunity Insights
+        (socialcapital.org), mapping social capital across U.S. communities;
+        covered by the New York Times and The Economist.
+      - >-
+        Led cross-institutional collaborations producing the UK Social Capital
+        Atlas, Cross-Gender Ties dataset, Migration Atlas, and Networks & Long
+        Ties dataset.
+      - >-
+        Research published in Nature (2), PNAS, the Journal of Political
+        Economy, and other leading journals.
+      - >-
+        Widespread press coverage of our work on social networks in the New York
+        Times, The Economist, The Wall Street Journal, and several international
+        outlets.
+
+  - position: "Founder and Manager, Political Science Research Team"
+    company: "Meta"
+    startDate: "Jan 2018"
+    endDate: "Apr 2020"
+    resume: true
+    highlights:
+      - >-
+        Founded a team of research scientists and computational social
+        scientists studying the impact of social media on elections, migration,
+        well-being, and economic mobility.
+      - >-
+        Established partnerships with external academic institutions and NGOs to
+        create public policy solutions to reduce misinformation on social media.
+
+  - position: "Founder and Manager, News Feed Science Team"
+    company: "Meta"
+    startDate: "Jun 2016"
+    endDate: "Jan 2018"
+    resume: true
+    highlights:
+      - >-
+        Co-created and led a team of research scientists and engineers studying
+        long-term dynamics within the News Feed ecosystem and implications for
+        recommender systems.
+      - >-
+        Built some of the first fake-news detection algorithms, launched in
+        production in 2016.
+      - >-
+        Our team created leading AI solutions for improving News Feed
+        recommendations and won a best-paper award at EC for our recommender
+        systems paper.
+
+  - position: "Founder and Manager, Economics Research Team"
+    company: "Meta"
+    startDate: "Jan 2014"
+    endDate: "Jun 2016"
+    resume: true
+    highlights:
+      - >-
+        Founded Facebook's first economics team: a multidisciplinary group of
+        PhDs, researchers, and engineers focused on advertising marketplace
+        modeling, auction theory, pricing, and revenue forecasting.
+      - >-
+        Built tools and methodology for financial and behavioral modeling
+        adopted across the company.
+      - >-
+        Our research was published in several leading outlets on economics and
+        computation, including EC, WWW, WSDM, ICWSM, and IC2S2.
+
+  - position: "Research Scientist / Economist"
+    company: "Facebook"
+    startDate: "Feb 2012"
+    endDate: "Jan 2014"
+    resume: false
+    highlights:
+      - >-
+        Studied computational economics problems through experimentation,
+        simulation, and econometric models focused on advertising markets, ad
+        auctions, and financial forecasting.
+      - >-
+        Designed and created Facebook's first model-based revenue forecast
+        incorporating novel demand and supply elasticity measurements, improving
+        forecast accuracy by over 20%.
+
+  - position: "Research Intern"
+    company: "Facebook"
+    startDate: "Oct 2011"
+    endDate: "Jan 2012"
+    resume: false
+    highlights:
+      - >-
+        Investigated competitive externalities of advertising; built an auction
+        simulation algorithm to evaluate site-wide impact on key metrics.
+
+  - position: "Research Intern"
+    company: "Yahoo!"
+    startDate: "Apr 2011"
+    endDate: "Oct 2011"
+    resume: false
+    highlights:
+      - >-
+        Developed a theoretical and statistical model for targeted advertising
+        effectiveness; paper accepted at WWW 2012.
+
+  - position: "Lecturer & Research Assistant"
+    company: "Stanford University"
+    startDate: "Sep 2007"
+    endDate: "Feb 2012"
+    resume: false
+    highlights:
+      - >-
+        Taught intermediate economics (2010–2011) with a performance rating of
+        4.4/5. Mentored undergraduate honors theses.
+
+# ---------------------------------------------------------------------------
+education:
+  - area: "Ph.D., Economics"
+    institution: "Stanford University"
+    endDate: "2012"
+    summary: >-
+      Fields: Economic History, Behavioral & Experimental Economics. Economics
+      Department Graduate Fellowship.
+  - area: "B.A. Mathematics & B.S. Economics"
+    institution: "Utah State University"
+    endDate: "2007"
+    summary: >-
+      2007 Scholar of the Year. 2025 Huntsman School of Business Professional
+      Achievement Award.
+
+# ---------------------------------------------------------------------------
+patents:
+  - name: "Simulating Advertising Campaigns"
+    number: "US Patent 10,565,613"
+    date: "2020"
+  - name: "Systems and Methods for Providing Feed Preference Surveys"
+    number: "US Patent 10,496,720"
+    date: "2019"
+  - name: "Selecting Content with an External Link for Presentation Based on User Interaction with External Content"
+    number: "US Patent 10,387,516"
+    date: "2019"
+
+# ---------------------------------------------------------------------------
+# Unused JSON Resume sections, kept so the schema is self-documenting.
+# Populate any of these and the CV pages will render them automatically.
+# ---------------------------------------------------------------------------
+publications: []
+skills: []
+presentations: []
+teaching: []
+portfolio: []
+languages: []
+interests: []
+references: []

@@ -1,0 +1,13 @@
+[project]
+name = "michaelbailey-org-tools"
+version = "0.1.0"
+description = "Helper scripts for michaelbailey.org (CV/resume PDF generation)"
+requires-python = ">=3.11"
+dependencies = [
+    "playwright>=1.49.0",
+]
+
+# This repo is primarily a Ruby/Jekyll site; Python is only used for the
+# scripts/ helpers. There is no importable package here.
+[tool.uv]
+package = false

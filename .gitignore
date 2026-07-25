@@ -19,6 +19,12 @@ package-lock.json
 # Ignore folders related to IDEs
 .vscode/
 
+# Python environment for scripts/ (see pyproject.toml). uv.lock IS committed
+# so the CV toolchain is reproducible across machines.
+.venv/
+__pycache__/
+*.py[oc]
+
 # Ignore files created by MacOS
 .DS_Store
 
