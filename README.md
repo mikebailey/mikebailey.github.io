@@ -2,6 +2,11 @@
 
 Source for [michaelbailey.org](https://michaelbailey.org), Michael Bailey's personal website. Built with Jekyll using the [Academic Pages](https://github.com/academicpages/academicpages.github.io) template.
 
+Everything the site needs is in this repo. The project's Google Drive folder
+(`Projects/personal/mikebailey.github.io/`) holds only the pre-Jekyll archive of
+the old hand-written site plus original image assets, kept for reference rather
+than as a mirror of `data/` or `outputs/`, which this project does not have.
+
 ## Local development
 
 ```bash
