@@ -1,1 +1,6 @@
-drive
+none
+# No data/ or outputs/ to mirror: everything the site needs is in this repo.
+# The Drive folder Projects/personal/mikebailey.github.io/ still holds the
+# pre-Jekyll archive of the old hand-written site plus original image assets.
+# That is a hand-managed reference archive, not a sync target, and
+# sync-mirror.py only ever covers data/ and outputs/ anyway.
