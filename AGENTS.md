@@ -16,7 +16,7 @@ at `michaelbailey.org/sci-map/`.
 **To update the mirror after canonical changes:**
 
 ```bash
-# from this repo root, with ../sci-map/ on your local disk
+# from this repo root, with ../sci-world-map/ on your local disk
 bash sci-map/sync-from-canonical.sh
 git diff -- sci-map
 git add sci-map && git commit -m "sync sci-map/ from canonical"

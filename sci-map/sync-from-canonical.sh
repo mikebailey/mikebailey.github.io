@@ -5,13 +5,13 @@
 # renders identically to before the split.
 #
 # Usage (from the personal-website repo root):
-#   bash sci-map/sync-from-canonical.sh [path/to/sci-map/checkout]
+#   bash sci-map/sync-from-canonical.sh [path/to/sci-world-map/checkout]
 #
-# Default canonical checkout path: ../sci-map (sibling of personal-website).
+# Default canonical checkout path: ../sci-world-map (sibling of this checkout).
 
 set -euo pipefail
 
-CANONICAL="${1:-../sci-map}"
+CANONICAL="${1:-../sci-world-map}"
 DEST_ROOT="sci-map"
 
 if [[ ! -d "$CANONICAL" ]]; then
