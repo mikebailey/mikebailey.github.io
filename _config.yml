@@ -161,6 +161,7 @@ exclude:
   - tmp
   - vendor
   # Repo tooling and docs — not part of the published site.
+  - AGENTS.md
   - CLAUDE.md
   - docker-compose.yaml
   - pyproject.toml
