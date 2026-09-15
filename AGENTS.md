@@ -37,6 +37,31 @@ Don't hand-edit files under `sci-map/` other than the back-link / Jekyll
 frontmatter — they'll be overwritten next sync. Changes meant to flow to
 both sites belong in the canonical repo.
 
+## power-calculator/index.html is generated, not the source
+
+`/power-calculator/` is a single self-contained HTML file built from the
+power-calculator repo (private, `~/Projects/jpal/tools/power-calculator`).
+The source is that repo's `code/power-calculator.html`; `code/make-site.js`
+adds the site title, description, canonical URL, favicon and the
+`← michaelbailey.org` back-link. It is presented as a personal tool: no
+J-PAL branding (the build refuses to emit any).
+
+**To update after canonical changes:**
+
+```bash
+# from the power-calculator repo root
+node code/make-site.js --out ../../../personal/websites/mikebailey.github.io/power-calculator/index.html
+# then, in this repo
+git diff --stat -- power-calculator
+git add power-calculator && git commit -m "Regenerate power calculator"
+```
+
+The file deliberately has **no front matter**, so Jekyll copies it byte for
+byte. Adding front matter would run Liquid over the page, and the tool's
+code templates contain `${{`, which breaks the build. Never hand-edit it;
+it is overwritten on every regeneration. The top-nav link lives in
+`_data/navigation.yml`; there is no portfolio card.
+
 ## CV / resume: `_data/cv.yml` is the single source of truth
 
 One YAML file drives three outputs:
