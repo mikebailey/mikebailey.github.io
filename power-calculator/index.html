@@ -147,13 +147,20 @@
      focus sits has to be visible. :focus-visible keeps it off mouse clicks. */
   button:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
   .field input.invalid { border-color: #d33; outline-color: rgba(221,51,51,.25); }
+  /* Both affix rules below have to out-specify two others that also set padding on the same
+     input: `.field input[type=number]` above, whose `padding` shorthand resets BOTH sides, and
+     `.num input[type=number]` further down, which owns the right-hand gutter for the stepper.
+     Each of those is (0,2,1), so a plain `.pct input` — (0,1,1) — silently loses and the affix
+     lands on top of the digits. Matching `.field .pct input[type=number]` at (0,3,1) wins
+     wherever these rules sit in the file. This bit the currency prefix: it sat at left 11px
+     over text that also started at 11px, so the first digit of every price was unreadable. */
   .pct { position: relative; }
-  .pct input { padding-right: 46px; }
+  .field .pct input[type=number] { padding-right: 46px; }
   .pct::after { content: '%'; position: absolute; right: 29px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 13px; pointer-events: none; }
   /* Currency affix, mirroring .pct. A prefix rather than a suffix because the stepper
      already owns the right-hand side of every numeric field. */
   .cur { position: relative; }
-  .cur input { padding-left: 21px; }
+  .field .cur input[type=number] { padding-left: 21px; }
   .cur::before { content: '$'; position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 13px; pointer-events: none; }
   /* Money stacks into columns in the sensitivity table and under the answers, and
      proportional digits leave those columns ragged. */
@@ -178,7 +185,12 @@
   .stepper button:hover { border-color: var(--accent); color: var(--accent); }
   .stepper button:active { background: var(--accent-soft); }
   .stepper button svg { width: 8px; height: 6px; display: block; }
-  @media (pointer: coarse) { .stepper button { width: 28px; height: 19px; } .num input[type=number] { padding-right: 40px; } .pct input { padding-right: 56px; } .pct::after { right: 39px; } }
+  /* Touch gets a wider stepper, so the % has to move further in and the text further still.
+     The .pct rule carries the same `.field … input[type=number]` shape as its desktop twin:
+     at (0,1,1) it lost to `.num input[type=number]` (0,2,1) two declarations above it and the
+     suffix overlapped the digits on phones, and it now also has to outrank that desktop twin,
+     which it does on source order at equal specificity. */
+  @media (pointer: coarse) { .stepper button { width: 28px; height: 19px; } .num input[type=number] { padding-right: 40px; } .field .pct input[type=number] { padding-right: 56px; } .pct::after { right: 39px; } }
 
   .seg { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .seg button {
