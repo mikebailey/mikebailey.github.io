@@ -13,8 +13,27 @@ body {
   background-color: var(--global-bg-color);
 
   margin: 0;
+  /* Top padding clears the fixed masthead. The 9em bottom padding that used to
+     sit here reserved room for the fixed footer; the footer is in normal flow
+     now, so the reservation would just be a band of empty page below it.
+
+     `bumpIt()` in assets/js/_main.js reserves the same space a second way, as
+     an INLINE `margin-bottom` equal to the footer's height (~130px), so it has
+     to be overridden rather than deleted — the shipped bundle is
+     assets/js/main.min.js, which nothing in this repo rebuilds. */
   padding: $masthead-height 0 0;
-  padding-bottom: 9em;
+  margin-bottom: 0 !important;
+
+  /* With the footer back in normal flow, a page shorter than the window would
+     leave it stranded mid-screen. A full-height flex column, with #main
+     allowed to grow into the slack (see below), keeps the footer at the bottom
+     without taking it out of flow — and lets it keep its own 3em top margin,
+     which pushing it with `margin-top: auto` would have overridden. The
+     masthead is position:fixed and so is not a flex item; #main keeps
+     centering on its own auto margins. */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   font-family: $global-font-family;
   line-height: 1.5;
 
@@ -394,4 +413,8 @@ body {
 #main {
   background-color: #fff;
   box-shadow: 0 0 38px 6px #fff;
+
+  // Takes up any leftover height in body's flex column so the footer lands at
+  // the bottom of a short page. Never shrinks below its content.
+  flex: 1 0 auto;
 }

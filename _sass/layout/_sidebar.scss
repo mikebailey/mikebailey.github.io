@@ -517,3 +517,114 @@
     }
   }
 }
+
+/* ==========================================================================
+   PHONE LAYOUT (below $medium): STACK, DON'T SPLIT
+   The flex two-column layout above is right from tablet up, but a phone has no
+   room for two columns. At 390px the sidebar sits on its 115px floor, the 2.5em
+   gap takes 40px more, and the text column is left with about 215px — roughly
+   26 characters a line, with the photo appearing to touch the paragraph beside
+   it. So below $medium the columns stack and the text takes the full width.
+
+   Stacking alone would push the opening paragraph below a full screen of
+   sidebar, so the author profile also collapses into a compact identity card:
+   photo beside the name and roles, links as a wrapped row underneath.
+
+   These rules must stay AFTER the blocks above: a media query adds no
+   specificity, so they win on source order alone.
+   ========================================================================== */
+@media screen and (max-width: $medium - 1px) {
+  #main {
+    flex-direction: column;
+    gap: 1.25em;
+  }
+
+  .sidebar {
+    width: 100%;              // replaces the clamp() that bounds the column
+    margin-bottom: 0;
+    padding-bottom: 1.25em;
+    border-bottom: 1px solid var(--global-border-color);
+
+    // assets/js/plugins/jquery.greedy-navigation.js writes an INLINE
+    // `padding-top: <masthead height>px` here whenever the "Follow" button is
+    // hidden, which the layout above makes true at every width. It dates from
+    // when the sidebar was position:fixed under the fixed masthead and needed
+    // the clearance; stacked on a phone it is just a blank band above the
+    // photo. An inline style can only be beaten by !important. Scoped to
+    // phones on purpose: above $medium that padding still sets the desktop
+    // spacing people are used to.
+    padding-top: 0 !important;
+
+    // The profile's three blocks — avatar, name/roles, links — are siblings in
+    // one itemscope wrapper. Grid puts the first two side by side and hands the
+    // links the full width beneath them.
+    > div[itemscope] {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      grid-template-areas:
+        "avatar content"
+        "links  links";
+      column-gap: 1.1em;
+      align-items: center;
+    }
+
+    .author__avatar {
+      grid-area: avatar;
+      width: auto;            // the desktop rule stretches this to 100%
+    }
+
+    .author__avatar img {
+      width: 104px;
+      max-width: 104px;
+    }
+
+    // Name and roles read as a left-aligned block beside the photo rather than
+    // centered captions under it. The name and bio need naming individually —
+    // the centered-profile block above targets them directly, so centering on
+    // .author__content alone does not reach them.
+    .author__content {
+      grid-area: content;
+    }
+
+    .author__content,
+    .author__name,
+    .author__pronouns,
+    .author__bio {
+      text-align: left;
+    }
+
+    .author__name {
+      margin: 0 0 0.15em;
+    }
+
+    .author__bio {
+      margin: 0;
+      line-height: 1.35;
+    }
+
+    .author__urls-wrapper {
+      grid-area: links;
+      margin-top: 0.9em;
+    }
+
+    // A wrapped row of links instead of a seven-row column. Each item is
+    // nowrap so a label wraps as a whole rather than splitting across lines.
+    .author__urls {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: 1.1em;
+      row-gap: 0.15em;
+      width: 100%;
+      margin: 0;
+
+      li {
+        white-space: nowrap;
+      }
+
+      a {
+        margin-bottom: 0;
+        padding: 0.35em 0;    // a taller tap target than the desktop list
+      }
+    }
+  }
+}

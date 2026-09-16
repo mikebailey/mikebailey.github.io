@@ -7,7 +7,6 @@
   background-color: var(--global-footer-bg-color);
   color: var(--global-text-color-light);
 
-  float: left;
   margin-left: 0;
   margin-right: 0;
   margin-top: 3em;
@@ -17,9 +16,16 @@
   /* keep footer in normal document flow so custom widgets do not overlap content */
   height: auto;
 
-  /* keep the footer on the bottom of the page */
-  position: fixed;
-  bottom: 0;
+  /* The template pinned this bar with `position: fixed; bottom: 0`, so content
+     scrolled UNDER it at every scroll position except the very end — at 390px
+     it hid the bottom two lines of whatever you were reading, and it did the
+     same on desktop. It flows after the content instead.
+
+     `float: left` has to go with it: `position: fixed` forces `float: none`,
+     so the float only becomes live once the pinning is removed, and a floated
+     footer drops out of flow and stops contributing to the page height. */
+  position: static;
+  float: none;
 
   -webkit-animation: intro 0.3s both;
           animation: intro 0.3s both;
