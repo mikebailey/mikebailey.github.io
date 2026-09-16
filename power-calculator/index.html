@@ -244,6 +244,12 @@
   .notes li.warn::before { content: '⚠'; position: static; margin-right: 5px; font-weight: 400; }
 
   .implied { margin: -6px 0 14px; font-size: 12.5px; color: var(--text-dim); line-height: 1.5; }
+  /* The two `.implied` notes elsewhere are one-liners tucked under the input they annotate, so
+     the negative top margin above is right for them. This one is a multi-line paragraph sitting
+     under a <summary>: the -6px pulls it into the heading and 1.5 is tight for text that wraps
+     three times, which together read as crowded. Given its own rule rather than loosening
+     `.implied`, which would unpick the tuck-under those other two depend on. */
+  details.advanced > .implied { margin: 8px 0 16px; line-height: 1.65; }
   /* The Greek and the Type I / Type II naming, for readers who think in those terms. Quiet
      enough to skip, close enough to the field to be the answer when you go looking. */
   .alt { font-weight: 400; font-size: 11px; color: var(--text-dim); letter-spacing: 0; }
@@ -2838,20 +2844,27 @@ function renderResult(s, r) {
       ? `${fmt(per)} clusters per group (control + ${arms} arms)`
       : `${fmt(per)} clusters per arm`;
   };
+  /* The price rides on the end of whichever sentence the mode produced, rather than getting a
+     line of its own. This sentence is the thing people copy into a memo or an email, and a
+     design quoted without its cost is the half of the answer that comes back as a surprise.
+     Gated on r.cost, exactly like the Total Cost answer field: null until something is priced,
+     so an unpriced design reads the way it always did. A budget alone cannot reach here — a
+     budget with no prices buys nothing the tool can name, so there is no total to quote. */
+  const money = r.cost ? `, at a total cost of <b>${fmtMoney(r.cost.total)}</b>` : '';
   if (r.mode === 'n') {
     const need = r.clusters ? `${design}` : `<b>${fmt(r.n)}</b>`;
     html = s.ni
-      ? `To rule out a difference larger than <b>${pp(s.niMargin)}</b>, the required sample size is ${need}.`
-      : `To detect an MDE of <b>${pp(r.mde)}</b>, the required sample size is ${need}.`;
+      ? `To rule out a difference larger than <b>${pp(s.niMargin)}</b>, the required sample size is ${need}${money}.`
+      : `To detect an MDE of <b>${pp(r.mde)}</b>, the required sample size is ${need}${money}.`;
     sub.push(split(r.n));
     const cs = clusterSplit(); if (cs) sub.push(cs);
   } else if (r.mode === 'mde') {
-    html = `With ${design}, the smallest detectable effect is <b>${pp(r.mde)}</b> at ${(s.power * 100).toFixed(0)}% power.`;
+    html = `With ${design}, the smallest detectable effect is <b>${pp(r.mde)}</b> at ${(s.power * 100).toFixed(0)}% power${money}.`;
     if (s.binary) sub.push(`${(100 * r.mde / s.p0).toFixed(0)}% change from a baseline of ${s.p0}`);
     else if (s.sd) sub.push(`${(r.mde / s.sd).toPrecision(2)} standard deviations`);
   } else {
     const pct = (r.power * 100);
-    html = `With ${design}, you have <b>${pct.toFixed(1)}%</b> power to detect an MDE of <b>${pp(r.mde)}</b>.`;
+    html = `With ${design}, you have <b>${pct.toFixed(1)}%</b> power to detect an MDE of <b>${pp(r.mde)}</b>${money}.`;
     if (pct < 80) sub.push(pct < 50 ? 'well below the 80% convention' : 'below the 80% convention');
   }
 
