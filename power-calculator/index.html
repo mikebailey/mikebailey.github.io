@@ -36,6 +36,7 @@
     --accent-soft: #fff1e8;
     --accent-border: #f3c9ad;
     --curve: #e8735a;
+    --cost: #2f6f8f;
     --grid: #eceae5;
     --chip-on: #c2410c;
     --warn-bg: #fdf3d7;
@@ -55,6 +56,7 @@
       --accent-soft: #33241a;
       --accent-border: #5c3a24;
       --curve: #f0824f;
+      --cost: #6fb3d2;
       --grid: #2e2b25;
       --chip-on: #f0824f;
       --warn-bg: #332c14;
@@ -79,6 +81,7 @@
       --accent-soft: #33241a;
       --accent-border: #5c3a24;
       --curve: #f0824f;
+      --cost: #6fb3d2;
       --grid: #2e2b25;
       --chip-on: #f0824f;
       --warn-bg: #332c14;
@@ -97,6 +100,7 @@
     --accent-soft: #33241a;
     --accent-border: #5c3a24;
     --curve: #f0824f;
+    --cost: #6fb3d2;
     --grid: #2e2b25;
     --chip-on: #f0824f;
     --warn-bg: #332c14;
@@ -146,6 +150,14 @@
   .pct { position: relative; }
   .pct input { padding-right: 46px; }
   .pct::after { content: '%'; position: absolute; right: 29px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 13px; pointer-events: none; }
+  /* Currency affix, mirroring .pct. A prefix rather than a suffix because the stepper
+     already owns the right-hand side of every numeric field. */
+  .cur { position: relative; }
+  .cur input { padding-left: 21px; }
+  .cur::before { content: '$'; position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 13px; pointer-events: none; }
+  /* Money stacks into columns in the sensitivity table and under the answers, and
+     proportional digits leave those columns ragged. */
+  .money { font-variant-numeric: tabular-nums; }
 
   /* custom stepper: native spinners overlap the % suffix and snap to min + n·step */
   .num { position: relative; }
@@ -224,6 +236,11 @@
      enough to skip, close enough to the field to be the answer when you go looking. */
   .alt { font-weight: 400; font-size: 11px; color: var(--text-dim); letter-spacing: 0; }
   .ans-note { text-align: center; font-size: 10.5px; color: var(--text-dim); margin-top: 1px; }
+  /* The marginal cost of power is the most decision-relevant number the tool prints, so it is
+     deliberately louder than the breakdown above it: full text colour rather than dim, and a
+     rule to separate it from the arithmetic it is derived from. */
+  .ans-margin { text-align: center; font-size: 11.5px; color: var(--text); margin-top: 6px;
+    padding-top: 5px; border-top: 1px solid var(--border); }
 
   .pane-note { color: var(--text-dim); font-size: 13.5px; max-width: 720px; margin: 0 0 16px; }
   .ghost { border: 1px solid var(--border); background: var(--surface); color: var(--text-dim);
@@ -291,7 +308,7 @@
       --bg: #fff;        --surface: #fff;      --surface-2: #fafafa;
       --border: #b8b3ab; --text: #000;         --text-dim: #333;
       --accent: #000;    --accent-soft: #fff;  --accent-border: #b8b3ab;
-      --curve: #000;     --grid: #d8d5cf;      --chip-on: #000;
+      --curve: #000;     --cost: #555;    --grid: #d8d5cf;      --chip-on: #000;
       --warn-bg: #fff;   --warn-border: #b8b3ab; --warn-text: #000;
     }
     @page { margin: 18mm 16mm; }
@@ -509,6 +526,14 @@
         <label for="ansN">Total Sample Size</label><output id="ansN">—</output></div>
       <div class="field answer" id="f-ansClusters" hidden>
         <label for="ansClusters" id="ansClustersLabel">Number of Clusters</label><output id="ansClusters">—</output></div>
+      <div class="field answer" id="f-ansCost" hidden>
+        <label for="ansCost">Total Cost</label><output id="ansCost" class="money">—</output>
+        <div class="ans-note" id="ansCostNote"></div>
+        <div class="ans-margin" id="ansCostMargin" hidden></div></div>
+      <div class="field answer" id="f-ansBudget" hidden>
+        <label for="ansBudget" id="ansBudgetLabel">What the Budget Buys</label><output id="ansBudget">—</output>
+        <div class="ans-note" id="ansBudgetNote"></div>
+        <div class="ans-margin" id="ansBudgetMargin" hidden></div></div>
     </div>
 
     <div class="field" id="f-sd"><label for="sd">Standard Deviation of Outcome <span class="hint" tabindex="0" role="button" aria-label="Explain this field" data-tip="Spread of the outcome in the study population, from baseline data or a comparable study. Only the ratio of MDE to SD matters, so an MDE of 2 with SD 10 needs the same sample as 0.2 with SD 1.">?</span></label>
@@ -577,6 +602,20 @@
       <div class="field"><label for="attr">Individual Attrition <span class="hint" tabindex="0" role="button" aria-label="Explain this field" data-tip="Share of individuals expected to drop out before endline, within clusters that remain in the study. Assumed non-differential across arms.">?</span></label>
         <div class="pct"><input type="number" id="attr" step="1" min="0" max="99" value="0"></div></div>
       <ul class="notes" id="takeupNotes"></ul>
+    </details>
+
+    <details class="advanced" id="costBlock">
+      <summary>Cost &amp; budget</summary>
+      <p class="implied">Leave these blank and cost stays out of the results. Prices are unit-free: enter them all in the same currency and the total comes back in that currency.</p>
+      <div class="field" id="f-costPer"><label for="costPer">Cost per Participant <span class="hint" tabindex="0" role="button" aria-label="Explain this field" data-tip="What one participant costs to recruit, enrol, treat and survey — all rounds combined, so a study with a baseline, a midline and an endline pays the survey cost three times. This is research cost, not programme cost, and it is charged on everyone enrolled: attrition destroys data, not invoices.">?</span></label>
+        <div class="cur"><input type="number" id="costPer" step="1" min="0" value=""></div></div>
+      <div class="field" id="f-costCluster" hidden><label for="costCluster">Cost per Cluster <span class="hint" tabindex="0" role="button" aria-label="Explain this field" data-tip="What one cluster costs on top of the participants inside it — negotiating with a school, training a facilitator, travelling to a village. In most clustered studies this dominates the per-participant cost, which is why adding clusters is expensive and adding units within them is cheap.">?</span></label>
+        <div class="cur"><input type="number" id="costCluster" step="1" min="0" value=""></div></div>
+      <div class="field" id="f-costFixed" hidden><label for="costFixed">Fixed Cost <span class="hint" tabindex="0" role="button" aria-label="Explain this field" data-tip="Costs that do not change with the size of the study — instrument design, piloting, ethics approval, setting up data systems. It shifts the total without affecting any design trade-off.">?</span></label>
+        <div class="cur"><input type="number" id="costFixed" step="100" min="0" value=""></div></div>
+      <div class="field" id="f-budget"><label for="budget">Total Budget <span class="hint" tabindex="0" role="button" aria-label="Explain this field" data-tip="Optional. What you have to spend on the research, in the same units as the prices above. The tool reports the largest design that money buys and what it can detect. The budget binds: it never rounds up to a study you cannot afford.">?</span></label>
+        <div class="cur"><input type="number" id="budget" step="1000" min="0" value=""></div></div>
+      <ul class="notes" id="costNotes"></ul>
     </details>
 
     <details class="advanced">
@@ -680,13 +719,22 @@
     <p><strong>Published worked examples.</strong> Against SAS PROC POWER's published two-sample tables, results agree within one participant across all nine published combinations of significance level, effect and power. Power is checked directly against R: fifteen noncentral t values against <code>pt(q, df, ncp)</code> and six designs against <code>power.t.test</code>, all agreeing to better than 1e-11. That is a stronger anchor than a published table rounded to three decimals, where the last digit cannot distinguish a correct calculation from a nearly correct one.</p>
     <p>Stata's <code>power twomeans, cluster</code> worked examples are computed with normal quantiles. With the small-sample t correction disabled, this calculator reproduces them exactly: 26 clusters for the target design, 17 units per cluster at a fixed 30 clusters, power 0.8560, and a minimum detectable effect of 1.0196. The production default is deliberately more conservative, because it uses t critical values on the degrees of freedom the cluster design actually has — the same example returns 28 clusters, 18 units per cluster, power 0.8308 and an MDE of 1.0565. The difference is the correction, not a disagreement about the formula.</p>
     <p><strong>Reference implementation.</strong> A smaller R implementation of the same core methodology was used as a benchmark during development; 23 parameter sets span both outcome types, all three design modes, take-up, attrition and the error boundaries. In a compatibility mode that restores that implementation's normal approximation and rounding convention, 16 reproduce exactly. The other 7 are clustered designs with attrition, and differ because that implementation folds attrition into n before solving the clustered equation while this one applies it to the enrolment target afterwards — the divergence described under Clustered designs, where the reasoning for this tool's order is given. The difference is a deliberate choice, not an unexplained gap.</p>
-    <p><strong>Independent parameter sweep.</strong> An external test oracle, implemented from this tool's written specification rather than from its code, checks 948 configurations — including 258 deliberately pathological cases covering rounding cliffs, near-singular clustered designs, ICC at 0 and 1, 99% attrition, near-zero treatment contrast, extreme significance and power, binary outcome boundaries, and multiplicity up to 20 arms by 50 outcomes — plus 32 input-guardrail tests. All guardrails are enforced. The sweep found and fixed a rounding inconsistency in the iteration, two quantile-precision limitations, and several validation gaps.</p>
+    <p><strong>Independent parameter sweep.</strong> An external test oracle, implemented from this tool's written specification rather than from its code, checks 948 configurations — including 258 deliberately pathological cases covering rounding cliffs, near-singular clustered designs, ICC at 0 and 1, 99% attrition, near-zero treatment contrast, extreme significance and power, binary outcome boundaries, and multiplicity up to 20 arms by 50 outcomes — plus 35 input-guardrail tests. All guardrails are enforced. The sweep found and fixed a rounding inconsistency in the iteration, two quantile-precision limitations, and several validation gaps.</p>
     <p><strong>Monte Carlo.</strong> Every design is also simulated end to end — cluster random effects split by the intracluster correlation, attrition dropping observations, take-up scaling the effect, covariates residualising the outcome, cluster sizes varying by their coefficient of variation — and the realised rejection rate checked against the stated power.</p>
     <p><strong>Binary and unequal cluster sizes.</strong> The binary calculation reproduces Stata's <code>power twoproportions</code> exactly on its equal-allocation output (712 total, 356 per group for 0.30 versus 0.40) and to within two participants on a 2:1 allocation, the difference being whether the allocation ratio is preserved exactly after rounding. Both unequal-cluster-size adjustments reproduce Stata's <code>cvcluster</code> example at 28 clusters.</p>
     <p><strong>Not yet externally validated.</strong> The joint-power model for several arms or outcomes, and cluster-level attrition, have been checked by simulation but not against published worked examples.</p>
 
     <h3>Sensitivity</h3>
     <p>The Sensitivity tab varies one assumption across a range while holding everything else at the values on the Calculate tab, and reports the consequence in whichever direction is being solved. It is meant for the question that actually decides a design — what if the intracluster correlation is twice what we assumed, what if take-up is 65% rather than 90% — rather than for a single point estimate. The range defaults to a span around the current value and can be set directly. The list of parameters is ordered by what is usually worth varying <em>for the quantity being solved for</em> &mdash; the effect size and the power target lead when solving for sample size, the sample and the design lead when solving for power or MDE &mdash; and the tab opens on the first of them, though an explicit choice is kept when you switch modes.</p>
+
+    <h3>Cost</h3>
+    <p>Three optional prices — per participant, per cluster, and a fixed cost — give a total of F + c<sub>K</sub>·K + c<sub>i</sub>·N. They are inert until at least one is entered, and nothing costed appears anywhere until then; a blank price is not a zero price. The currency is unlabelled because the arithmetic is unit-free: any consistent unit works. Costs are shown to three significant figures, since a total derived from an MDE that rests on a guessed intracluster correlation does not deserve to be printed to the dollar. The budget lines are the exception and print in full, because they assert that what you spend plus what is left over is what you had.</p>
+    <p><strong>N and K are the enrolled counts, not the analysed ones.</strong> Recruitment, enrolment and survey attempts are paid for on everyone who starts, and attrition destroys data rather than invoices. Two consequences follow, and together they are the check that the model is wired correctly: with the design stated, varying attrition moves the answer and leaves the total alone; when solving for sample size the same attrition raises the total, because reaching the target now means enrolling more. A model that priced the analysed sample would show cost <em>falling</em> as attrition rises, which reads as sensible and is wrong. The cluster and fixed prices apply only to clustered designs, where there is a cluster to price.</p>
+    <p><strong>What the next five points of power cost.</strong> The design is re-solved at a higher power and the two totals differenced. Both powers quoted are the ones the designs actually achieve, not the targets: integer sample sizes overshoot, so a design solved at 80% may deliver 81.6%, and quoting the targets would print a pair that does not reproduce when the printed design is re-entered. Where a fixed number of clusters has already hit its power ceiling, that is reported rather than suppressed.</p>
+    <p><strong>A budget, run backwards.</strong> Enter what you have and the tool reports the largest design it affords and what that design detects, in whichever direction you are already solving. The division always floors — a design quoted one cluster above what the money covers is a study that cannot be run — so the design shown always fits, and one more of whatever the budget was buying never does. The leftover is reported as a fraction of one more of that same thing: 41 clusters and 78% of another is a case for finding a little more money, and 41 and 3% of another is not. A budget the prices cannot satisfy says so, and names what would be needed.</p>
+    <p><strong>Cost across the tabs.</strong> The sensitivity table gains a rightmost column, priced from each row's own design, and it appears in both copied forms. It is shown even where it cannot vary, because a design you stated has one bill repeated down the table, and a column that vanished whenever it happened not to move would read as the feature being broken. Both charts gain a cost series on a right-hand money axis, priced from points the chart has already solved rather than sampled again. That axis is zero-based, like the axis beside it: where a large fixed cost dwarfs the variable cost the series draws as a nearly flat line, and that is the answer — at those prices, sample size barely moves the budget.</p>
+    <p><strong>One line of advice.</strong> If the entered cluster size is far from the one that buys the most precision per dollar, the tool says so. It minimises the design effect times the cost per analysed participant, using the same design effect the rest of the page uses, and searches rather than trusting the textbook square root — that closed form is exact when cluster sizes are equal but misses by up to 20% in variance under the efficient unequal-size adjustment. At $500 a cluster and $20 a participant with an intracluster correlation of 0.05, about 22 participants per cluster is efficient, and a design of 60 per cluster reaches an MDE about 13% larger for the same money. The line appears only outside a factor of two in either direction, because the curve is flat near its minimum, and it closes by saying that if cluster size is fixed in the field you should ignore it — which is the common case, and the sentence is a diagnostic rather than an instruction.</p>
+    <p>The model is descriptive. It prices the research design as specified, not the programme being evaluated; it does not price treatment and control differently; and it does not solve the optimal-design problem of choosing between more clusters and larger ones at a fixed budget.</p>
 
     <h3>Scope</h3>
     <p>Estimates are for planning. Stratification and blocking, repeated measures, subgroup and interaction power, mediation, and non-parametric outcomes are not covered; consult a statistician for those. Attrition is modelled as non-differential across arms, at both the individual and the cluster level. The core two-arm sample-size framework follows Duflo, Glennerster &amp; Kremer (2007); the extensions for clustered designs, unequal cluster sizes, small-sample inference, covariate adjustment and multiple testing use the methods described above.</p>
@@ -719,6 +767,14 @@
   <div class="export-block">
     <div class="export-head"><h3>Methods paragraph</h3><button type="button" class="ghost" data-copy="outMethods">Copy</button></div>
     <div class="out" id="outMethods"></div>
+  </div>
+  <!-- The varied-assumption table belongs beside the methods paragraph, because that is where
+       a reviewer asks "and if the ICC is twice what you assumed?". Same table as the
+       Sensitivity tab, same range controls, rendered fixed-width to match Assumptions above. -->
+  <div class="export-block">
+    <div class="export-head"><h3>Sensitivity table</h3><button type="button" class="ghost" data-copy="outSens">Copy</button></div>
+    <p class="pane-note" id="outSensNote"></p>
+    <pre class="out mono" id="outSens"></pre>
   </div>
   <div class="export-block">
     <div class="export-head"><h3>R</h3><button type="button" class="ghost" data-copy="outR">Copy</button></div>
@@ -1492,9 +1548,297 @@ function achievedPower(mde, s, d) {
   return { power, each, analysed, deff, df };
 }
 
+/* ---------- cost ----------
+   Cost is arithmetic on a design rather than statistics, but it lives inside the engine
+   deliberately: above this boundary it is a pure function, so it can be unit-tested with no
+   DOM and hammered by the property sweep in tests/cost.js.
+
+       C = fixed + perCluster·clusters + perParticipant·participants
+
+   Two things this function has to get right, neither of which is visible on inspection.
+
+   1. It prices the ENROLLED sample, never the analysed one. You pay to recruit, enrol and
+      attempt to survey everyone who starts; attrition destroys data, not invoices. Every
+      design's fromN0() already inflates by 1/(1−attr) before returning, so taking d.n and
+      d.clusters as they come is correct. Switching to the analysed count would understate
+      cost by the attrition rate while every number on screen still looked plausible.
+
+   2. It reads the DESIGN, never the state. In the fixed-K mode s.m holds the *number of
+      clusters* while d.m holds the solved cluster size; in the units mode it is the other
+      way round. Reading s.m here would silently price two different quantities depending on
+      a mode this function cannot see.
+
+   Returns null when nothing has been priced, which is what keeps the whole feature invisible
+   until someone enters a price — one check at the source rather than six downstream. */
+function costOf(d, p) {
+  if (!d || !p) return null;
+  // A blank field parses to NaN, and NaN is falsy, so blank and zero both collapse to 0 here.
+  const perParticipant = p.perParticipant || 0;
+  const perCluster = p.perCluster || 0;
+  const fixed = p.fixed || 0;
+  if (!(perParticipant > 0 || perCluster > 0 || fixed > 0)) return null;
+  // Enrolled totals straight off the design: unclustered carries {n}, clustered {clusters, m}.
+  const participants = d.n != null ? d.n : (d.clusters || 0) * (d.m || 0);
+  const clusters = d.clusters || 0;
+  const participant = perParticipant * participants;
+  const cluster = perCluster * clusters;
+  const total = fixed + cluster + participant;
+  if (!isFinite(total) || total < 0) return null;
+  return { total, fixed, cluster, participant, participants, clusters };
+}
+
+/* ---------- the marginal cost of power ----------
+   A total answers "what does this study cost". This answers the question people actually
+   argue about in a budget meeting: "what would it cost to not be underpowered". It solves the
+   design again at a slightly higher power and differences the two bills.
+
+   Three things it has to get right.
+
+   1. It steps from the REALISED power, not the target. Cluster counts and sample sizes are
+      integers, so a design solved for 80% typically lands a little above it. Stepping from
+      0.80 when the design on screen actually delivers 0.827 would quote the cost of a step
+      the user has already partly paid for.
+
+   2. It steps from the realised power to a realised power. The returned design is the
+      minimum integer design at the target, so it too overshoots; reporting the target would
+      print a cost that does not reproduce if you re-enter the printed design.
+
+   3. It forces cmode to 'units' outside sample-size mode. In the fixed-K mode s.m carries the
+      *number of clusters*, and that mode's field is only on screen while solving for sample
+      size. A stale 'clusters' left in the state would make requiredSample read the cluster
+      size as a cluster count — a wrong answer that looks entirely plausible. Holding cluster
+      size fixed and buying more clusters is also the right economics for every direction
+      except the one where the user has explicitly fixed the number of clusters.
+
+   Returns null when there is nothing to say — no price, no finite base, or a step that would
+   run past 99%, where the power curve is flat enough that the marginal cost is both enormous
+   and meaningless. Returns {target, error} when no design reaches the step, which is a real
+   answer in fixed-K mode: past a point, no cluster size gets you there at all. */
+// Five points is the conventional gap people argue over — 80% to 85% — and it is large enough
+// that the answer is not swallowed by integer rounding on a small design.
+const POWER_STEP = 0.05;
+function powerStepCost(s, r, prices, step) {
+  const baseCost = costOf(r, prices);
+  if (!baseCost || !r || r.error) return null;
+  // Realised power of the design on screen, in every direction. In power mode r.power already
+  // is realised; recomputing it costs nothing and keeps the three modes on one path.
+  const base = achievedPower(r.mde, s, r);
+  if (base.error || !isFinite(base.power)) return null;
+  const target = base.power + step;
+  if (!(target > 0) || target > 0.99) return null;
+  // See note 3: outside sample-size mode cmode is stale and s.m means something else there.
+  const sStep = r.mode === 'n' ? s : Object.assign({}, s, { cmode: 'units' });
+  const design = requiredSample(r.mde, Object.assign({}, sStep, { power: target }));
+  if (design.error) return { step, from: base.power, target, error: design.error };
+  const cost = costOf(design, prices);
+  if (!cost) return null;
+  const to = achievedPower(r.mde, sStep, design);
+  return { step, from: base.power, target,
+           to: (to.error || !isFinite(to.power)) ? target : to.power,
+           total: cost.total, delta: cost.total - baseCost.total, design };
+}
+
+/* ---------- the budget inverse ----------
+   Every other cost function here answers "what does this design cost". This one answers the
+   question a PI actually walks in with: "I have this much money — what can I detect with it?"
+
+   It is a PRE-STEP, not a fourth solve direction. It works out the largest design the budget
+   affords and hands that design to machinery that already exists — mdeForSampleSize() or
+   achievedPower(). Nothing about solveFor, the URL schema, or the generated R and Stata code
+   changes, which is why a feature this visible costs the rest of the tool nothing.
+
+   Three branches, because what a budget buys depends on which dimension is free to move.
+
+   - Unclustered: the budget buys participants.   N = floor((B − F) / c_i)
+   - Clustered, cluster SIZE fixed: it buys whole clusters, each costing c_K + m·c_i.
+                                                  K = floor((B − F) / (c_K + m·c_i))
+   - Clustered, cluster COUNT fixed: the clusters are paid for first, whatever they cost, and
+     what is left buys depth inside them.         m = floor((B − F − K·c_K) / (K·c_i))
+
+   Floor everywhere. Never ceiling, never round. The budget binds — that is the whole premise —
+   and "you can afford 41 clusters" when the 41st costs $300 more than the user has is the one
+   failure mode that makes the feature worse than not having it.
+
+   The same floor gives the residual its meaning. In all three branches the money left over is
+   what could not buy one more of whatever the budget was buying, so 0 ≤ residual < unit holds
+   by construction, and `unit` is the thing to report it as a fraction of.
+
+   Returns null when there is nothing to say: no budget typed, or no price on the dimension the
+   budget would buy. Returns {error: <code>} rather than a sentence — this function sits above
+   the engine boundary and fmtMoney() lives below it, so the renderer does the wording. */
+function affordableDesign(s, p, budget) {
+  if (!p || !isFinite(budget) || budget <= 0) return null;
+  // A blank price parses to NaN; NaN > 0 is false, so blank and zero both collapse to 0.
+  const ci = p.perParticipant > 0 ? p.perParticipant : 0;
+  const cK = p.perCluster > 0 ? p.perCluster : 0;
+  const fixed = p.fixed > 0 ? p.fixed : 0;
+  // Priced on fixed costs alone there is no design to solve for: nothing scales with money.
+  if (!(ci > 0 || cK > 0)) return null;
+  const free = budget - fixed;
+  if (!(free > 0)) return { error: 'fixed', budget, fixed };
+
+  // The two floors below are validate()'s own minima — nGiven ≥ 4, kGiven ≥ 3 — so a design
+  // this function reports back is always one the tool would accept if it were typed in.
+  const N_MIN = 4, K_MIN = 3;
+  let d = null;
+  if (!s.clustered) {
+    if (!(ci > 0)) return null;
+    // pricesFrom() already zeroes F and c_K for unclustered designs, so `free` is `budget`
+    // here. Subtracting anyway keeps the branch correct rather than merely lucky.
+    const n = Math.floor(free / ci);
+    if (n < N_MIN) return { error: 'small', budget, got: n, need: N_MIN, unitLabel: 'participant' };
+    d = { n, unit: ci, unitLabel: 'participant' };
+  } else if (s.cmode === 'clusters') {
+    // The cluster count is the user's input, so the budget buys depth inside it.
+    const K = s.m;
+    if (!(K >= K_MIN) || !(ci > 0)) return null;
+    const afterClusters = free - cK * K;
+    const m = afterClusters > 0 ? Math.floor(afterClusters / (K * ci)) : 0;
+    // One message for both ways this fails — the clusters themselves are unaffordable, or they
+    // are affordable but leave nothing to put in them — quoting the cheapest design that works.
+    if (m < 1) return { error: 'clusters', budget, clusters: K, need: fixed + K * (cK + ci) };
+    d = { n: K * m, clusters: K, m, unit: K * ci, unitLabel: 'unit in every cluster' };
+  } else {
+    // Cluster size is the user's input, so the budget buys whole clusters at that size.
+    const m = s.m;
+    if (!(m >= 1)) return null;
+    const perCluster = cK + m * ci;
+    if (!(perCluster > 0)) return null;
+    const K = Math.floor(free / perCluster);
+    if (K < K_MIN) return { error: 'small', budget, got: K, need: K_MIN, unitLabel: 'cluster' };
+    d = { n: K * m, clusters: K, m, unit: perCluster, unitLabel: 'cluster' };
+  }
+  // Price the design the same way everything else in the tool is priced, rather than trusting
+  // the arithmetic above to have inverted itself correctly. If the two ever disagree, the
+  // residual goes negative and says so.
+  const cost = costOf(d, p);
+  if (!cost) return null;
+  return Object.assign(d, { budget, spent: cost.total, residual: budget - cost.total });
+}
+
+/* ---------- the cost-optimal cluster size, as an advisory and nothing more ----------
+   The budget inverse above deliberately holds the user's cluster size fixed and solves only
+   for the number of clusters: class sizes, village rosters and clinic caseloads are usually
+   fixed in the field, and a tool that silently re-optimises m answers a question the
+   researcher cannot act on. But having computed what the best cluster size would be and then
+   saying nothing is the worse failure — the user is one square root away from learning their
+   design is 20% off the efficient frontier.
+
+   So: compute it, and surface one line only when the entered size is materially off. Four
+   things about this that are easy to get wrong.
+
+   1. The optimum is over the ENROLLED cluster size, because that is what the user typed and
+      what the per-participant price is charged on — but the variance depends on the ANALYSED
+      size, m·(1−attr). The textbook formula (Raudenbush 1997) assumes no attrition, so it
+      needs an extra (1−attr) term; without it the tool would recommend an enrolled size
+      derived as though it were the analysed one. Cluster-level attrition, by contrast, scales
+      the number of clusters by a constant and does not move the optimum at all.
+
+   2. The objective is the tool's own design effect, not a private formula. What a budget buys,
+      in variance, from one enrolled cluster of size m is
+          h(m) = deff(m(1−a)) · (c_K + m·c_i) / (m(1−a))
+      and the budget and the fixed cost both cancel out of a ratio of two of these — which is
+      why this advisory needs no budget to be entered, and does not change when one is.
+
+   3. The square root is a SEED, not the answer, and that distinction was measured rather than
+      assumed. With equal cluster sizes, minimising h with deff = 1 + (m_a − 1)ρ gives
+          m* = sqrt( (c_K/c_i) · (1−ρ) / ((1+CV²)·ρ·(1−a)) )
+      — the textbook result at CV = 0 and a = 0 — and over a 400-case sweep that rounds to the
+      exact integer minimiser every single time. It does NOT survive unequal cluster sizes: the
+      conservative adjustment folds into the (1+CV²) term above, but the efficient adjustment
+      is a relative-efficiency discount that is not linear in cluster size, and there the closed
+      form was off by up to 10 participants and 20% of variance. So the seed is only a starting
+      point: the answer is found by bracketing and searching under the real deff, which is
+      exact, and means the number in the sentence is by construction the best cluster size this
+      tool's own arithmetic can find rather than an approximation to it. Sabotaging the seed
+      formula is therefore invisible in the answer, by design — it costs a few more evaluations
+      and nothing else.
+
+   4. It fires at a deliberately wide threshold, past 2× or below 0.5×. Budget-constrained MDE
+      is flat near an interior optimum: within roughly 0.6×–1.6× the penalty is under 2%, far
+      below the error in the user's ICC guess, and a line firing there would be noise dressed
+      as advice. And m* inherits that guess — moving ρ from 0.05 to 0.10 moves it by about
+      45% — which is why the sentence says "at these costs and this ICC" rather than presenting
+      one number as a fact. */
+
+/* Variance per unit of budget for enrolled cluster size m: the quantity the optimum minimises. */
+function budgetVariance(s, p, m) {
+  const ma = m * (1 - Math.min(Math.max(s.attr || 0, 0), 0.95));
+  if (!(ma > 0)) return Infinity;
+  return clusterDeff(ma, s) * (p.perCluster + m * p.perParticipant) / ma;
+}
+
+function optimalClusterSize(s, p) {
+  if (!s || !s.clustered || !p) return null;
+  const ci = p.perParticipant, cK = p.perCluster, rho = s.icc;
+  if (!(ci > 0) || !(cK > 0) || !(rho > 0) || !(rho < 1)) return null;
+  const a = Math.min(Math.max(s.attr || 0, 0), 0.95);
+  const cv = s.cv > 0 ? s.cv : 0;
+  const seed = Math.sqrt((cK / ci) * (1 - rho) / ((1 + cv * cv) * rho * (1 - a)));
+  if (!isFinite(seed) || !(seed > 0)) return null;
+  // A cluster of one is not a cluster, and the design effect is degenerate there.
+  let m = Math.max(2, Math.round(seed)), v = budgetVariance(s, p, m);
+  if (!isFinite(v)) return null;
+
+  /* h is unimodal in cluster size — the UI caps CV at √3, which is exactly the bound above
+     which the design effect stops being monotone in cluster size — so the minimum can be
+     bracketed and then searched, and the result does not depend on the seed being good.
+
+     That independence was worth buying. An earlier version walked downhill from the seed in
+     unit steps, which is exact but takes as many steps as the seed is wrong by; sabotaging the
+     seed formula then produced a wrong recommendation rather than a slower correct one, which
+     is a bad property for the one number on this page that is advice. Bracket geometrically,
+     then search the bracket, and a seed out by six orders of magnitude costs a few dozen
+     extra evaluations and changes no answer. */
+  /* The ceiling is what keeps the bracket in exact integer arithmetic. Doubling is capped at 80
+     steps, so an objective that never turns — which real prices cannot produce, but a corrupted
+     budgetVariance can — walks m up to 2^80, where a double's spacing is around 1e8 and the
+     ternary step below rounds to no movement at all and spins forever. Ten million participants
+     per cluster is far past any design this tool would be asked about (it needs a cluster-to-
+     participant price ratio around 1e11) and is comfortably inside exact integer doubles. */
+  const M_MAX = 1e7;
+  for (const f of [2, 0.5]) {                       // expand until the objective turns
+    for (let i = 0; i < 80; i++) {
+      const m2 = Math.min(M_MAX, Math.max(2, Math.round(m * f)));
+      if (m2 === m) break;
+      const v2 = budgetVariance(s, p, m2);
+      if (!(v2 < v)) break;
+      m = m2; v = v2;
+    }
+  }
+  // The last step that failed bounds the minimum on both sides, so this bracket contains it.
+  let lo = Math.max(2, Math.floor(m / 2)), hi = Math.min(M_MAX, Math.max(lo + 1, Math.ceil(m * 2)));
+  while (hi - lo > 2) {                             // ternary search, exact for a unimodal h
+    const third = Math.floor((hi - lo) / 3);
+    const a1 = lo + third, b1 = hi - third;
+    if (budgetVariance(s, p, a1) <= budgetVariance(s, p, b1)) hi = b1; else lo = a1;
+  }
+  for (let k = lo; k <= hi; k++) {                  // and pick among the two or three survivors
+    const vk = budgetVariance(s, p, k);
+    if (vk < v) { v = vk; m = k; }
+  }
+  return m;
+}
+
+function clusterSizeAdvice(s, p, m) {
+  const mStar = optimalClusterSize(s, p);
+  if (mStar === null || !(m >= 1)) return null;
+  const ratio = m / mStar;
+  if (ratio > 0.5 && ratio < 2) return null;          // inside the flat region: say nothing
+  const here = budgetVariance(s, p, m), best = budgetVariance(s, p, mStar);
+  if (!isFinite(here) || !isFinite(best) || !(best > 0)) return null;
+  // MDE scales with the square root of variance, so that is the currency the line quotes.
+  const penalty = Math.sqrt(here / best) - 1;
+  if (!(penalty > 0)) return null;
+  return { mStar, m, penalty };
+}
+
 /* ---------- state ---------- */
 const $ = id => document.getElementById(id);
-const inputs = ['alpha','power','tut','tuc','attr','p0','mde','sd','prop','icc','m','r2','cv','nGiven','kGiven','niMargin','arms','outcomes','testCorr','clusterAttr','r2corr'];
+// This array is load-bearing in four places: URL serialisation, URL deserialisation, the
+// input listener, and the stepper. A field added here gets all four; a field left out of it
+// silently gets none of them.
+const inputs = ['alpha','power','tut','tuc','attr','p0','mde','sd','prop','icc','m','r2','cv','nGiven','kGiven','niMargin','arms','outcomes','testCorr','clusterAttr','r2corr','costPer','costCluster','costFixed','budget'];
 let solveFor = 'power';
 let logScale = false;
 
@@ -1519,8 +1863,26 @@ function readState() {
     correction: $('correction').value, powerDef: $('powerDef').value,
     binaryDir: $('binaryDir').value, binaryMethod: $('binaryMethod').value,
     cvMethod: $('cvMethod').value, clusterAttr: v('clusterAttr')/100,
+    // Prices stay NaN when their field is blank, which is how the cost feature stays
+    // invisible until someone enters one. Do not default them to 0: a real 0 and a blank
+    // read identically downstream, but only a blank should leave the readout hidden.
+    costPer: v('costPer'), costCluster: v('costCluster'), costFixed: v('costFixed'),
+    // Same rule for the budget: NaN while blank, which is what keeps the budget readout off
+    // screen until someone types one.
+    budget: v('budget'),
     tCorrect: true, roundEven: false
   };
+}
+
+/* Map the state's field names onto the shape costOf() wants. Kept separate so costOf stays
+   generic enough to test against arbitrary price objects. */
+function pricesFrom(s) {
+  // Both cluster-scale prices are gated on the design, not just hidden by it: a price the
+  // user cannot see must not reach the total, or switching to an individual design leaves an
+  // invisible cost in the answer.
+  return { perParticipant: s.costPer,
+           perCluster: s.clustered ? s.costCluster : 0,
+           fixed: s.clustered ? s.costFixed : 0 };
 }
 
 /* The realised design implied by the inputs, when the user supplies it rather than
@@ -1532,6 +1894,18 @@ function givenDesign(s) {
 /* One entry point for all three directions. Returns a common shape so the result
    text and the chart never have to know which direction was asked for. */
 function solve(s) {
+  const r = solveCore(s);
+  if (r.error) return r;
+  // The single confluence point. Every direction normalises to a shape carrying the enrolled
+  // total and, when clustered, the enrolled cluster count, so pricing here once reaches the
+  // readout, the sensitivity table, the chart and the export without any of them knowing
+  // which direction was asked for. Computing it downstream would mean writing it six times.
+  const cost = costOf(r, pricesFrom(s));
+  if (cost) r.cost = cost;
+  return r;
+}
+
+function solveCore(s) {
   if (solveFor === 'n') {
     const r = requiredSample(s.mde, s);
     return r.error ? r : Object.assign({ mode: 'n', mde: s.mde, power: s.power }, r);
@@ -1547,6 +1921,34 @@ function solve(s) {
   if (mde === null || !isFinite(mde))
     return { error: 'No detectable effect reaches that power with this design — even a very large effect would need a bigger sample.' };
   return Object.assign({ mode: 'mde', mde, n: total, power: s.power }, d);
+}
+
+/* Joins the affordable design to the statistics: what the budget buys, expressed as the same
+   kind of answer the user is already solving for. Lives here rather than inside
+   affordableDesign() so that function stays pure arithmetic, testable without an engine. */
+function budgetAnswer(s, r, prices, budget) {
+  if (!r || r.error) return null;
+  // See powerStepCost note 3. Outside sample-size mode the cluster-input selector is off
+  // screen and s.m is always a cluster SIZE, whatever a stale cmode still says. Reading it as
+  // a cluster count there would price and solve two different designs, both plausible-looking.
+  const sBud = r.mode === 'n' ? s : Object.assign({}, s, { cmode: 'units' });
+  const d = affordableDesign(sBud, prices, budget);
+  if (!d || d.error) return d;
+  const design = s.clustered ? { clusters: d.clusters, m: d.m } : { n: d.n };
+  if (r.mode === 'power') {
+    // In power mode the effect is the user's input and power is the answer, so the budget's
+    // answer is the power it buys at that same effect.
+    const a = achievedPower(s.mde, sBud, design);
+    if (a.error || !isFinite(a.power)) return Object.assign({ error: 'nopower' }, d);
+    return Object.assign({ power: a.power }, d);
+  }
+  // Everywhere else the answer is an effect size. d.n is an ENROLLED total, and
+  // mdeForSampleSize() takes enrolled totals — sampleAt() returns requiredSample().nExact,
+  // which is already inflated by 1/(1−attrition). Deflating here would be the enrolled-versus-
+  // analysed trap in its most expensive form: it would overstate what the money buys.
+  const mde = mdeForSampleSize(d.n, sBud);
+  if (mde === null || !isFinite(mde)) return Object.assign({ error: 'nomde' }, d);
+  return Object.assign({ mde }, d);
 }
 
 function validate(s) {
@@ -1570,6 +1972,18 @@ function validate(s) {
   inRange('arms', s.arms, 1, 20);
   inRange('outcomes', s.outcomes, 1, 50);
   inRange('testCorr', s.testCorr, 0, 0.95);
+  // A price is allowed to be blank — that is how the cost feature stays off — but anything
+  // typed into one must be a non-negative finite number. The ceiling stops a mistyped
+  // exponent reaching the formatter as Infinity, which would print "$Infinity" rather than
+  // flagging the field.
+  const price = id => { const el = $(id); if (!el) return;
+    const v = parseFloat(el.value);
+    chk(id, el.value.trim() === '' || (isFinite(v) && v >= 0 && v <= 1e12)); };
+  price('costPer');
+  // The budget is not a price, but it is money typed into the same block and it takes the
+  // same rule: blank is how the feature stays off, anything else must be a sane number.
+  price('budget');
+  if (s.clustered) { price('costCluster'); price('costFixed'); }
   if (s.clustered) {
     inRange('icc', s.icc, 0, 1);
     // The efficient adjustment is only valid to CV = sqrt(3); above it the design effect stops
@@ -1623,6 +2037,135 @@ function hashToState() {
 
 /* ---------- number formatting ---------- */
 const fmt = n => n.toLocaleString('en-US');
+
+/* Money, to three significant figures. A cost sits on screen next to an MDE resting on a
+   guessed ICC, so printing it to the dollar would invite more confidence than either number
+   deserves — three figures is enough to budget from and honest about the precision. Values
+   under $100 keep their decimals, because rounding $4.87 to $5 is a visible lie at that
+   scale while rounding $487,312 to $487,000 is not. */
+function fmtMoney(n) {
+  if (!isFinite(n)) return '—';
+  if (n === 0) return '$0';
+  const abs = Math.abs(n);
+  const rounded = +n.toPrecision(3);
+  // Three significant figures means the decimal count depends on the magnitude: 4.87 keeps
+  // two, 48.7 keeps one, anything from 100 up keeps none.
+  const decimals = abs < 100 ? Math.min(2, Math.max(0, 2 - Math.floor(Math.log10(abs)))) : 0;
+  return '$' + rounded.toLocaleString('en-US', { maximumFractionDigits: decimals });
+}
+
+/* Money the reader is expected to add up, printed in full rather than to three significant
+   figures. The budget lines make an arithmetic claim — what you spend plus what is left over
+   equals what you had — and fmtMoney breaks it visibly: a $100,500 budget buying an $100,000
+   study reads as "$100,000 of $101,000 · $500 unspent", three numbers that do not reconcile.
+   Everywhere else fmtMoney's rounding is the right call, because a derived total of $487,231
+   claims a precision the prices behind it do not support. Cents are kept only when the prices
+   have cents, which is why this trims trailing zeros instead of always showing two decimals. */
+function fmtMoneyExact(n) {
+  if (!isFinite(n)) return '—';
+  return '$' + (Math.round(n * 100) / 100).toLocaleString('en-US', { maximumFractionDigits: 2 });
+}
+
+/* The breakdown is what makes a total checkable by hand, which matters more for cost than for
+   the statistics: a reader who can see 50 × $400 + 1,500 × $20 can tell at a glance whether
+   the tool priced the design they meant. */
+function costBreakdown(c) {
+  const parts = [];
+  if (c.fixed > 0) parts.push(`${fmtMoney(c.fixed)} fixed`);
+  if (c.cluster > 0)
+    parts.push(`${fmt(Math.round(c.clusters))} clusters × ${fmtMoney(c.cluster / c.clusters)}`);
+  if (c.participant > 0)
+    parts.push(`${fmt(Math.round(c.participants))} participants × ${fmtMoney(c.participant / c.participants)}`);
+  return parts.join('  +  ');
+}
+
+/* The one line in this feature that turns a number into a decision. "$487,000" tells you what
+   the study costs; "raising power from 81.6% to 87.6% costs $10,800 more" tells you whether to
+   ask for it.
+
+   It names both powers rather than the five-point step that produced them. The step is the
+   question asked; the two powers are the answer, and because designs are integers the second
+   one routinely overshoots — the nearest feasible design above 86.6% here delivers 87.6%.
+   Printing "+5 points ... to 88%" would look like an arithmetic error on its face, and the
+   reader who re-entered the printed design would get the printed cost only from the pair.
+
+   One decimal place, matching how the power readout above it prints. */
+function costStepText(cs) {
+  if (!cs) return '';
+  const pc = v => `${(v * 100).toFixed(1)}%`;
+  // Two sentences, not a spliced clause: the engine's messages are capitalised and punctuated.
+  // Only the first of them, though — this line sits in the narrow answer column, where the
+  // full fixed-K message runs to seven wrapped lines and pushes the actual answers off screen.
+  // Split on a period followed by whitespace and a capital, which leaves "ρ = 0.05" intact.
+  if (cs.error) return `Nothing here reaches ${pc(cs.target)}. ${cs.error.split(/\.\s+(?=[A-Z])/)[0].replace(/\.?$/, '.')}`;
+  // Integer designs are lumpy: sometimes the next feasible one up clears the step for free.
+  if (cs.delta <= 0) return `Raising power to ${pc(cs.to)} costs nothing more — the next feasible design up is already paid for.`;
+  return `Raising power from ${pc(cs.from)} to ${pc(cs.to)} costs ${fmtMoney(cs.delta)} more`;
+}
+
+/* ---------- wording the budget answer ----------
+   Three lines, because a budget answer that is only a number invites the wrong question. The
+   headline is what the money buys in the same currency as the answer beside it — an effect, or
+   a power. The note is the design that buys it, so the reader can check it against the prices
+   they typed. The margin is what is left over, which is the line that turns "you can afford 41
+   clusters" into a decision: 41 clusters and 78% of another is a case for finding a little
+   more money; 41 and 3% of another is not. */
+function budgetLabelText(s, mode) {
+  if (mode === 'power') return 'Power the Budget Buys';
+  return s.binary ? 'Effect the Budget Buys (pp)' : 'Effect the Budget Buys';
+}
+function budgetValueText(b, s) {
+  // Formatted exactly as the corresponding main answer is, so the two are comparable at a
+  // glance — that comparison is the entire point of showing them together.
+  if (b.power != null) return `${(b.power * 100).toFixed(1)}%`;
+  if (b.mde != null) return s.binary ? `${(+(b.mde * 100).toPrecision(3))} pp` : `${+b.mde.toPrecision(4)}`;
+  return '—';
+}
+function budgetNoteText(b, s) {
+  if (b.error) return budgetErrorText(b, s);
+  const design = b.clusters
+    ? `${fmt(b.clusters)} clusters × ${fmt(b.m)} = ${fmt(b.n)} participants`
+    : `${fmt(b.n)} participants`;
+  return `${design}  ·  ${fmtMoneyExact(b.spent)} of ${fmtMoneyExact(b.budget)}`;
+}
+function budgetMarginText(b) {
+  if (!b || b.error || !(b.residual > 0) || !(b.unit > 0)) return '';
+  // By construction residual < unit, so this is always a fraction of one more of whatever the
+  // budget was buying — a cluster, a participant, or a unit in every cluster.
+  return `${fmtMoneyExact(b.residual)} unspent — ${Math.round((b.residual / b.unit) * 100)}% of one more ${b.unitLabel}`;
+}
+// The count can be 1, and "buys 1 clusters" undoes the care taken over everything around it.
+const plural = (n, word) => `${fmt(n)} ${word}${n === 1 ? '' : 's'}`;
+function budgetErrorText(b, s) {
+  switch (b.error) {
+    case 'fixed':
+      return `A budget of ${fmtMoneyExact(b.budget)} does not cover the ${fmtMoneyExact(b.fixed)} fixed cost, `
+        + `so there is nothing left to buy a sample with.`;
+    case 'clusters':
+      return `A budget of ${fmtMoneyExact(b.budget)} does not stretch to ${plural(b.clusters, 'cluster')} with `
+        + `even one unit in each, which costs ${fmtMoneyExact(b.need)}.`;
+    case 'small':
+      return `A budget of ${fmtMoneyExact(b.budget)} buys ${plural(Math.max(0, b.got), b.unitLabel)} at these `
+        + `prices — fewer than the ${b.need} this tool will analyse.`;
+    case 'nomde':
+      return `No detectable effect reaches ${(s.power * 100).toFixed(0)}% power on what this budget buys.`;
+    default:
+      return 'That budget does not buy a design this tool can report on.';
+  }
+}
+
+/* The advisory sentence. Written as "about N" and "about P%" because both numbers rest on the
+   ICC, and closed with the escape clause that stops a correct hint from reading as an error —
+   a researcher whose cluster size is a village roster has nothing to act on here. A penalty
+   that rounds below 1% is not worth a sentence, whatever the size ratio says. */
+function clusterAdviceText(a) {
+  const pct = Math.round(a.penalty * 100);
+  if (!(pct >= 1)) return '';
+  return `At these costs and this ICC, about <b>${fmt(a.mStar)}</b> participants per cluster would `
+    + `give the most precision per dollar. Your ${fmt(a.m)} per cluster reaches an MDE about `
+    + `<b>${pct}%</b> larger for the same budget. If cluster size is fixed in the field, ignore this.`;
+}
+
 function niceTicks(min, max, count) {
   const span = max - min || 1;
   const step0 = span / count;
@@ -1634,9 +2177,85 @@ function niceTicks(min, max, count) {
 }
 const fmtAxis = n => n >= 1e6 ? (n/1e6)+'M' : n >= 1000 ? (n/1000)+'k' : String(Math.round(n*1000)/1000);
 
+/* Axis money is deliberately coarser than fmtMoney: "$195k" fits in the right margin of a
+   720-unit plot and "$195,000" does not. An axis tick is for reading magnitude off a curve;
+   the figure to budget from is in the readout and, point by point, in the tooltip. */
+const fmtAxisMoney = n => '$' + fmtAxis(+n.toPrecision(3));
+
 /* ---------- chart ---------- */
 let chartPoints = [];
 let chartMode = 'mde';
+
+/* ---------- the cost series ----------
+   Both charts can carry a second curve: what each point on the plotted curve would cost.
+
+   It is arithmetic on solves the chart has already paid for, never a second sampling pass.
+   That is not an optimisation, it is the design constraint: sampling the MDE curve BY sample
+   size inverts the solver once per point and cost ~600 ms per keystroke before it was rebuilt
+   around a calibrated guess. Cost is linear in the design, so a second pass would buy nothing
+   and cost everything. `designOf` turns a plotted point back into the design it came from —
+   each chart knows its own mapping — and every point is priced from its OWN design, on the
+   ENROLLED sample, exactly as the readout and the sensitivity table are.
+
+   Returns null when there is no second series to draw, which is the one check that keeps an
+   unpriced chart byte-for-byte what it was before this feature existed. Three ways to get it:
+   nothing is priced; something is priced but a point could not be (half a curve is worse than
+   none); or everything prices to zero, which has no axis to draw. */
+function costSeries(pts, designOf, prices) {
+  if (!prices) return null;
+  const totals = [];
+  for (const p of pts) {
+    const c = costOf(designOf(p), prices);
+    if (!c) return null;
+    totals.push(c.total);
+  }
+  const hi = Math.max(...totals);
+  if (!isFinite(hi) || hi <= 0) return null;
+  const max = hi * 1.06;                      // the same 6% headroom the MDE axis leaves
+  return { totals, max, ticks: niceTicks(0, max, 5) };
+}
+
+/* Draws the cost curve and its right-hand axis, shared by both charts because both plot their
+   points against sample size on the x-axis.
+
+   The right axis gets tick labels and short tick marks but deliberately NO gridlines. A second
+   set of gridlines at heights that do not line up with the left axis's turns the plot into
+   plaid for the sake of a secondary series; the exact figure at any point is a hover away.
+
+   Dashed, not solid, so the two series stay apart when the chart is printed — the print block
+   flattens --curve to black — or read by someone who cannot separate the two hues. */
+function costLayer(cs, pts, g, X) {
+  const { W, H, mr, mt, mb } = g;
+  const ih = H - mt - mb;
+  const Y2 = v => mt + ih - (v / cs.max) * ih;
+  let el = '';
+  cs.ticks.forEach(t => {
+    const y = Y2(t);
+    if (y < mt - 1 || y > mt + ih + 1) return;
+    el += `<line x1="${W-mr}" y1="${y.toFixed(1)}" x2="${W-mr+4}" y2="${y.toFixed(1)}" stroke="var(--cost)" stroke-width="1" opacity="0.7"/>`;
+    el += `<text x="${W-mr+7}" y="${(y+4).toFixed(1)}" text-anchor="start" font-size="${g.tick}" fill="var(--cost)">${fmtAxisMoney(t)}</text>`;
+  });
+  // The axis title is the legend. Two axis titles, each in its series' colour, say which curve
+  // belongs to which scale without spending plot area on a legend box that would then have to
+  // dodge whichever curve ran through it.
+  const tx = W - (g.compact ? 8 : 12);
+  el += `<text x="${tx}" y="${mt + ih/2}" text-anchor="middle" font-size="${g.axis}" font-weight="600" fill="var(--cost)" transform="rotate(90 ${tx},${mt + ih/2})">Total cost</text>`;
+  const path = pts.map((p, i) => `${i ? 'L' : 'M'}${X(p.n).toFixed(1)},${Y2(cs.totals[i]).toFixed(1)}`).join('');
+  el += `<path d="${path}" fill="none" stroke="var(--cost)" stroke-width="2" stroke-dasharray="6 3" stroke-linejoin="round"/>`;
+  return { el, Y2 };
+}
+
+/* The bill for the design the user is actually looking at, marked on the cost curve.
+   It is read off `res.cost` rather than recomputed, so the dot on the chart and the total in
+   the readout cannot disagree — they are the same number. */
+function costMarkerEl(res, marker, cs, Y2, X) {
+  if (!res || !res.cost || !marker) return '';
+  const v = res.cost.total;
+  if (!isFinite(v) || v < 0 || v > cs.max) return '';
+  const x = X(marker.n).toFixed(1), y = Y2(v).toFixed(1);
+  return `<circle cx="${x}" cy="${y}" r="5.5" fill="none" stroke="var(--cost)" stroke-width="2"/>`;
+}
+
 function renderChart(s, res) {
   // In Power mode the natural chart is power against sample size at the MDE you typed:
   // your design lies on that curve, and changing any input moves the curve itself. The
@@ -1651,10 +2270,6 @@ function renderChart(s, res) {
   chartMode = 'mde';
   $('chartTitle').textContent = 'MDE vs. required sample size';
   const svg = $('chart');
-  const g = chartGeometry(svg);
-  const { W, H, ml, mr, mt, mb } = g;
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-  const iw = W - ml - mr, ih = H - mt - mb;
 
   // Grid on sample size, not MDE, and using the unrounded requirement. Gridding on MDE
   // meant that at large MDE many points shared one rounded sample size, piling up into a
@@ -1706,7 +2321,10 @@ function renderChart(s, res) {
     if (!isFinite(mdeVal) || mdeVal <= 0) continue;
     const r = requiredSample(mdeVal, s);
     if (r.error || !isFinite(r.nExact)) continue;        // past the MDE ceiling: drop the point
-    pts.push({ mde: mdeVal, n: r.nExact, reported: r.n });
+    // r.clusters rides along so the cost series can price this point later without re-solving.
+    // It is the integer cluster count, and `reported` the integer sample, because the bill a
+    // reader would check is the one for the design this point would actually be written up as.
+    pts.push({ mde: mdeVal, n: r.nExact, reported: r.n, clusters: r.clusters });
   }
   pts.sort((a, b) => a.mde - b.mde);   // sort by MDE: n is monotone in it, so no zigzag
 
@@ -1719,6 +2337,14 @@ function renderChart(s, res) {
     : null;
   chartPoints = marker ? pts.concat([marker]) : pts;
   if (pts.length < 2) { svg.innerHTML = ''; return; }
+
+  // Price the curve, then lay out around the answer: the right margin depends on whether there
+  // is a money axis to fit, so the geometry cannot be settled any earlier than this.
+  const cs = costSeries(pts, p => ({ n: p.reported, clusters: p.clusters }), pricesFrom(s));
+  const g = chartGeometry(svg, !!cs);
+  const { W, H, ml, mr, mt, mb } = g;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const iw = W - ml - mr, ih = H - mt - mb;
 
   const xs = chartPoints.map(p => p.n), ys = chartPoints.map(p => p.mde);
   let xmin = Math.min(...xs), xmax = Math.max(...xs);
@@ -1758,7 +2384,19 @@ function renderChart(s, res) {
   });
   // axes labels
   el += `<text x="${ml + iw/2}" y="${H-6}" text-anchor="middle" font-size="${g.axis}" font-weight="600" fill="var(--text-dim)">Total Sample Size${logScale ? ' (log scale)' : ''}</text>`;
-  el += `<text x="${g.titleX}" y="${mt + ih/2}" text-anchor="middle" font-size="${g.axis}" font-weight="600" fill="var(--text-dim)" transform="rotate(-90 ${g.titleX},${mt + ih/2})">MDE${s.binary ? ' (proportion points)' : ''}</text>`;
+  // With a second axis on the right, the left title takes the curve's colour so the two titles
+  // act as the legend. On an unpriced chart it stays dimmed, as it always was.
+  el += `<text x="${g.titleX}" y="${mt + ih/2}" text-anchor="middle" font-size="${g.axis}" font-weight="600" fill="var(--${cs ? 'curve' : 'text-dim'})" transform="rotate(-90 ${g.titleX},${mt + ih/2})">MDE${s.binary ? ' (proportion points)' : ''}</text>`;
+
+  // The cost layer goes down before the MDE curve so the primary series draws on top of it.
+  if (cs) {
+    const layer = costLayer(cs, pts, g, X);
+    el += layer.el + costMarkerEl(res, marker, cs, layer.Y2, X);
+    // Carry each point's bill onto the point itself, for the tooltip. The two arrays are
+    // parallel by construction — costSeries builds totals in the order it was handed pts.
+    pts.forEach((p, i) => { p.cost = cs.totals[i]; });
+    if (marker && res && res.cost) marker.cost = res.cost.total;
+  }
 
   // curve
   const path = pts.map((p, i) => `${i ? 'L' : 'M'}${X(p.n).toFixed(1)},${Y(p.mde).toFixed(1)}`).join('');
@@ -1773,7 +2411,11 @@ function renderChart(s, res) {
     el += `<circle cx="${X(c.n).toFixed(1)}" cy="${Y(c.mde).toFixed(1)}" r="3.4" fill="var(--accent)"/>`;
   }
   svg.innerHTML = el;
-  svg._map = { pts, X, Y, W, H };
+  // chartPoints, not pts: _map.pts is what the tooltip hit-tests against, and handing it the
+  // curve alone left the marker — the one point on this chart the reader most wants to read —
+  // unhoverable, with chartTip's own "your design" branch unreachable in MDE mode. The power
+  // chart has always passed the marker here; this is the two of them agreeing.
+  svg._map = { pts: chartPoints, X, Y, W, H };
 }
 
 /* The chart domain was anchored directly on the answer, so every keystroke that nudged the
@@ -1793,18 +2435,23 @@ function chartAnchor(n) {
    shrank every label to under half size: 12px tick labels drew at about 5px. Below 560px the
    viewBox is set to the chart's real width instead, so font sizes are true pixel sizes, and the
    plot gets a taller aspect so the curve is not a sliver. Desktop geometry is unchanged, and so
-   is anything that cannot be measured (a hidden tab, or the headless test stubs). */
+   is anything that cannot be measured (a hidden tab, or the headless test stubs).
+
+   `costAxis` is the only thing that varies the margins: a right-hand money axis needs room for
+   "$195k" plus a rotated title, and the caller cannot know whether to ask for it until it has
+   priced the points. An unpriced chart passes false and gets exactly the geometry it has always
+   had, which is why adding this feature moved no existing chart by a pixel. */
 let chartArgs = null;
-function chartGeometry(svg) {
+function chartGeometry(svg, costAxis) {
   const w = (svg && svg.getBoundingClientRect && svg.getBoundingClientRect().width) || 0;
   if (w > 0 && w < 560) {
     const W = Math.round(Math.max(260, w));
     const H = Math.round(Math.min(360, Math.max(240, W * 0.8)));
-    return { W, H, ml: 56, mr: 12, mt: 12, mb: 42, tick: 11, axis: 12, note: 11,
+    return { W, H, ml: 56, mr: costAxis ? 56 : 12, mt: 12, mb: 42, tick: 11, axis: 12, note: 11,
              tickPad: 6, titleX: 11, compact: true, measured: w };
   }
-  return { W: 720, H: 420, ml: 62, mr: 18, mt: 14, mb: 46, tick: 12, axis: 13, note: 11.5,
-           tickPad: 9, titleX: 16, compact: false, measured: w };
+  return { W: 720, H: 420, ml: 62, mr: costAxis ? 66 : 18, mt: 14, mb: 46, tick: 12, axis: 13,
+           note: 11.5, tickPad: 9, titleX: 16, compact: false, measured: w };
 }
 /* Redraw when the chart's width no longer matches its viewBox: a phone rotated, a window
    resized, or the Calculate tab shown again after a resize while it was hidden. Height-only
@@ -1823,13 +2470,14 @@ window.addEventListener('resize', () => { clearTimeout(refitTimer); refitTimer =
 function renderPowerChart(s, res) {
   chartMode = 'power';
   const svg = $('chart');
-  const g = chartGeometry(svg);
-  const { W, H, ml, mr, mt, mb } = g;
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-  const iw = W - ml - mr, ih = H - mt - mb;
   $('chartTitle').textContent = 'Power vs. sample size';
 
-  if (!res || res.error || !isFinite(res.n) || res.n <= 0) { svg.innerHTML = ''; svg._map = null; return; }
+  if (!res || res.error || !isFinite(res.n) || res.n <= 0) {
+    // Nothing to draw. Lay the viewBox out unpriced so an empty chart keeps a sane aspect.
+    const g0 = chartGeometry(svg, false);
+    svg.setAttribute('viewBox', `0 0 ${g0.W} ${g0.H}`);
+    svg.innerHTML = ''; svg._map = null; return;
+  }
   const anchor = chartAnchor(res.n);
   const nMin = Math.max(4, anchor / 8), nMax = anchor * 8;
   const powerAt = total => {
@@ -1848,6 +2496,19 @@ function renderPowerChart(s, res) {
   if (pts.length < 2) { svg.innerHTML = ''; chartPoints = []; return; }
   const marker = { n: res.n, power: res.power, current: true };
   chartPoints = pts.concat([marker]);
+
+  /* Price the curve. These points are hypothetical sample totals rather than solved designs, so
+     the mapping back to a design is the same one powerAt uses above — including the FRACTIONAL
+     cluster count. Rounding it here would make the cost curve stair-step against a power curve
+     drawn from the unrounded design, and the two series would disagree about what each x means.
+     At the user's own n the fraction is exactly the integer design, so the marker still agrees
+     with the readout. */
+  const cs = costSeries(pts, p => ({ n: p.n, clusters: s.clustered ? p.n / s.m : 0 }),
+                        pricesFrom(s));
+  const g = chartGeometry(svg, !!cs);
+  const { W, H, ml, mr, mt, mb } = g;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const iw = W - ml - mr, ih = H - mt - mb;
 
   const xmin = pts[0].n, xmax = pts[pts.length - 1].n;
   const X = logScale
@@ -1875,11 +2536,19 @@ function renderPowerChart(s, res) {
     el += `<text x="${x}" y="${mt+ih+20}" text-anchor="middle" font-size="${g.tick}" fill="var(--text-dim)">${fmtAxis(t)}</text>`;
   });
   el += `<text x="${ml+iw/2}" y="${H-6}" text-anchor="middle" font-size="${g.axis}" font-weight="600" fill="var(--text-dim)">Total Sample Size${logScale ? ' (log scale)' : ''}</text>`;
-  el += `<text x="${g.titleX}" y="${mt+ih/2}" text-anchor="middle" font-size="${g.axis}" font-weight="600" fill="var(--text-dim)" transform="rotate(-90 ${g.titleX},${mt+ih/2})">Power</text>`;
+  // Coloured to match its curve when a second axis shares the plot — see renderChart.
+  el += `<text x="${g.titleX}" y="${mt+ih/2}" text-anchor="middle" font-size="${g.axis}" font-weight="600" fill="var(--${cs ? 'curve' : 'text-dim'})" transform="rotate(-90 ${g.titleX},${mt+ih/2})">Power</text>`;
 
   // the 80% convention, for orientation
   el += `<line x1="${ml}" y1="${Y(0.8)}" x2="${W-mr}" y2="${Y(0.8)}" stroke="var(--text-dim)" stroke-width="1" stroke-dasharray="5 4" opacity="0.55"/>`;
   el += `<text x="${W-mr-4}" y="${Y(0.8)-6}" text-anchor="end" font-size="${g.note}" fill="var(--text-dim)">80% convention</text>`;
+
+  if (cs) {
+    const layer = costLayer(cs, pts, g, X);
+    el += layer.el + costMarkerEl(res, marker, cs, layer.Y2, X);
+    pts.forEach((p, i) => { p.cost = cs.totals[i]; });
+    if (res.cost) marker.cost = res.cost.total;
+  }
 
   const path = pts.map((p, i) => `${i ? 'L' : 'M'}${X(p.n).toFixed(1)},${Y(p.power).toFixed(1)}`).join('');
   el += `<path d="${path}" fill="none" stroke="var(--curve)" stroke-width="2.5" stroke-linejoin="round"/>`;
@@ -1908,15 +2577,19 @@ function chartTip(ev) {
     if (d < bestD) { bestD = d; best = p; }
   });
   if (!best) { tooltip.style.display = 'none'; return; }
+  /* The exact bill at the hovered point. The right-hand axis is rounded to three figures and
+     has no gridlines, so this is where a reader actually reads a cost off the chart. It is
+     appended rather than spliced in, so an unpriced chart's tooltip is unchanged. */
+  const money = best.cost != null ? ` — <span class="money">${fmtMoney(best.cost)}</span>` : '';
   if (chartMode === 'power') {
     tooltip.innerHTML = `n = <b>${fmt(Math.round(best.n))}</b> → power <b>${(best.power * 100).toFixed(1)}%</b>`
-      + (best.current ? ' — your design' : '');
+      + money + (best.current ? ' — your design' : '');
   } else {
     const shown = best.reported != null ? best.reported : Math.ceil(best.n);
     const tag = best.current
       ? (best.power != null ? ` — your design, ${(best.power * 100).toFixed(1)}% power` : ' — your design')
       : '';
-    tooltip.innerHTML = `MDE <b>${best.mde.toPrecision(3)}</b> → n = <b>${fmt(shown)}</b>${tag}`;
+    tooltip.innerHTML = `MDE <b>${best.mde.toPrecision(3)}</b> → n = <b>${fmt(shown)}</b>${money}${tag}`;
   }
   tooltip.style.display = 'block';
   // Keep it on screen. A mouse tooltip sits right of the cursor and flips left near the edge;
@@ -1996,6 +2669,33 @@ function renderNotes(s, r) {
   if (s.binary && s.binaryMethod === 'legacy') global.push('Legacy binary variance in use — retained for comparability, not recommended for new designs.');
   if (s.correction === 'effective') global.push('Correlation-discounted threshold is experimental and does not carry Bonferroni\'s guarantee.');
 
+  /* Cost notes. The first is not optional. A figure labelled "Total cost" will be inside a
+     concept note within a week, and the exclusions belong on the screen that produced it
+     rather than in a document nobody opens. */
+  const cost = [];
+  if (r && !r.error && r.cost) {
+    cost.push('Indicative research-design cost, not a budget — it excludes staff time, '
+      + 'overhead, ethics review, piloting, data management, translation and equipment.');
+    // The enrolled-versus-analysed distinction is the one thing about this number a reader
+    // could reasonably get wrong, so it is stated wherever attrition makes the two differ.
+    if (s.attr > 0 || (s.clustered && s.clusterAttr > 0))
+      cost.push(`Priced on the ${fmt(Math.round(r.cost.participants))} participants enrolled rather `
+        + `than the number analysed after attrition: you pay to recruit, enrol and attempt to `
+        + `survey everyone who starts.`);
+    // The one place this tool offers advice rather than arithmetic, so it is hedged twice:
+    // named as resting on the ICC, and closed with the reason a reader may rightly ignore it.
+    const advice = r.clusterAdvice && clusterAdviceText(r.clusterAdvice);
+    if (advice) cost.push(advice);
+    if (r.cost.total > 1e9) cost.push({ warn: true, text:
+      `A total of ${fmtMoney(r.cost.total)} is almost certainly a units problem — check whether a `
+      + `price was entered in a smaller unit than intended, such as cents rather than dollars.` });
+  }
+  // A budget typed with nothing priced is a dead input. Say so rather than leaving the reader
+  // to wonder why the number they entered produced nothing at all.
+  if (s.budget > 0 && !(r && r.cost))
+    cost.push('Enter at least one price above for the budget to mean anything — working out what '
+      + 'money buys needs a price to divide by.');
+
   const put = (id, list) => {
     const el = $(id);
     if (el) el.innerHTML = list.map(x => typeof x === 'string'
@@ -2003,6 +2703,7 @@ function renderNotes(s, r) {
   };
   put('takeupNotes', takeup);
   put('allocNotes', alloc);
+  put('costNotes', cost);
   put('assumptionNotes', global);
 }
 
@@ -2025,9 +2726,40 @@ function renderAnswers(s, r) {
   show('f-ansMde', solveFor === 'mde');
   show('f-ansN', solveFor === 'n');
   show('f-ansClusters', solveFor === 'n' && s.clustered);
+  // Cost shows in every direction, and only once something has been priced — r.cost is null
+  // until then, which is the whole of the "invisible by default" behaviour.
+  show('f-ansCost', !bad && !!r.cost);
+  // The budget readout is gated independently of the cost readout. They are different
+  // questions: a price with no budget is just a total, and a budget with no price buys nothing
+  // the tool can name.
+  show('f-ansBudget', !bad && !!r.budget);
   if (bad) {
-    ['ansPower','ansMde','ansN','ansClusters'].forEach(id => { $(id).textContent = '—'; });
+    ['ansPower','ansMde','ansN','ansClusters','ansCost','ansBudget'].forEach(id => { $(id).textContent = '—'; });
+    $('ansCostNote').textContent = '';
+    $('ansCostMargin').hidden = true; $('ansCostMargin').textContent = '';
+    $('ansBudgetNote').textContent = '';
+    $('ansBudgetMargin').hidden = true; $('ansBudgetMargin').textContent = '';
     return;
+  }
+  if (r.cost) {
+    $('ansCost').textContent = fmtMoney(r.cost.total);
+    $('ansCostNote').textContent = costBreakdown(r.cost);
+  }
+  // r.costStep is attached only on the answer path, not by solve() — see the note at its call
+  // site. Absent (near 100% power, or nothing priced) means no line rather than an empty one.
+  const stepText = costStepText(r.costStep);
+  $('ansCostMargin').textContent = stepText;
+  $('ansCostMargin').hidden = !stepText;
+  // r.budget, like r.costStep, is attached on the answer path only — the sensitivity table and
+  // the export call solve() per row and neither of them shows a budget.
+  const b = r.budget;
+  if (b) {
+    $('ansBudgetLabel').textContent = budgetLabelText(s, r.mode);
+    $('ansBudget').textContent = b.error ? '—' : budgetValueText(b, s);
+    $('ansBudgetNote').textContent = budgetNoteText(b, s);
+    const budgetMargin = budgetMarginText(b);
+    $('ansBudgetMargin').textContent = budgetMargin;
+    $('ansBudgetMargin').hidden = !budgetMargin;
   }
   if (solveFor === 'power') $('ansPower').textContent = `${(r.power * 100).toFixed(1)}%`;
   if (solveFor === 'mde') {
@@ -2165,6 +2897,11 @@ function syncVisibility() {
   // native range check agree with the rule rather than contradicting it.
   $('cv').max = $('cvMethod').value === 'efficient' ? CV_EFFICIENT_MAX.toFixed(4) : '2';
   $('f-clusterAttr').hidden = !clu;
+  // Both cluster-scale prices are for clustered designs only, so an individual design shows a
+  // single cost field. pricesFrom() gates them on the same flag, so a hidden price never
+  // reaches the total.
+  $('f-costCluster').hidden = !clu;
+  $('f-costFixed').hidden = !clu;
   $('f-nGiven').hidden = clu || solvingN;
   $('f-kGiven').hidden = !clu || solvingN;
   $('f-m').hidden = !clu;
@@ -2187,6 +2924,18 @@ function update() {
     return;
   }
   const r = solve(s);
+  // Deliberately here rather than inside solve(). It costs a second full requiredSample, and
+  // solve() is also the per-row call in the sensitivity table and the export — both of which
+  // would pay for it and neither of which shows it. The answer block is the only consumer.
+  if (r.cost) r.costStep = powerStepCost(s, r, pricesFrom(s), POWER_STEP);
+  // Same reasoning — a bisection per sensitivity row, for a line only the answer block shows.
+  r.budget = budgetAnswer(s, r, pricesFrom(s), s.budget);
+  /* The cluster size the design actually has, taken from the priced totals rather than from
+     s.m, which means the cluster COUNT in fixed-K mode — the same trap costOf note 2 documents.
+     Both totals are enrolled, so their ratio is the enrolled cluster size, which is the
+     quantity the advisory compares against and the one the per-participant price applies to. */
+  if (s.clustered && r.cost && r.cost.clusters > 0)
+    r.clusterAdvice = clusterSizeAdvice(s, pricesFrom(s), r.cost.participants / r.cost.clusters);
   renderChart(s, r);
   renderResult(s, r);
   renderErrorRates(s, r);
@@ -2287,6 +3036,13 @@ const stepPrefs = {
   // designs. Every other field keeps the step declared on its own input, which is already
   // right (1 cluster, 1 arm, 1 percentage point) and stays an integer where it must.
   sd: { auto: true }, nGiven: { auto: true, int: true },
+  // Prices span $2 to $5,000 between studies, so they earn the magnitude-scaled ladder too.
+  // `zero` is the first step up from an empty field, scaled to what each price usually is.
+  costPer: { auto: true, zero: 1 }, costCluster: { auto: true, zero: 10 },
+  costFixed: { auto: true, zero: 100 },
+  // A budget is the largest number in this block by orders of magnitude, so it starts a
+  // thousand up from blank rather than at 1.
+  budget: { auto: true, zero: 1000 },
   // MDE is read in the outcome's own units, which range from proportion points to dollars,
   // so a step tied to the value's own magnitude meant the spinner jumped 0.2 → 0.3 but
   // 1 → 2. Tie it to the outcome instead and it means the same thing at every scale: one
@@ -2313,7 +3069,9 @@ function niceStep(v, dir, pref, id) {
   if (pref.step != null) return pref.step;
   if (!pref.auto && baseSteps[id] != null) return baseSteps[id];
   const a = Math.abs(v);
-  if (!isFinite(a) || a === 0) return pref.int ? 1 : 0.01;
+  // Stepping up from blank or zero: 0.01 is right for a standard deviation and absurd for a
+  // price, where the first click should land on a unit someone would actually type.
+  if (!isFinite(a) || a === 0) return pref.zero != null ? pref.zero : (pref.int ? 1 : 0.01);
   // A 1-2-5 sub-step inside each decade. A flat decade/10 rule keeps the step between 1% and
   // 10% of the value, which sounds fine until you cross a boundary: stepping down from 1 gave
   // 0.9 and then 0.89, because 0.9 sits in the decade below. Sub-stepping holds the relative
@@ -2365,7 +3123,7 @@ function attachStepper(input) {
   if (isFinite(declared) && declared > 0) baseSteps[input.id] = declared;
   input.setAttribute('step', 'any');          // our handler owns stepping
   let wrap = input.parentElement;
-  if (!wrap.classList.contains('pct')) {      // % fields already have a wrapper
+  if (!wrap.classList.contains('pct') && !wrap.classList.contains('cur')) {   // affixed fields already have a wrapper
     wrap = document.createElement('div');
     input.parentNode.insertBefore(wrap, input);
     wrap.appendChild(input);
@@ -2595,20 +3353,39 @@ function sensResetRange() {
   $('sensHigh').value = +(p.hi(base) * sc).toFixed(p.pct ? 0 : p.dp);
 }
 
-function renderSensitivity() {
-  const q = solveLabel();
-  $('sensTitle').textContent = `Sensitivity: ${q.title}`;
-  $('sensNote').textContent = `See how ${q.phrase} changes as you vary different parameters. `
-    + 'All other values are taken from the current setting in the Calculate tab.';
+/* Which parameter is being varied, and over what range. Read off the sensitivity tab's own
+   controls, and shared with the export tab so the table in a proposal is the table on screen
+   rather than a second one built from defaults. Returns null when the inputs cannot be solved.
+
+   This is the only part of the table that touches the DOM. Everything below it is a function
+   of (state, parameter, range), which is what lets one model feed three renderings. */
+function sensSelection() {
   sensFillParams();
   const s = readState();
   const p = SENS_PARAMS.find(x => x.id === sensParamId);
-  const out = $('sensOut');
-  if (!p || !validate(s)) { out.innerHTML = '<p class="pane-note">Fix the inputs on the Calculate tab first.</p>'; return; }
+  if (!p || !validate(s)) return null;
   if (!$('sensLow').value || !$('sensHigh').value) sensResetRange();
   const sc = p.pct ? 100 : 1;
   let lo = parseFloat($('sensLow').value) / sc, hi = parseFloat($('sensHigh').value) / sc;
-  if (!isFinite(lo) || !isFinite(hi) || hi <= lo) { sensResetRange(); lo = parseFloat($('sensLow').value) / sc; hi = parseFloat($('sensHigh').value) / sc; }
+  if (!isFinite(lo) || !isFinite(hi) || hi <= lo) {
+    sensResetRange();
+    lo = parseFloat($('sensLow').value) / sc; hi = parseFloat($('sensHigh').value) / sc;
+  }
+  return { s, p, lo, hi };
+}
+
+/* ---------- the sensitivity table, as a model ----------
+   One column list, rendered three ways: as the HTML table on the tab, as tab-separated text
+   for the copy button, and as a fixed-width block for the export tab. It used to be two
+   parallel loops with the same `solveFor === 'n' && s.clustered` condition written out four
+   times, which is how the HTML and the copied text came to disagree about what an unreachable
+   design looks like — and adding one column meant editing six places.
+
+   Each column declares `cell` (the HTML) and optionally `text` (the plain form). Where a
+   column does not declare `text`, the plain form is the HTML with its tags stripped, which is
+   correct for every column whose cell is already plain text or a single wrapping span. */
+const SENS_NA = 'not attainable';
+function sensitivityModel(s, p, lo, hi) {
   const base = p.get(s);
 
   const N = 7;
@@ -2630,50 +3407,118 @@ function renderSensitivity() {
 
   const fmtParam = v => p.pct ? `${(+(v * 100).toFixed(1))}%` : (p.int ? fmt(v) : +v.toPrecision(4));
   const fmtOut = r => {
-    if (r.error) return '<span class="warn-text">not attainable</span>';
+    if (r.error) return `<span class="warn-text">${SENS_NA}</span>`;
     if (solveFor === 'power') return `${(r.power * 100).toFixed(1)}%`;
     if (solveFor === 'mde') return s.binary ? `${(+(r.mde * 100).toPrecision(3))} pp` : +r.mde.toPrecision(4);
     return fmt(r.n);
   };
   const head = solveLabel().column;
-  let html = `<div class="table-scroll"><table class="sens"><tr><th>${paramLabel(p, s)}</th><th>${head}</th>`
-    + (solveFor === 'n' && s.clustered ? '<th>Design</th>' : '') + '<th>vs base</th></tr>';
-  rows.forEach(row => {
-    const v = valueOf(row.r);
-    let delta = '—';
-    if (v != null && bv != null && bv !== 0) {
-      const d = (v / bv - 1) * 100;
-      delta = Math.abs(d) < 0.05 ? '—'
-        : `<span class="${d > 0 ? 'delta-up' : 'delta-down'}">${d > 0 ? '+' : ''}${d.toFixed(0)}%</span>`;
-    }
-    html += `<tr class="${row.isBase ? 'base' : ''}"><td>${fmtParam(row.v)}${row.isBase ? ' (base)' : ''}</td>`
-      + `<td>${fmtOut(row.r)}</td>`
-      + (solveFor === 'n' && s.clustered ? `<td>${row.r.error ? '—' : `${fmt(row.r.clusters)} × ${fmt(row.r.m)}`}</td>` : '')
-      + `<td>${delta}</td></tr>`;
+
+  const cols = [
+    { head: paramLabel(p, s), cell: row => `${fmtParam(row.v)}${row.isBase ? ' (base)' : ''}` },
+    { head, cell: row => String(fmtOut(row.r)) },
+  ];
+  if (solveFor === 'n' && s.clustered) cols.push({
+    head: 'Design',
+    cell: row => row.r.error ? '—' : `${fmt(row.r.clusters)} × ${fmt(row.r.m)}`,
+    // The copied form differs deliberately: a plain x rather than ×, because × is awkward to
+    // type when someone edits the pasted table, and an empty cell rather than an em dash,
+    // because "—" in a spreadsheet is text that breaks sorting on the column beside it.
+    text: row => row.r.error ? '' : `${r0(row.r.clusters)} x ${r0(row.r.m)}`,
   });
-  html += '</table></div>';
-  const spread = rows.map(valueOf).filter(v => v != null);
+  cols.push({
+    head: 'vs base',
+    cell: row => {
+      const v = valueOf(row.r);
+      if (v == null || bv == null || bv === 0) return '—';
+      const d = (v / bv - 1) * 100;
+      // Below half a tenth of a percent the sign is noise, so show nothing rather than "+0%".
+      return Math.abs(d) < 0.05 ? '—'
+        : `<span class="${d > 0 ? 'delta-up' : 'delta-down'}">${d > 0 ? '+' : ''}${d.toFixed(0)}%</span>`;
+    },
+    text: row => { const v = valueOf(row.r); return (v != null && bv) ? `${((v / bv - 1) * 100).toFixed(0)}%` : ''; },
+  });
+
+  /* The bill for each row, last, because it is the bottom line and because appending it leaves
+     the columns a returning user already knows where they were.
+
+     `solve()` prices every row it returns, so this column is a read and not a second
+     calculation — the row loop above is already the expensive part of this tab.
+
+     It appears whenever anything is priced, including in the two modes where the design is an
+     input and the bill is therefore the same in every row. A constant column is redundant
+     rather than wrong, and the alternative — hiding it when it does not vary — means someone
+     who has priced their study finds the column missing and concludes the feature is broken.
+     The export block is also a proposal appendix, where the bill beside each scenario is
+     wanted even when it does not move. */
+  if (rows.some(row => row.r.cost)) cols.push({
+    head: 'Cost',
+    cell: row => row.r.cost ? `<span class="money">${fmtMoney(row.r.cost.total)}</span>` : '—',
+    // Same convention as the design column: an unanswerable row copies as an empty cell, not an
+    // em dash, which a spreadsheet treats as text and sorts against the numbers beside it.
+    text: row => row.r.cost ? fmtMoney(row.r.cost.total) : '',
+  });
+
+  /* The summary sentence. Note the arrow: `rows.map(valueOf)` — what this line used to say —
+     hands valueOf the ROW rather than the result, so `row.error` was undefined, the guard
+     passed, and it read `row.n` off an object that has no `n`. Every element came back
+     undefined, the filter dropped all of them, and the sentence has never once rendered. */
+  const spread = rows.map(row => valueOf(row.r)).filter(v => v != null);
+  let summary = '';
   if (spread.length > 1) {
     const mn = Math.min(...spread), mx = Math.max(...spread);
     const factor = mn > 0 ? (mx / mn) : null;
-    html += `<p class="sens-note">Across this range the ${head.toLowerCase()} `
+    summary = `Across this range the ${head.toLowerCase()} `
       + (factor && factor > 1.02 ? `varies by a factor of ${factor.toFixed(2)}.` : 'is largely unchanged.')
-      + ` Everything else is held at the values on the Calculate tab.</p>`;
+      + ` Everything else is held at the values on the Calculate tab.`;
   }
-  out.innerHTML = html;
+  return { cols, rows, summary, head, label: paramLabel(p, s) };
+}
 
-  // tab-separated copy: pastes straight into a spreadsheet, a doc table, or a proposal
-  const cols = [paramLabel(p, s), head].concat(solveFor === 'n' && s.clustered ? ['Design'] : []).concat(['vs base']);
-  const lines = [cols.join('\t')];
-  rows.forEach(row => {
-    const v = valueOf(row.r);
-    const d = (v != null && bv) ? `${((v / bv - 1) * 100).toFixed(0)}%` : '';
-    lines.push([fmtParam(row.v) + (row.isBase ? ' (base)' : ''),
-                row.r.error ? 'not attainable' : String(fmtOut(row.r)).replace(/<[^>]+>/g, ''),
-                ...(solveFor === 'n' && s.clustered ? [row.r.error ? '' : `${r0(row.r.clusters)} x ${r0(row.r.m)}`] : []),
-                d].join('\t'));
+// The plain form of a cell: whatever the column declares, else the HTML with its tags removed.
+const sensText = (c, row) => c.text ? c.text(row) : String(c.cell(row)).replace(/<[^>]+>/g, '');
+
+function sensModelHTML(model) {
+  let html = '<div class="table-scroll"><table class="sens"><tr>'
+    + model.cols.map(c => `<th>${c.head}</th>`).join('') + '</tr>';
+  model.rows.forEach(row => {
+    html += `<tr class="${row.isBase ? 'base' : ''}">`
+      + model.cols.map(c => `<td>${c.cell(row)}</td>`).join('') + '</tr>';
   });
-  sensTSV = lines.join('\n');
+  html += '</table></div>';
+  if (model.summary) html += `<p class="sens-note">${model.summary}</p>`;
+  return html;
+}
+
+// Tab-separated: pastes straight into a spreadsheet as cells.
+function sensModelTSV(model) {
+  return [model.cols.map(c => c.head).join('\t')]
+    .concat(model.rows.map(row => model.cols.map(c => sensText(c, row)).join('\t')))
+    .join('\n');
+}
+
+/* Fixed-width: pastes into a proposal or an appendix as a block, matching the Assumptions
+   block above it on the same tab. Columns are padded to their widest cell, header included. */
+function sensModelText(model) {
+  const body = model.rows.map(row => model.cols.map(c => sensText(c, row)));
+  const w = model.cols.map((c, i) =>
+    Math.max(String(c.head).length, ...body.map(cells => String(cells[i]).length)));
+  // The last column is not padded, so no line carries trailing spaces into the pasted text.
+  const line = cells => cells.map((x, i) => i === cells.length - 1 ? String(x) : String(x).padEnd(w[i])).join('  ').trimEnd();
+  return [line(model.cols.map(c => c.head))].concat(body.map(line)).join('\n');
+}
+
+function renderSensitivity() {
+  const q = solveLabel();
+  $('sensTitle').textContent = `Sensitivity: ${q.title}`;
+  $('sensNote').textContent = `See how ${q.phrase} changes as you vary different parameters. `
+    + 'All other values are taken from the current setting in the Calculate tab.';
+  const sel = sensSelection();
+  const out = $('sensOut');
+  if (!sel) { out.innerHTML = '<p class="pane-note">Fix the inputs on the Calculate tab first.</p>'; return; }
+  const model = sensitivityModel(sel.s, sel.p, sel.lo, sel.hi);
+  out.innerHTML = sensModelHTML(model);
+  sensTSV = sensModelTSV(model);
 }
 const r0 = v => (v == null ? '' : fmt(v));
 
@@ -3095,11 +3940,22 @@ function renderExport() {
   const s = readState();
   if (!validate(s)) { $('outMethods').textContent = 'Fix the highlighted inputs on the Calculate tab first.'; return; }
   const r = solve(s);
-  if (r.error) { $('outMethods').textContent = r.error; $('outAssump').textContent = ''; $('outR').textContent = ''; $('outStata').textContent = ''; return; }
+  if (r.error) { $('outMethods').textContent = r.error; $('outAssump').textContent = ''; $('outR').textContent = ''; $('outStata').textContent = '';
+                 $('outSens').textContent = ''; $('outSensNote').textContent = ''; return; }
   $('outAssump').textContent = assumptionsTable(s, r);
   $('outMethods').textContent = methodsParagraph(s, r);
   $('outR').textContent = rCode(s, r);
   $('outStata').textContent = stataCode(s, r);
+  // The same selection the Sensitivity tab is showing, so the two tabs never disagree. The
+  // range lives on that tab's controls; this block says which parameter it is varying, since
+  // a bare table pasted into a proposal has to name its own varied assumption.
+  const sel = sensSelection();
+  const model = sel ? sensitivityModel(sel.s, sel.p, sel.lo, sel.hi) : null;
+  $('outSens').textContent = model ? sensModelText(model) : '';
+  $('outSensNote').textContent = model
+    ? `Varying ${model.label.toLowerCase()}; everything else at the values on the Calculate tab.`
+    + (model.summary ? ` ${model.summary.replace(' Everything else is held at the values on the Calculate tab.', '')}` : '')
+    : '';
 }
 document.addEventListener('click', ev => {
   const b = ev.target.closest('[data-copy]'); if (!b) return;
