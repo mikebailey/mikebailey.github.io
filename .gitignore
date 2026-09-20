@@ -30,3 +30,11 @@ __pycache__/
 
 # Source images (keep local for re-cropping; processed versions are committed)
 images/headshot-original.*
+
+# Secrets — this repo is PUBLIC (GitHub Pages), so never commit credentials.
+# .env.example stays tracked to document the variable names.
+.env
+.env.*
+!.env.example
+*.key
+*.pem
