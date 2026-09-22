@@ -1,0 +1,23 @@
+{
+  "name": "michael-bailey-mcp",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-21",
+  "account_id": "db78d5ac9926e676be98b82a5d3febef",
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "michaelbailey.org/mcp",
+      "zone_name": "michaelbailey.org"
+    },
+    {
+      "pattern": "michaelbailey.org/mcp/*",
+      "zone_name": "michaelbailey.org"
+    }
+  ],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "preview_urls": false
+}

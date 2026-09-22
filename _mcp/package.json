@@ -1,0 +1,19 @@
+{
+  "name": "michael-bailey-public-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 8790",
+    "deploy": "wrangler deploy",
+    "test": "node --test test/*.test.js",
+    "test:integration": "node test/integration.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "wrangler": "4.136.1"
+  }
+}
