@@ -15,6 +15,10 @@ September 21, 2026. Endpoint: https://michaelbailey.org/mcp.
 - Local and public workers.dev integration suite passed every tool, resources,
   prompts, errors and request limits. Custom-domain HTTP checks using Cloudflare's
   public resolved IP returned the MCP page and the existing homepage successfully.
+- The full MCP SDK integration suite then passed at https://michaelbailey.org/mcp
+  using normal DNS, after refreshing the local DNS cache.
+- The public landing page and copy button were verified in Chrome.
+- GitHub Pages build 35687533251 succeeded and AI Tools navigation is live.
 
 The service exposes only public sources and aggregate releases. Scheduling returns
 user-supplied Google links; availability across the three calendars is not verified.
