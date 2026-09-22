@@ -23,7 +23,7 @@ export function createServer(env){
  server.registerPrompt('prepare-a-conversation',{description:'Find overlap with Mike’s public work and prepare a meeting.',argsSchema:{interests:short}},({interests})=>({messages:[{role:'user',content:{type:'text',text:`I want to talk with Mike about ${interests}. Use prepare_to_meet_mike, cite relevant projects or papers, distinguish documented facts from suggested topics, and give me his booking options.`}}]}));
  return server;
 }
-function wrap(r){const h=new Headers(r.headers);h.set('Access-Control-Allow-Origin','*');h.set('Access-Control-Allow-Methods','GET, POST, OPTIONS');h.set('Access-Control-Allow-Headers','Content-Type, Accept, MCP-Protocol-Version, MCP-Session-Id, Last-Event-ID');h.set('Access-Control-Expose-Headers','MCP-Session-Id');h.set('X-Content-Type-Options','nosniff');h.set('Referrer-Policy','strict-origin-when-cross-origin');return new Response(r.body,{status:r.status,headers:h});}
+function wrap(r){const h=new Headers(r.headers);h.set('Access-Control-Allow-Origin','*');h.set('Access-Control-Allow-Methods','GET, POST, OPTIONS');h.set('Access-Control-Allow-Headers','Content-Type, Accept, MCP-Protocol-Version, MCP-Session-Id, Last-Event-ID');h.set('Access-Control-Expose-Headers','MCP-Session-Id');h.set('X-Content-Type-Options','nosniff');h.set('X-Robots-Tag','noindex, nofollow, noarchive');h.set('Referrer-Policy','strict-origin-when-cross-origin');return new Response(r.body,{status:r.status,headers:h});}
 export default {async fetch(request,env){
  try{
  const url=new URL(request.url),path=url.pathname.replace(/\/$/,'');

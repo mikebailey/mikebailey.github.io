@@ -32,8 +32,8 @@ npm run deploy
 node test/integration.mjs https://michaelbailey.org/mcp
 ```
 
-Check homepage and calculator after routing changes. Website navigation is published
-separately through GitHub Pages. Use Wrangler rollback to revert a Worker release;
+Check homepage and calculator after routing changes. The MCP route is intentionally absent from the website navigation so the card
+clue remains an invitation to discover it. Use Wrangler rollback to revert a Worker release;
 if retiring it remove only these two routes, never unrelated account resources.
 
 ## Capabilities and limits

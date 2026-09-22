@@ -27,3 +27,9 @@ Evidence search is a 13-entry curated starter library, not exhaustive live searc
 No card-design files were changed during this launch.
 
 Reproduction, refresh and rollback instructions: `../_mcp/README.md`.
+
+## September 22 card discovery update
+
+Removed AI Tools from the website navigation and added `noindex` to the MCP
+landing response. Added the public `/card/` contact page and vCard for the QR
+code. The MCP remains public after discovery; this is not access control.
