@@ -1,0 +1,80 @@
+{
+  "name": "Social Capital Lab",
+  "site": "https://social-connectedness.org/",
+  "summary": "The lab's public home for measures of social capital built from Facebook friendship networks: how connected people are across geography (SCI), gender (CGFR) and class (Economic Connectedness). Mike co-founded the Social Capital Lab at Facebook and is a co-author on the SCI and CGFR releases.",
+  "question": "How connected are people across geography, gender, and class? What drives differences in these measures of social capital? What outcomes are associated with them?",
+  "measures": [
+    {
+      "id": "sci",
+      "name": "Social Connectedness Index (SCI)",
+      "dimension": "Spatial connectedness",
+      "definition": "A globally comparable measure of the relative probability that Facebook users in two locations are friends. Scaled for the size of the two populations; compare within one release and geographic level, never as a count or probability.",
+      "page": "https://social-connectedness.org/sci.html",
+      "geographies": ["country", "GADM levels 1-2", "geoBoundaries ADM1-2", "NUTS 2024 (Europe)", "US counties", "US ZCTAs", "region to country"],
+      "tools": [
+        {"name": "Interactive Explorer", "url": "https://social-connectedness.org/explore.html", "answers": "Where is this country or region most connected? Click a place on a globe and see its strongest ties."},
+        {"name": "Map Maker", "url": "https://social-connectedness.org/generator.html", "answers": "Make a publication-quality SCI map with chosen geography, colors, breaks and titles; export as image or video."},
+        {"name": "Local Network Share", "url": "https://social-connectedness.org/local-network.html", "answers": "Pick a distance and color every place by the estimated share of its friendship network that lives within it."},
+        {"name": "Connected Communities", "url": "https://social-connectedness.org/cluster.html", "answers": "Group the places in a country or region into a chosen number of clusters by how tightly they are connected."}
+      ],
+      "data": {"download": "https://data.humdata.org/dataset/social-connectedness-index", "license": "CC0", "notes": "Country table is small; subnational tables run to hundreds of megabytes. Use the download for subnational work; this MCP serves the country level through query_social_connections."},
+      "citations": [
+        "Johnston, D., Kuchler, T., Kulkarni, M., & Stroebel, J. (2026). The Social Connectedness Index: A Large-Scale Dataset of Social Ties Across Geographic Locations. Data in Brief, 67, 112905. https://doi.org/10.1016/j.dib.2026.112905",
+        "Bailey, M., Cao, R., Kuchler, T., Stroebel, J., & Wong, A. (2018). Social Connectedness: Measurement, Determinants, and Effects. Journal of Economic Perspectives, 32(3), 259-280. https://doi.org/10.1257/jep.32.3.259"
+      ],
+      "mcp_tool": "query_social_connections"
+    },
+    {
+      "id": "cgfr",
+      "name": "Cross-Gender Friending Ratio (CGFR)",
+      "dimension": "Gender connectedness",
+      "definition": "For a location, the share of women among men's friends divided by the share of women among women's friends, computed over each user's top-n closest friends. A value of 1 means men and women form equal shares of their ties with women; lower values mean more gender-segregated networks. Differential-privacy noise is added and small cells are dropped.",
+      "page": "https://social-connectedness.org/cgfr.html",
+      "geographies": ["country (nearly 200)", "GADM levels 1-3", "geoBoundaries ADM1-3", "NUTS 2024 levels 1-3", "US counties"],
+      "findings": [
+        "Across countries, CGFR correlates strongly with gender differences in labor force participation.",
+        "Within countries, people from areas with higher CGFR are typically more supportive of equal treatment of men and women.",
+        "County-level differences in CGFR line up with demographic and socioeconomic patterns across the United States."
+      ],
+      "tools": [
+        {"name": "Interactive Explorer", "url": "https://social-connectedness.org/cgfr-map.html", "answers": "Where are cross-gender friendship networks more or less separated? Click a country or region on a globe."}
+      ],
+      "data": {"download": "https://data.humdata.org/dataset/cross-gender-ties", "license": "CC BY", "as_of": "2026-01-25", "notes": "Static release; no regular updates planned. This MCP serves the country and US county tables through query_cross_gender_ties."},
+      "citations": [
+        "Bailey, M., Johnston, D., Kuchler, T., Kumar, A., & Stroebel, J. (2025). Cross-Gender Social Ties around the World. AEA Papers and Proceedings, 115, 132-138. https://doi.org/10.1257/pandp.20251032"
+      ],
+      "mcp_tool": "query_cross_gender_ties"
+    },
+    {
+      "id": "ec",
+      "name": "Economic Connectedness (EC)",
+      "dimension": "Economic connectedness",
+      "definition": "A measure of cross-class friendship networks by place: the share of high-socioeconomic-status friends among low-SES people, normalized. The US release is the Social Capital Atlas; a worldwide release is in preparation.",
+      "page": "https://social-connectedness.org/scatw.html",
+      "status": "Coming soon on social-connectedness.org as of 2026-09-23. The US Social Capital Atlas is available now.",
+      "tools": [
+        {"name": "Social Capital Atlas (US)", "url": "https://www.socialcapital.org", "answers": "Economic connectedness, cohesiveness and civic engagement for US counties, ZIPs, colleges and high schools."}
+      ],
+      "data": {"download": "https://data.humdata.org/dataset/social-capital-atlas", "license": "See license.pdf distributed with the data", "notes": "This MCP serves the US Atlas through query_social_capital."},
+      "citations": [
+        "Chetty, R., Jackson, M. O., Kuchler, T., Stroebel, J., et al. (2022). Social capital I: measurement and associations with economic mobility. Nature, 608, 108-121.",
+        "Chetty, R., Jackson, M. O., Kuchler, T., Stroebel, J., et al. (2022). Social capital II: determinants of economic connectedness. Nature, 608, 122-134."
+      ],
+      "mcp_tool": "query_social_capital"
+    }
+  ],
+  "research_using_sci": [
+    {"title": "The Social Integration of International Migrants: Evidence from the Networks of Syrians in Germany", "venue": "Journal of Political Economy", "year": 2026, "url": "https://pages.stern.nyu.edu/~jstroebe/PDF/BJKKRS_SyrianMigrantsGermany_JPE.pdf"},
+    {"title": "Social Networks Shape Beliefs and Behavior: Evidence from Social Distancing during the Covid-19 Pandemic", "venue": "JPE: Micro", "year": 2024, "url": "https://pages.stern.nyu.edu/~jstroebe/PDF/BJKKRS_FB_Covid_Distancing_JPEM.pdf"},
+    {"title": "Peer Effects in Product Adoption", "venue": "American Economic Journal: Applied Economics", "year": 2022, "url": "https://pages.stern.nyu.edu/~jstroebe/PDF/BJKSW_PeerEffectsProductAdoption_AEJApplied.pdf"},
+    {"title": "Social Proximity to Capital: Implications for Investors and Firms", "venue": "Review of Financial Studies", "year": 2022, "url": "https://pages.stern.nyu.edu/~jstroebe/PDF/KPLSZ_SocialProximityToCapital_RFS.pdf"},
+    {"title": "The Geographic Spread of Covid-19 Correlates with the Structure of Social Networks as Measured by Facebook", "venue": "Journal of Urban Economics: Insights", "year": 2022, "url": "https://pages.stern.nyu.edu/~jstroebe/PDF/KRS_SCI_and_COVID_JUE.pdf"},
+    {"title": "Social Finance", "venue": "Annual Review of Financial Economics", "year": 2021, "url": "https://pages.stern.nyu.edu/~jstroebe/PDF/KS_SocialFinance_ARFE.pdf"},
+    {"title": "International Trade and Social Connectedness", "venue": "Journal of International Economics", "year": 2021, "url": "https://pages.stern.nyu.edu/~jstroebe/PDF/BGHKRS_InternationalTradeSocialConnectedness_JIE.pdf"},
+    {"title": "The Determinants of Social Connectedness in Europe", "venue": "Social Informatics 2020", "year": 2020, "url": "https://pages.stern.nyu.edu/~jstroebe/PDF/BJRKSS_EuroSCI.pdf"},
+    {"title": "Social Connectedness in Urban Areas", "venue": "Journal of Urban Economics", "year": 2020, "url": "https://pages.stern.nyu.edu/~jstroebe/PDF/BFKS_SocialConnectednessUrbanAreas_JUE.pdf"},
+    {"title": "The Economic Effects of Social Networks: Evidence from the Housing Market", "venue": "Journal of Political Economy", "year": 2018, "url": "https://pages.stern.nyu.edu/~jstroebe/PDF/BCKS_Networks.pdf"}
+  ],
+  "how_to_use": "For a number, call the matching MCP tool. For a picture or a subnational question, send the person to the tool URL on the site. For anything beyond the served tables, point to the download and cite the paper listed with the measure.",
+  "snapshot": "2026-09-23"
+}

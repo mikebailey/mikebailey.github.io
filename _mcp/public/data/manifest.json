@@ -1,1 +1,103 @@
-{"international-migration-flows":{"source":"https://data.humdata.org/dataset/international-migration-flows","license":"Creative Commons Attribution International (CC BY)","license_url":"http://www.opendefinition.org/licenses/cc-by","updated":"2026-05-26T01:53:49.748811","retrieved":"2026-09-21","resources":[{"name":"international_migration_flow.csv","url":"https://data.humdata.org/dataset/e09595bd-f4c5-4a66-8130-5a05f14d5e64/resource/67b2d6fc-ff4f-4d04-a75e-80e3de81b072/download/international_migration_flow.csv","bytes":25600823,"sha256":"9057eebd5b796403894de61d2b7dd4b1f4e2abbb308451f686984091d86d38dc"},{"name":"README.txt","url":"https://data.humdata.org/dataset/e09595bd-f4c5-4a66-8130-5a05f14d5e64/resource/e192d910-4fc7-40cf-a25b-0f5dcf75fbb5/download/readme.txt","bytes":3232,"sha256":"4745596be9ff75874be212b198170c8a48e22457ab1e88da0073cebe72b647cc"}]},"social-capital-atlas":{"source":"https://data.humdata.org/dataset/social-capital-atlas","license":"Other","license_url":null,"updated":"2026-05-26T01:48:36.774858","retrieved":"2026-09-21","resources":[{"name":"Social Capital Atlas - US Counties.csv","url":"https://data.humdata.org/dataset/85ee8e10-0c66-4635-b997-79b6fad44c71/resource/ec896b64-c922-4737-b759-e4bd7f73b8cc/download/social_capital_county.csv","bytes":717799,"sha256":"69de384096214aad20d0739d522b3731d6fa9bee5cff32c66eb5df89b8fb3828"},{"name":"Social Capital Atlas - US Zip Codes.csv","url":"https://data.humdata.org/dataset/85ee8e10-0c66-4635-b997-79b6fad44c71/resource/ab878625-279b-4bef-a2b3-c132168d536e/download/social_capital_zip.csv","bytes":4052257,"sha256":"8eec444ff54ed2cad0bf7e3b2927938c80d262f46c9a2405359e7265184936a3"},{"name":"Social Capital Atlas - US Colleges.csv","url":"https://data.humdata.org/dataset/85ee8e10-0c66-4635-b997-79b6fad44c71/resource/7bd697cf-c572-47a6-b15b-8450cc5c7ef8/download/social_capital_college.csv","bytes":516511,"sha256":"fa5c3a4854f26ef39ca461155ff33e5727ada338dcb6297c27d99be6eafc475f"},{"name":"Social Capital Atlas - US High Schools.csv","url":"https://data.humdata.org/dataset/85ee8e10-0c66-4635-b997-79b6fad44c71/resource/0de85271-031d-4849-bda8-c8582a67e11b/download/social_capital_high_school.csv","bytes":2903410,"sha256":"637e11f43841fee4ae18e383280054200c54436f4d8042c6a0865f9f9618355a"},{"name":"LICENSE.pdf","url":"https://data.humdata.org/dataset/85ee8e10-0c66-4635-b997-79b6fad44c71/resource/eea36412-034c-4c86-b85c-9e4171aa580a/download/license.pdf","bytes":31736,"sha256":"da52166ec629b316d94f1d87f3331b0f861f8d1204cf1eb9ddf244248e5bbcd6"},{"name":"README.pdf","url":"https://data.humdata.org/dataset/85ee8e10-0c66-4635-b997-79b6fad44c71/resource/fbe5b0b9-e81c-41c7-a9f2-3ebf8212cf64/download/data_release_readme_31_07_2022_nomatrix.pdf","bytes":310184,"sha256":"431f73ada2720112f6eea209377719a8ccac99766a44fa3d6b25ae55b2844723"}]},"sci":{"source":"https://data.humdata.org/dataset/social-connectedness-index","license":"Public Domain / No restrictions (CC0)","updated":"2026-09-20T10:44:35.712243","url":"https://data.humdata.org/dataset/e9988552-74e4-4ff4-943f-c782ac8bca87/resource/652cf9c9-541f-47de-8d53-ff818062bd0c/download/country.csv","sha256":"0d9e13d555f281a2cb5a8afd3b2598a77af69aa90908509959c580bd0b74d5bf","retrieved":"2026-09-21"}}
+{
+  "international-migration-flows": {
+    "source": "https://data.humdata.org/dataset/international-migration-flows",
+    "license": "Creative Commons Attribution International (CC BY)",
+    "license_url": "http://www.opendefinition.org/licenses/cc-by",
+    "updated": "2026-05-26T01:53:49.748811",
+    "retrieved": "2026-09-21",
+    "resources": [
+      {
+        "name": "international_migration_flow.csv",
+        "url": "https://data.humdata.org/dataset/e09595bd-f4c5-4a66-8130-5a05f14d5e64/resource/67b2d6fc-ff4f-4d04-a75e-80e3de81b072/download/international_migration_flow.csv",
+        "bytes": 25600823,
+        "sha256": "9057eebd5b796403894de61d2b7dd4b1f4e2abbb308451f686984091d86d38dc"
+      },
+      {
+        "name": "README.txt",
+        "url": "https://data.humdata.org/dataset/e09595bd-f4c5-4a66-8130-5a05f14d5e64/resource/e192d910-4fc7-40cf-a25b-0f5dcf75fbb5/download/readme.txt",
+        "bytes": 3232,
+        "sha256": "4745596be9ff75874be212b198170c8a48e22457ab1e88da0073cebe72b647cc"
+      }
+    ]
+  },
+  "social-capital-atlas": {
+    "source": "https://data.humdata.org/dataset/social-capital-atlas",
+    "license": "Other",
+    "license_url": null,
+    "updated": "2026-05-26T01:48:36.774858",
+    "retrieved": "2026-09-21",
+    "resources": [
+      {
+        "name": "Social Capital Atlas - US Counties.csv",
+        "url": "https://data.humdata.org/dataset/85ee8e10-0c66-4635-b997-79b6fad44c71/resource/ec896b64-c922-4737-b759-e4bd7f73b8cc/download/social_capital_county.csv",
+        "bytes": 717799,
+        "sha256": "69de384096214aad20d0739d522b3731d6fa9bee5cff32c66eb5df89b8fb3828"
+      },
+      {
+        "name": "Social Capital Atlas - US Zip Codes.csv",
+        "url": "https://data.humdata.org/dataset/85ee8e10-0c66-4635-b997-79b6fad44c71/resource/ab878625-279b-4bef-a2b3-c132168d536e/download/social_capital_zip.csv",
+        "bytes": 4052257,
+        "sha256": "8eec444ff54ed2cad0bf7e3b2927938c80d262f46c9a2405359e7265184936a3"
+      },
+      {
+        "name": "Social Capital Atlas - US Colleges.csv",
+        "url": "https://data.humdata.org/dataset/85ee8e10-0c66-4635-b997-79b6fad44c71/resource/7bd697cf-c572-47a6-b15b-8450cc5c7ef8/download/social_capital_college.csv",
+        "bytes": 516511,
+        "sha256": "fa5c3a4854f26ef39ca461155ff33e5727ada338dcb6297c27d99be6eafc475f"
+      },
+      {
+        "name": "Social Capital Atlas - US High Schools.csv",
+        "url": "https://data.humdata.org/dataset/85ee8e10-0c66-4635-b997-79b6fad44c71/resource/0de85271-031d-4849-bda8-c8582a67e11b/download/social_capital_high_school.csv",
+        "bytes": 2903410,
+        "sha256": "637e11f43841fee4ae18e383280054200c54436f4d8042c6a0865f9f9618355a"
+      },
+      {
+        "name": "LICENSE.pdf",
+        "url": "https://data.humdata.org/dataset/85ee8e10-0c66-4635-b997-79b6fad44c71/resource/eea36412-034c-4c86-b85c-9e4171aa580a/download/license.pdf",
+        "bytes": 31736,
+        "sha256": "da52166ec629b316d94f1d87f3331b0f861f8d1204cf1eb9ddf244248e5bbcd6"
+      },
+      {
+        "name": "README.pdf",
+        "url": "https://data.humdata.org/dataset/85ee8e10-0c66-4635-b997-79b6fad44c71/resource/fbe5b0b9-e81c-41c7-a9f2-3ebf8212cf64/download/data_release_readme_31_07_2022_nomatrix.pdf",
+        "bytes": 310184,
+        "sha256": "431f73ada2720112f6eea209377719a8ccac99766a44fa3d6b25ae55b2844723"
+      }
+    ]
+  },
+  "sci": {
+    "source": "https://data.humdata.org/dataset/social-connectedness-index",
+    "license": "Public Domain / No restrictions (CC0)",
+    "updated": "2026-09-20T10:44:35.712243",
+    "url": "https://data.humdata.org/dataset/e9988552-74e4-4ff4-943f-c782ac8bca87/resource/652cf9c9-541f-47de-8d53-ff818062bd0c/download/country.csv",
+    "sha256": "0d9e13d555f281a2cb5a8afd3b2598a77af69aa90908509959c580bd0b74d5bf",
+    "retrieved": "2026-09-21"
+  },
+  "cross-gender-ties": {
+    "source": "https://data.humdata.org/dataset/cross-gender-ties",
+    "license": "Creative Commons Attribution International (CC BY)",
+    "license_url": "http://www.opendefinition.org/licenses/cc-by",
+    "updated": "2026-05-26T01:47:38.974666",
+    "retrieved": "2026-09-23",
+    "resources": [
+      {
+        "name": "country_cgfr.csv",
+        "url": "https://data.humdata.org/dataset/b138131c-52d0-48c0-8351-ee1c21cadf34/resource/0c5236fe-dc03-4c87-a8c3-26e6216aa2f6/download/country_cgfr.csv",
+        "bytes": 15567,
+        "sha256": "4875d45f18001237b4ff50bcf2e648a3d74dd2b44af9708c3f5a6db169972e14"
+      },
+      {
+        "name": "us_counties_cgfr.csv",
+        "url": "https://data.humdata.org/dataset/b138131c-52d0-48c0-8351-ee1c21cadf34/resource/c5b170ab-ed79-46d3-8f0d-bd7adba6a947/download/us_counties_cgfr.csv",
+        "bytes": 337946,
+        "sha256": "b107c33eb6d378203a72c94a2887b7a77090810ccef0aa366c9ad902c48d4c52"
+      },
+      {
+        "name": "readme.pdf",
+        "url": "https://data.humdata.org/dataset/b138131c-52d0-48c0-8351-ee1c21cadf34/resource/1325104e-8851-45e0-b9a2-4f88c6f05412/download/readme.pdf",
+        "bytes": 56981,
+        "sha256": "67bcc85ef04eac58515ba9fe76b3b9dcfd34c6db2a139403fd826876293a540c"
+      }
+    ]
+  }
+}

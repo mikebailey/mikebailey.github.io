@@ -3,3 +3,6 @@ node_modules/
 .env
 .dev.vars
 raw/
+cgfr
+cgfr-index.json
+cgfr-readme.pdf

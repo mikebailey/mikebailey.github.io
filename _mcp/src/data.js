@@ -12,13 +12,13 @@ export function countryCode(value,codes){
  const q=value.trim().toLowerCase();const code=aliases[q]||codes.find(c=>c.toLowerCase()===q||countryName(c).toLowerCase()===q);
  if(!code||!codes.includes(code))throw Error('Country not available in this release: '+value+'. Use list_datasets to inspect coverage.');return code;
 }
-export async function datasets(env){return {sources:await load(env,'manifest.json'),migration:await load(env,'migration/index.json'),social_connectedness:await load(env,'sci-index.json'),social_capital:{geographies:['county','zip','college','high_school'],codebook:base+'/data/data_release_readme_31_07_2022_nomatrix.pdf',license:base+'/data/license.pdf'},refresh:'Versioned snapshot retrieved 2026-09-21; not a live feed.'};}
+export async function datasets(env){return {sources:await load(env,'manifest.json'),migration:await load(env,'migration/index.json'),social_connectedness:await load(env,'sci-index.json'),social_capital:{geographies:['county','zip','college','high_school'],codebook:base+'/data/data_release_readme_31_07_2022_nomatrix.pdf',license:base+'/data/license.pdf'},cross_gender_ties:await load(env,'cgfr-index.json'),social_capital_lab:{guide:base+'/lab',site:'https://social-connectedness.org/'},refresh:'Versioned snapshot retrieved 2026-09-21; not a live feed.'};}
 export async function sci(env,a){
  const index=await load(env,'sci-index.json'),origin=countryCode(a.origin,index.countries);
  const destination=a.destination?countryCode(a.destination,index.countries):null;
  const rows=await load(env,`sci/country/${origin}.json`);
  const results=rows.filter(([c])=>destination?c===destination:(a.include_self||c!==origin)).sort((a,b)=>b[1]-a[1]).slice(0,a.limit??10).map(([c,v])=>({destination:c,name:countryName(c),scaled_sci:v}));
- return {origin,origin_name:countryName(origin),results,unit:'Country pair; scaled Social Connectedness Index',definition:'Relative likelihood of friendship across places, normalized for the size of their Facebook populations. Not a friendship count, probability, or migration flow. Compare values within the same release and geographic level.',coverage:'Country-level only in this release',source:'https://data.humdata.org/dataset/social-connectedness-index',map:'https://sci-map.michaelbailey.org/',license:'CC0',snapshot:'2026-09-21'};
+ return {origin,origin_name:countryName(origin),results,unit:'Country pair; scaled Social Connectedness Index',definition:'Relative likelihood of friendship across places, normalized for the size of their Facebook populations. Not a friendship count, probability, or migration flow. Compare values within the same release and geographic level.',coverage:'Country-level only in this release',source:'https://data.humdata.org/dataset/social-connectedness-index',map:'https://social-connectedness.org/explore.html',lab:'https://social-connectedness.org/sci.html',license:'CC0',snapshot:'2026-09-21'};
 }
 export async function migration(env,a){
  // Name the side that failed: migration coverage is narrower than SCI coverage, so one country
@@ -38,6 +38,35 @@ export async function migration(env,a){
 export async function socialCapital(env,a){
  const rows=await load(env,`social_capital_${a.geography}.json`),q=a.query.trim().toLowerCase();
  const matches=rows.filter(r=>String(r[a.geography]).toLowerCase()===q||Object.entries(r).some(([k,v])=>k.endsWith('name')&&String(v).toLowerCase().includes(q)));
- return {geography:a.geography,query:a.query,total_matches:matches.length,results:matches.slice(0,a.limit??10),unit:'One '+a.geography+' per record',definitions:{economic_connectedness:'Baseline ec measure: twice the average share of high-SES friends among low-SES individuals. It is a normalized index, not a raw percentage.',missing:'Null denotes unavailable or suppressed data, never zero.',other_fields:'Use the linked source codebook for exact definitions, denominators and standard errors.'},limitations:'Observational, privacy-protected aggregate estimates; associations are not causal effects. Coverage exclusions and noise are described in the codebook.',source:'https://data.humdata.org/dataset/social-capital-atlas',map:'https://www.socialcapital.org',codebook:base+'/data/data_release_readme_31_07_2022_nomatrix.pdf',license:base+'/data/license.pdf',snapshot:'2026-09-21'};
+ return {geography:a.geography,query:a.query,total_matches:matches.length,results:matches.slice(0,a.limit??10),unit:'One '+a.geography+' per record',definitions:{economic_connectedness:'Baseline ec measure: twice the average share of high-SES friends among low-SES individuals. It is a normalized index, not a raw percentage.',missing:'Null denotes unavailable or suppressed data, never zero.',other_fields:'Use the linked source codebook for exact definitions, denominators and standard errors.'},limitations:'Observational, privacy-protected aggregate estimates; associations are not causal effects. Coverage exclusions and noise are described in the codebook.',source:'https://data.humdata.org/dataset/social-capital-atlas',map:'https://www.socialcapital.org',lab:'https://social-connectedness.org/scatw.html',codebook:base+'/data/data_release_readme_31_07_2022_nomatrix.pdf',license:base+'/data/license.pdf',snapshot:'2026-09-21'};
 }
+// Cross-Gender Friending Ratio: one row per region, values at ten top-n friend cutoffs.
+const cgfrMeta={unit:'One region per record; CGFR at the requested top-n friend cutoff',definition:'Share of women among men\'s friends divided by the share of women among women\'s friends in a location, over each user\'s n closest friends. 1 means men and women form equal shares of their ties with women; lower means more gender-segregated networks.',interpretation:'A relative ratio, not a share of cross-gender friendships. Compare across places at the same cutoff. Differential-privacy noise is added and small cells are dropped, so treat small differences as noise.',coverage:'Country level (178 countries and territories) and US counties in this release. Regional tables (GADM, geoBoundaries, NUTS) are in the source download.',as_of:'2026-01-25',refresh:'Static release; the lab plans no regular updates.',source:'https://data.humdata.org/dataset/cross-gender-ties',readme:base+'/data/cgfr-readme.pdf',explorer:'https://social-connectedness.org/cgfr-map.html',page:'https://social-connectedness.org/cgfr.html',citation:'Bailey, M., Johnston, D., Kuchler, T., Kumar, A., & Stroebel, J. (2025). Cross-Gender Social Ties around the World. AEA Papers and Proceedings, 115, 132-138.',license:'CC BY',snapshot:'2026-09-23'};
+export async function crossGenderTies(env,a){
+ // Tool input names one county; the shard written by scripts/prepare-cgfr.py is the plural table.
+ const data=await load(env,`cgfr/${a.geography==='country'?'country':'us_counties'}.json`),cutoff=a.cutoff??100,ci=data.cutoffs.indexOf(cutoff);
+ if(ci<0)throw Error('Cutoff must be one of '+data.cutoffs.join(', ')+'.');
+ if(!a.places?.length&&!a.rank)throw Error('Give places to look up, or rank (lowest or highest) to list the extremes.');
+ const byCutoff=values=>Object.fromEntries(data.cutoffs.map((c,i)=>[c,values[i]]));
+ // Shape every row the same way whichever geography was asked for.
+ const shape=a.geography==='country'?r=>({id:r[0],name:countryName(r[0]),cgfr:r[1][ci],cgfr_by_cutoff:byCutoff(r[1])}):r=>({id:r[0],name:r[1],state:r[2],cgfr:r[3][ci],cgfr_by_cutoff:byCutoff(r[3])});
+ // Rank positions are computed over every region with a value at this cutoff, ascending.
+ const ranked=data.rows.map(shape).filter(r=>r.cgfr!=null).sort((x,y)=>x.cgfr-y.cgfr);ranked.forEach((r,i)=>{r.rank_ascending=i+1;});
+ let results;
+ if(a.rank){results=(a.rank==='highest'?[...ranked].reverse():ranked).slice(0,a.limit??10);}
+ else{
+  results=[];
+  for(const place of a.places){
+   const q=place.trim().toLowerCase();let hits;
+   if(a.geography==='country'){const code=countryCode(place,data.rows.map(r=>r[0]));hits=ranked.filter(r=>r.id===code);}
+   else hits=ranked.filter(r=>r.id===q.padStart(5,'0')||`${r.name}, ${r.state}`.toLowerCase()===q||r.name.toLowerCase()===q)
+    ,hits=hits.length?hits:ranked.filter(r=>`${r.name}, ${r.state}`.toLowerCase().includes(q));
+   if(!hits.length)throw Error('Place not found in the CGFR '+a.geography+' table: '+place+'. Use a five-digit FIPS code or "County name, ST".');
+   results.push(...hits.slice(0,a.limit??10).map(r=>({query:place,...r})));
+  }
+ }
+ return {geography:a.geography,cutoff,results,regions_ranked:ranked.length,cutoffs_available:data.cutoffs,...cgfrMeta};
+}
+// The lab's site, as a structured guide an agent can route a person through.
+export const lab=env=>load(env,'social-capital-lab.json');
 export const bookingLinks=[{minutes:30,url:'https://calendar.app.google/EdFPjKmPb97tY5Dv6'},{minutes:45,url:'https://calendar.app.google/QXKNDWh28PUFf9HSA'},{minutes:60,url:'https://calendar.app.google/ZcSBbU5juS1Txu3P7'}];

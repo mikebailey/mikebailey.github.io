@@ -26,7 +26,7 @@ decides who is who from the request itself, in `src/worker.js`:
 4. `OPTIONS` preflight is always answered so browser-hosted MCP clients can connect.
 
 Agent GETs on `/mcp/health`, `/mcp/catalog`, `/mcp/profile`, `/mcp/evidence` and
-`/mcp/data/*` (the URLs that tool results cite) keep working. Refusals send
+`/mcp/lab` and `/mcp/data/*` (the URLs that tool results cite) keep working. Refusals send
 `Cache-Control: no-store` and `X-Robots-Tag: noindex` and are never cached. The
 greeting and the MCP `instructions` share one voice and live in `src/greeting.js`.
 
@@ -67,7 +67,7 @@ if retiring it remove only these two routes, never unrelated account resources.
 
 ## Capabilities and limits
 
-Ten read-only tools, three resources and one meeting-preparation prompt:
+Twelve read-only tools, four resources and one meeting-preparation prompt:
 
 - Public biography, projects and papers; caller labels inferred discussion topics.
 - Supplied Google booking links for 30/45/60 minutes; no availability lookup or booking.
@@ -81,6 +81,12 @@ Ten read-only tools, three resources and one meeting-preparation prompt:
 - Country-level SCI comparisons. Scaled SCI is not a count or probability.
 - US Atlas records for counties, ZIPs, colleges and high schools. Economic
   connectedness is twice a friendship share; consult the included source codebook.
+- Cross-Gender Friending Ratio (Social Capital Lab, CC BY) for 178 countries and
+  3,185 US counties at ten top-n friend cutoffs. A relative ratio with privacy noise,
+  not a share of cross-gender friendships; static release as of 2026-01-25.
+- A structured guide to social-connectedness.org: measures, what each map tool
+  answers, downloads, citations, and which MCP tool serves each measure
+  (`public/data/social-capital-lab.json`, also `GET /mcp/lab`).
 - Monthly country-pair migration estimates for 2019–2022. Residence-based, weighted
   and privacy-noised estimates, not stocks, citizenship counts or border encounters.
 - Thirteen curated evidence/guidance summaries, each sourced and status-labeled.
@@ -92,7 +98,7 @@ Ten read-only tools, three resources and one meeting-preparation prompt:
 
 Only public aggregate releases are ingested. Units and asserted unique keys:
 SCI = directed country pair; migration = directed pair/month (unbalanced panel);
-Atlas = one geography ID (cross-section). No datasets are merged. Query sums report
+Atlas = one geography ID (cross-section); CGFR = one region (ISO2 or county FIPS). No datasets are merged. Query sums report
 observed coverage. Missing observations are null, never invented zeroes. Geography
 IDs remain strings, preserving leading zeros. Source values are preserved in country
 shards. Raw downloads are immutable caches in ignored `raw/`. Manifests record source
@@ -102,6 +108,7 @@ no reidentification or endorsement is allowed.
 ```sh
 python3 scripts/ingest.py
 python3 scripts/prepare-data.py
+python3 scripts/prepare-cgfr.py
 python3 scripts/prepare-content.py
 node scripts/sync-calculator.mjs /path/to/power-calculator/code/power-calculator.html
 ```

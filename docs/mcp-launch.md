@@ -62,3 +62,22 @@ the destination is missing from the migration release (coverage there is narrowe
 than SCI coverage; Somalia is one example). Server version 1.1.1. Unit tests: 25
 passed. Integration suite passed locally and at https://michaelbailey.org/mcp.
 Deployed release: `4de7526e-1534-4422-8023-6168cab3ea84`.
+
+## September 23 Social Capital Lab update
+
+The lab's new site, https://social-connectedness.org/, is now both served and pointed
+to. `query_cross_gender_ties` serves the Cross-Gender Friending Ratio (CGFR) country
+table (178 countries and territories) and US county table (3,185 counties) at all ten
+top-n friend cutoffs, with lookup by ISO2 or English name, FIPS or "County, ST", and
+lowest/highest ranking; every response carries the definition, the differential-
+privacy caveat, the HDX source (CC BY, friendships as of 2026-01-25), the AEA Papers
+and Proceedings citation and the site's CGFR explorer URL. Data comes from
+`scripts/prepare-cgfr.py`, which follows the existing HDX snapshot pattern (raw cache,
+compact shards, manifest entry with sha256). `social_capital_lab` is a guide tool and
+`social-capital-lab` resource (also `GET /mcp/lab`) returning a curated map of the
+site: the three measures, what each map tool answers and its URL, downloads, citations,
+which MCP tool serves each measure, and Economic Connectedness marked as coming soon.
+SCI and Atlas results now link the lab pages as canonical. Twelve tools, four
+resources. Server version 1.2.0. Unit tests: 30 passed. Integration suite (26 checks)
+passed locally and at https://michaelbailey.org/mcp.
+Deployed release: `935e0d9b-0108-4351-8114-92f017d48a0b`.
