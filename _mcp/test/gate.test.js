@@ -94,3 +94,17 @@ test('the connected-client instructions carry the same voice',async()=>{
  assert.match(body.result.instructions,/^Hello, friend/);
  assert.ok(body.result.instructions.includes('not an official J-PAL or MIT service'));
 });
+
+test('profile bio carries no Jekyll template markup',async()=>{
+ const {readFile}=await import('node:fs/promises');
+ const profile=JSON.parse(await readFile(new URL('../public/data/profile.json',import.meta.url),'utf8'));
+ for(const text of [profile.bio,...profile.projects.map(p=>p.description)]){assert.ok(!/\{%|\{\{|\{:/.test(text),'template markup leaked: '+text.slice(0,80));}
+});
+
+test('migration error names the missing side of the pair',async()=>{
+ const {migration}=await import('../src/data.js');
+ const {readFile}=await import('node:fs/promises');
+ const env={ASSETS:{fetch:async req=>{const p=new URL(req.url).pathname;try{return new Response(await readFile(new URL('../public'+p,import.meta.url)));}catch{return new Response('',{status:404});}}}};
+ await assert.rejects(migration(env,{origin:'India',destination:'Somalia'}),/Destination not available in the migration release: Somalia/);
+ await assert.rejects(migration(env,{origin:'Atlantis'}),/Origin not available in the migration release: Atlantis/);
+});

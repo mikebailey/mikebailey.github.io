@@ -48,3 +48,17 @@ Both landing page designs are archived in `_mcp/archive/landing-page/` with rest
 steps. Server version 1.1.0. Unit tests: 22 passed. Integration suite passed locally
 and at https://michaelbailey.org/mcp, including the refusal and greeting checks.
 Deployed release: `b839621c-dbe8-485d-8dbd-221f5f6b785f`.
+
+## September 23 review fixes
+
+A third-party agent's exploration flagged three defects; all fixed and redeployed.
+`prepare-content.py` now strips Liquid tags, Liquid output and kramdown block
+attributes from the bio and portfolio text before writing `profile.json`, and exits
+cleanly when the SCI raw file from ingest is absent. `calculate_power` refuses a
+clustered design that supplies `nGiven` without `m` instead of silently sizing the
+study from the default of 30 per cluster; the tool description says clustered
+designs take `kGiven` and `m`. `query_migration` errors name whether the origin or
+the destination is missing from the migration release (coverage there is narrower
+than SCI coverage; Somalia is one example). Server version 1.1.1. Unit tests: 25
+passed. Integration suite passed locally and at https://michaelbailey.org/mcp.
+Deployed release: `4de7526e-1534-4422-8023-6168cab3ea84`.

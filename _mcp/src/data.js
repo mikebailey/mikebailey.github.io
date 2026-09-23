@@ -21,7 +21,11 @@ export async function sci(env,a){
  return {origin,origin_name:countryName(origin),results,unit:'Country pair; scaled Social Connectedness Index',definition:'Relative likelihood of friendship across places, normalized for the size of their Facebook populations. Not a friendship count, probability, or migration flow. Compare values within the same release and geographic level.',coverage:'Country-level only in this release',source:'https://data.humdata.org/dataset/social-connectedness-index',map:'https://sci-map.michaelbailey.org/',license:'CC0',snapshot:'2026-09-21'};
 }
 export async function migration(env,a){
- const index=await load(env,'migration/index.json'),origin=countryCode(a.origin,index.origins),destination=a.destination?countryCode(a.destination,index.origins):null;
+ // Name the side that failed: migration coverage is narrower than SCI coverage, so one country
+ // of a pair can be present while the other is absent from this release.
+ const index=await load(env,'migration/index.json');
+ const resolve=(value,side)=>{try{return countryCode(value,index.origins);}catch(e){throw Error(side+' '+e.message.replace('Country not available in this release','not available in the migration release'));}};
+ const origin=resolve(a.origin,'Origin'),destination=a.destination?resolve(a.destination,'Destination'):null;
  const start=a.start_month||'2019-01',end=a.end_month||'2022-12';
  if(!index.months.includes(start)||!index.months.includes(end)||start>end)throw Error('Use months within 2019-01 to 2022-12, with start <= end.');
  const months=index.months.filter(m=>m>=start&&m<=end),raw=await load(env,`migration/${origin}.json`);

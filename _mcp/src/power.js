@@ -23,6 +23,9 @@ export function compute(mode,input={},includeCode=false){
  if(!s.ni && mode!=='mde' && s.mde<=0)throw Error('MDE must be positive for superiority designs.');
  if(s.tut===s.tuc)throw Error('Treatment and control take-up must differ.');
  if(s.clustered&&mode==='n'&&s.cmode==='clusters'&&s.m<3)throw Error('At least three clusters required.');
+ // A clustered design is sized by clusters (kGiven) and units per cluster (m); the engine never
+ // reads nGiven there. Refuse rather than silently size the study from a defaulted m.
+ if(s.clustered&&mode!=='n'&&'nGiven' in input&&!('m' in input))throw Error('Clustered designs are sized by kGiven (clusters) and m (units per cluster); nGiven is not used. Pass m, for example m = nGiven / kGiven.');
  const E=calculator(mode),r=E.solve(s);
  const q=new URLSearchParams({v:'1',solveFor:mode,outcomeType:s.binary?'binary':'continuous',designType:s.clustered?'clustered':'individual'});
  for(const [k,v]of Object.entries(s))if(!['tCorrect','roundEven','binary','clustered'].includes(k))q.set(k,String(['tut','tuc','attr','clusterAttr'].includes(k)?v*100:v));
