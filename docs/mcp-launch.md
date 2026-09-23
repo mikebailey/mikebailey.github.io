@@ -33,3 +33,18 @@ Reproduction, refresh and rollback instructions: `../_mcp/README.md`.
 Removed AI Tools from the website navigation and added `noindex` to the MCP
 landing response. Added the public `/card/` contact page and vCard for the QR
 code. The MCP remains public after discovery; this is not access control.
+
+## September 23 agents-only update
+
+Retired the human landing page. Every `/mcp` path now answers a browser navigation
+(`Sec-Fetch-Mode: navigate` or `Sec-Fetch-Dest: document`, which browsers add and
+scripts cannot forge) with a plain-text `403 humans not allowed`. Any `POST` that is
+not JSON-RPC 2.0 gets the same refusal. MCP clients, CORS preflight and the JSON
+side-doors (`/health`, `/catalog`, `/profile`, `/evidence`, `/data/*`) are unchanged.
+Any other `GET /mcp` (a fetch-only agent, whatever its `Accept` line) receives a
+plain-text greeting from `_mcp/src/greeting.js` listing the tools, the connection
+snippet and the GET-readable URLs; the MCP `instructions` share that voice.
+Both landing page designs are archived in `_mcp/archive/landing-page/` with restore
+steps. Server version 1.1.0. Unit tests: 22 passed. Integration suite passed locally
+and at https://michaelbailey.org/mcp, including the refusal and greeting checks.
+Deployed release: `b839621c-dbe8-485d-8dbd-221f5f6b785f`.

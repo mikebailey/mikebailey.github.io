@@ -1,7 +1,36 @@
 # Michael Bailey public MCP
 
-https://michaelbailey.org/mcp is both the human landing page and an MCP Streamable
-HTTP endpoint. Personal project, not an official J-PAL or MIT service.
+https://michaelbailey.org/mcp is an MCP Streamable HTTP endpoint for AI agents only.
+Personal project, not an official J-PAL or MIT service.
+
+## Access policy: agents only
+
+Since September 23, 2026 there is no human page. A person who opens any `/mcp` path
+in a browser gets a plain-text `403 humans not allowed`, nothing else. The Worker
+decides who is who from the request itself, in `src/worker.js`:
+
+1. A browser page load carries `Sec-Fetch-Mode: navigate` and `Sec-Fetch-Dest:
+   document`. Browsers add those automatically and scripts cannot forge or strip
+   them; the fetch tools AI agents use never send them, even when they imitate a
+   browser's `Accept` line. Either header means a person: refused on every `/mcp`
+   path, including the JSON side-doors and data files. `Accept` is not consulted.
+   Browsers from before 2020 (Safari before 16.4) lack these headers and are
+   treated as agents.
+2. Any other `GET /mcp` is an agent that can only fetch. It gets a plain-text
+   greeting (`src/greeting.js`) listing the tools, the MCP connection snippet and
+   the GET-readable URLs below. A `GET` with `text/event-stream` in `Accept` is an
+   MCP client asking for a standalone SSE stream, which this stateless server does
+   not open; it gets a JSON-RPC `405` pointing at POST.
+3. A `POST /mcp` must carry `Content-Type: application/json` and a body that parses
+   as a JSON-RPC 2.0 message or batch (`"jsonrpc": "2.0"`). Anything else is refused.
+4. `OPTIONS` preflight is always answered so browser-hosted MCP clients can connect.
+
+Agent GETs on `/mcp/health`, `/mcp/catalog`, `/mcp/profile`, `/mcp/evidence` and
+`/mcp/data/*` (the URLs that tool results cite) keep working. Refusals send
+`Cache-Control: no-store` and `X-Robots-Tag: noindex` and are never cached. The
+greeting and the MCP `instructions` share one voice and live in `src/greeting.js`.
+
+The retired landing pages and restore steps are in `archive/landing-page/`.
 
 ## Hosting
 

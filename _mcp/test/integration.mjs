@@ -15,3 +15,12 @@ await client.close();
 assert.equal((await fetch(endpoint+'/health')).status,200);assert.equal((await fetch(endpoint+'/absent')).status,404);
 assert.equal((await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:'a'.repeat(66000)})).status,413);
 console.log('PASS resources, prompts, HTTP limits. Endpoint:',endpoint);
+// Access policy: a person in a browser gets a plain refusal on every /mcp path; no HTML is ever served.
+const browser={Accept:'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8','Sec-Fetch-Dest':'document','Sec-Fetch-Mode':'navigate'};
+for(const p of['','/','/health','/catalog','/data/profile.json','/nowhere']){const r=await fetch(endpoint+p,{headers:browser,redirect:'manual'});assert.equal(r.status,403,p);assert.equal(await r.text(),'humans not allowed',p);assert.match(r.headers.get('content-type'),/text\/plain/);}
+assert.equal((await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:'{"hello":"world"}'})).status,403);
+// A fetch-only agent (browser-like Accept, but no Sec-Fetch navigation headers) is greeted and shown the way in.
+const agentGet=await fetch(endpoint,{headers:{Accept:'text/html,*/*;q=0.8','User-Agent':'ChatGPT-User/1.0'}});
+assert.equal(agentGet.status,200);assert.match(agentGet.headers.get('content-type'),/text\/plain/);
+const greeting=await agentGet.text();assert.match(greeting,/^Hello, friend/);assert.ok(greeting.includes('/mcp/catalog'));
+console.log('PASS humans not allowed on every /mcp path; fetch-only agents greeted; non-JSON-RPC POST refused');
