@@ -1,0 +1,42 @@
+[
+ {
+  "slug": "emerald-jungle",
+  "name": "Emerald jungle",
+  "note": "Deep green ground, layered palm and banana leaves in four greens, a few blush blooms. Evolves option 1.",
+  "bg": "#1b3a2f",
+  "dark": true,
+  "bytes": 426225
+ },
+ {
+  "slug": "midnight-palms",
+  "name": "Midnight palms",
+  "note": "Near-black green, tonal palms and ferns with pale sage edges, sparse white blossoms. Evolves option 3.",
+  "bg": "#10231d",
+  "dark": true,
+  "bytes": 641548
+ },
+ {
+  "slug": "sage-verdure",
+  "name": "Sage verdure",
+  "note": "Tonal mid-sage ground with lighter and darker sage leaves, no flowers. Classic tone-on-tone paper.",
+  "bg": "#8fa08a",
+  "dark": true,
+  "bytes": 441060
+ },
+ {
+  "slug": "ink-botanical",
+  "name": "Ink botanical",
+  "note": "Single-colour engraved look: dark teal ground, leaves in one ink drawn only by their edges and veins.",
+  "bg": "#173c3f",
+  "dark": true,
+  "bytes": 385469
+ },
+ {
+  "slug": "terracotta-grove",
+  "name": "Terracotta grove",
+  "note": "Warm ochre-terracotta ground with olive and bottle-green leaves, cream blooms. The Sicilian villa version.",
+  "bg": "#b8664a",
+  "dark": false,
+  "bytes": 449367
+ }
+]

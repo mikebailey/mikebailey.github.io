@@ -1,0 +1,122 @@
+[
+ {
+  "slug": "study-wall",
+  "name": "Study wall",
+  "note": "Haeckel radiolaria, Catlow’s water drops and Schmidt’s diatoms as one sepia ink on kraft. Mixed sources, one tone.",
+  "mode": "repeat",
+  "css_size": "900px",
+  "bg": "#e6dcc6",
+  "dark": false,
+  "credits": "Ernst Haeckel, Die Radiolarien (Rhizopoda radiaria) (1862); Agnes Catlow, A. Achilles, Drops of Water: Their Marvellous and Beautiful Inhabitants Displayed by the Microscope (1851); Adolf Schmidt, Atlas der Diatomaceenkunde (1890); Dr Alesha Sivartha, The Book of Life: The Spiritual and Physical Constitution of Man (1898)",
+  "bytes": 457783,
+  "size": [
+   1800,
+   1800
+  ]
+ },
+ {
+  "slug": "linen-charts",
+  "name": "Linen charts",
+  "note": "Orra White Hitchcock’s 1828 geology classroom charts, natural colour, butted like a patchwork on linen.",
+  "mode": "repeat",
+  "css_size": "1000px",
+  "bg": "#cbbfa4",
+  "dark": false,
+  "credits": "Orra White Hitchcock, Trap Vein in Clay Slate from Seil, Scotland (1828); Orra White Hitchcock, Sectional View of the Crust of the Earth (1828); Orra White Hitchcock, Granite Veins in Mica Slate from Williamsburg, Massachusetts (1828); Orra White Hitchcock, Granite Veins in a Boulder from Westhampton, Massachusetts (1828); Orra White Hitchcock, Geologic Trap (1828); Orra White Hitchcock, Diluvial Elevations and Depressions in Amherst, Massachusetts (1828)",
+  "bytes": 415981,
+  "size": [
+   1800,
+   1800
+  ]
+ },
+ {
+  "slug": "observatory",
+  "name": "Observatory",
+  "note": "Trouvelot’s 1882 astronomical pastels on near-black. The ivory panel and coral button pick up Mars.",
+  "mode": "repeat",
+  "css_size": "900px",
+  "bg": "#14161c",
+  "dark": true,
+  "credits": "Étienne Léopold Trouvelot, The Trouvelot Astronomical Drawings (1882)",
+  "bytes": 208674,
+  "size": [
+   1800,
+   1800
+  ]
+ },
+ {
+  "slug": "meander",
+  "name": "Meander",
+  "note": "Harold Fisk’s 1944 Mississippi meander maps in three columns. Already one palette, so only a light desaturation.",
+  "mode": "repeat",
+  "css_size": "1000px",
+  "bg": "#e3ddcb",
+  "dark": false,
+  "credits": "Harold Fisk, Geological Investigation of the Alluvial Valley of the Lower Mississippi River (1944)",
+  "bytes": 714813,
+  "size": [
+   1800,
+   1800
+  ]
+ },
+ {
+  "slug": "cartographer",
+  "name": "Cartographer",
+  "note": "One plate, full bleed: the 1867 Sanborn map of Boston washed toward the paper so the panel stays legible.",
+  "mode": "cover",
+  "css_size": "cover",
+  "bg": "#e9dfcb",
+  "dark": false,
+  "credits": "Daniel Alfred Sanborn, Sanborn map of Boston, Massachusetts (1867)",
+  "bytes": 269369,
+  "size": [
+   2000,
+   1212
+  ]
+ },
+ {
+  "slug": "paradiso",
+  "name": "Paradiso",
+  "note": "Caetani’s 1855 diagram of Dante’s Paradise, full bleed; the card sits inside the rings.",
+  "mode": "cover",
+  "css_size": "cover",
+  "bg": "#ece4d2",
+  "dark": false,
+  "credits": "Michelangelo Caetani, La Materia della Divina Commedia di Dante Alighieri Dichiarata in VI Tavole (1855)",
+  "bytes": 274379,
+  "size": [
+   1800,
+   2422
+  ]
+ },
+ {
+  "slug": "booth",
+  "name": "Booth",
+  "note": "Booth’s 1898–9 poverty map, sheet 7: Kensington through Belgravia to Pimlico, south of Hyde Park. Coloured streets edge to edge.",
+  "mode": "cover",
+  "css_size": "cover",
+  "bg": "#ebe3d1",
+  "dark": false,
+  "credits": "Charles Booth (LSE Library scan), Maps Descriptive of London Poverty, 1898–9 (1899)",
+  "bytes": 703033,
+  "size": [
+   2400,
+   1045
+  ]
+ },
+ {
+  "slug": "booth-north",
+  "name": "Booth north",
+  "note": "Same sheet, the band north of the park: Notting Hill, Bayswater, Paddington and Marylebone. More red and blue, less gold.",
+  "mode": "cover",
+  "css_size": "cover",
+  "bg": "#ebe3d1",
+  "dark": false,
+  "credits": "Charles Booth (LSE Library scan), Maps Descriptive of London Poverty, 1898–9 (1899)",
+  "bytes": 542220,
+  "size": [
+   2400,
+   784
+  ]
+ }
+]
