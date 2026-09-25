@@ -1,0 +1,72 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#fffaf3"><title>Card greetings</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet"><style>
+:root{color-scheme:light;--ink:#2b2a27;--muted:#6a675f;--paper:#fffaf3;--accent:#d9572a;--line:#e2d9cc;--panel:transparent}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--paper);color:var(--ink);font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+.card{position:relative;width:min(100%,560px);padding:48px 28px 52px;background:var(--panel)}
+.greet{font:italic 400 21px/1.2 Newsreader,Georgia,serif;color:var(--accent);margin:0 0 18px}
+h1{font:400 clamp(44px,8vw,64px)/1 Newsreader,Georgia,serif;letter-spacing:-.03em;margin:0 0 14px}
+.role{font-size:18px;margin:0 0 14px;line-height:1.4}.role span{display:block;color:var(--muted)}
+.lede{color:var(--muted);margin:0 0 26px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 12px}
+.button{display:inline-flex;align-items:center;text-decoration:none;font-weight:600;border:1px solid var(--ink);border-radius:10px;padding:13px 18px;color:var(--ink);min-height:48px;background:transparent}
+.button.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.secondary .button{font-weight:500;padding:9px 14px;min-height:40px;border-color:var(--line);font-size:15px}
+a:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+.email{margin:26px 0 0}.email a{color:var(--ink);text-underline-offset:3px}
+.foot{border-top:1px solid var(--line);margin-top:26px;padding-top:16px;font-size:13px;color:var(--muted)}
+.g1 .greet{color:var(--accent)}.g2 .greet{font:500 13px/1 "IBM Plex Sans",sans-serif;letter-spacing:.18em;text-transform:uppercase;display:flex;align-items:center;gap:10px;color:var(--accent)}.g2 .sprig{width:30px;height:18px}.g3 .greet{font-size:44px;line-height:1.05;color:var(--ink);letter-spacing:-.02em}.g3 h1{font-size:34px;font-weight:500}.g4 .greet{color:var(--ink)}.g4 em{color:var(--accent)}.g5 .card{outline:1px solid var(--line);outline-offset:-1px;margin-top:14px}.g5 .greet{position:absolute;top:-15px;left:26px;margin:0;background:var(--paper);padding:3px 14px;border:1px solid var(--line);border-radius:3px;font-size:19px}.g6 .greet{color:var(--ink);display:inline;background:linear-gradient(transparent 55%,#f7d9c9 55%,#f7d9c9 92%,transparent 92%);padding:0 4px}.g6 .greet-wrap{margin:0 0 18px}.g7 .greet{color:var(--accent)}.g8 .greet{color:var(--ink)}.g8 .greet small{display:block;font:400 15px/1.4 "IBM Plex Sans",sans-serif;color:var(--muted);margin-top:4px;font-style:normal}
+body{display:block;place-items:normal;padding:20px}
+.studio{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:22px;max-width:1500px;margin:0 auto}
+section{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+section h2{font:500 12px/1 "IBM Plex Sans",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0;padding:12px 16px;border-bottom:1px solid var(--line);background:#faf6ee}
+section .card{width:100%;padding:36px 26px 30px}
+section .actions.secondary,section .foot,section .email{display:none}
+</style></head><body><div class="studio"><section class="g1"><h2>Italic, no rule</h2><main class="card"><p class="greet">Great to meet you!</p><h1>Michael Bailey</h1>
+<p class="role">Senior Advisor, AI · J-PAL at MIT<span>Co-founder, Social Capital Lab</span></p>
+<p class="lede">I work on AI+social good and social capital research. Save my details or explore my research and projects.</p>
+<div class="actions"><a class="button primary" href="/files/michael-bailey.vcf" download="Michael-Bailey.vcf">Save contact</a><a class="button " href="/">Explore my website ↗</a></div>
+<div class="actions secondary"><a class="button" href="/publications/">My Research</a><a class="button" href="https://www.povertyactionlab.org/">J-PAL ↗</a></div>
+<p class="email"><a href="mailto:mbailey@povertyactionlab.org">mbailey@povertyactionlab.org</a></p>
+<p class="foot">The contact file includes my website, so you can find it later from your contacts too.</p></main></section><section class="g2"><h2>Small caps with a sprig</h2><main class="card"><p class="greet"><svg class="sprig" viewBox="0 0 40 24" aria-hidden="true"><path d="M2 20c8-10 20-14 36-16" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M12 14c-1-5 2-9 7-10-1 5-3 8-7 10zM22 9c0-5 4-8 9-8-1 5-4 8-9 8zM9 19c-4 1-7-1-8-5 4 0 7 2 8 5z" fill="currentColor"/></svg>Great to meet you</p><h1>Michael Bailey</h1>
+<p class="role">Senior Advisor, AI · J-PAL at MIT<span>Co-founder, Social Capital Lab</span></p>
+<p class="lede">I work on AI+social good and social capital research. Save my details or explore my research and projects.</p>
+<div class="actions"><a class="button primary" href="/files/michael-bailey.vcf" download="Michael-Bailey.vcf">Save contact</a><a class="button " href="/">Explore my website ↗</a></div>
+<div class="actions secondary"><a class="button" href="/publications/">My Research</a><a class="button" href="https://www.povertyactionlab.org/">J-PAL ↗</a></div>
+<p class="email"><a href="mailto:mbailey@povertyactionlab.org">mbailey@povertyactionlab.org</a></p>
+<p class="foot">The contact file includes my website, so you can find it later from your contacts too.</p></main></section><section class="g3"><h2>Greeting as headline</h2><main class="card"><p class="greet">Great to meet you.</p><h1>Michael Bailey</h1>
+<p class="role">Senior Advisor, AI · J-PAL at MIT<span>Co-founder, Social Capital Lab</span></p>
+<p class="lede">I work on AI+social good and social capital research. Save my details or explore my research and projects.</p>
+<div class="actions"><a class="button primary" href="/files/michael-bailey.vcf" download="Michael-Bailey.vcf">Save contact</a><a class="button " href="/">Explore my website ↗</a></div>
+<div class="actions secondary"><a class="button" href="/publications/">My Research</a><a class="button" href="https://www.povertyactionlab.org/">J-PAL ↗</a></div>
+<p class="email"><a href="mailto:mbailey@povertyactionlab.org">mbailey@povertyactionlab.org</a></p>
+<p class="foot">The contact file includes my website, so you can find it later from your contacts too.</p></main></section><section class="g4"><h2>Accent word</h2><main class="card"><p class="greet">So glad we <em>met.</em></p><h1>Michael Bailey</h1>
+<p class="role">Senior Advisor, AI · J-PAL at MIT<span>Co-founder, Social Capital Lab</span></p>
+<p class="lede">I work on AI+social good and social capital research. Save my details or explore my research and projects.</p>
+<div class="actions"><a class="button primary" href="/files/michael-bailey.vcf" download="Michael-Bailey.vcf">Save contact</a><a class="button " href="/">Explore my website ↗</a></div>
+<div class="actions secondary"><a class="button" href="/publications/">My Research</a><a class="button" href="https://www.povertyactionlab.org/">J-PAL ↗</a></div>
+<p class="email"><a href="mailto:mbailey@povertyactionlab.org">mbailey@povertyactionlab.org</a></p>
+<p class="foot">The contact file includes my website, so you can find it later from your contacts too.</p></main></section><section class="g5"><h2>Sewn label</h2><main class="card"><p class="greet">Great to meet you!</p><h1>Michael Bailey</h1>
+<p class="role">Senior Advisor, AI · J-PAL at MIT<span>Co-founder, Social Capital Lab</span></p>
+<p class="lede">I work on AI+social good and social capital research. Save my details or explore my research and projects.</p>
+<div class="actions"><a class="button primary" href="/files/michael-bailey.vcf" download="Michael-Bailey.vcf">Save contact</a><a class="button " href="/">Explore my website ↗</a></div>
+<div class="actions secondary"><a class="button" href="/publications/">My Research</a><a class="button" href="https://www.povertyactionlab.org/">J-PAL ↗</a></div>
+<p class="email"><a href="mailto:mbailey@povertyactionlab.org">mbailey@povertyactionlab.org</a></p>
+<p class="foot">The contact file includes my website, so you can find it later from your contacts too.</p></main></section><section class="g6"><h2>Marker highlight</h2><main class="card"><div class="greet-wrap"><p class="greet">Great to meet you!</p></div><h1>Michael Bailey</h1>
+<p class="role">Senior Advisor, AI · J-PAL at MIT<span>Co-founder, Social Capital Lab</span></p>
+<p class="lede">I work on AI+social good and social capital research. Save my details or explore my research and projects.</p>
+<div class="actions"><a class="button primary" href="/files/michael-bailey.vcf" download="Michael-Bailey.vcf">Save contact</a><a class="button " href="/">Explore my website ↗</a></div>
+<div class="actions secondary"><a class="button" href="/publications/">My Research</a><a class="button" href="https://www.povertyactionlab.org/">J-PAL ↗</a></div>
+<p class="email"><a href="mailto:mbailey@povertyactionlab.org">mbailey@povertyactionlab.org</a></p>
+<p class="foot">The contact file includes my website, so you can find it later from your contacts too.</p></main></section><section class="g7"><h2>Past tense</h2><main class="card"><p class="greet">It was great to meet you.</p><h1>Michael Bailey</h1>
+<p class="role">Senior Advisor, AI · J-PAL at MIT<span>Co-founder, Social Capital Lab</span></p>
+<p class="lede">I work on AI+social good and social capital research. Save my details or explore my research and projects.</p>
+<div class="actions"><a class="button primary" href="/files/michael-bailey.vcf" download="Michael-Bailey.vcf">Save contact</a><a class="button " href="/">Explore my website ↗</a></div>
+<div class="actions secondary"><a class="button" href="/publications/">My Research</a><a class="button" href="https://www.povertyactionlab.org/">J-PAL ↗</a></div>
+<p class="email"><a href="mailto:mbailey@povertyactionlab.org">mbailey@povertyactionlab.org</a></p>
+<p class="foot">The contact file includes my website, so you can find it later from your contacts too.</p></main></section><section class="g8"><h2>Paths crossed</h2><main class="card"><p class="greet">Glad our paths crossed.<small>Michael, from the conversation just now</small></p><h1>Michael Bailey</h1>
+<p class="role">Senior Advisor, AI · J-PAL at MIT<span>Co-founder, Social Capital Lab</span></p>
+<p class="lede">I work on AI+social good and social capital research. Save my details or explore my research and projects.</p>
+<div class="actions"><a class="button primary" href="/files/michael-bailey.vcf" download="Michael-Bailey.vcf">Save contact</a><a class="button " href="/">Explore my website ↗</a></div>
+<div class="actions secondary"><a class="button" href="/publications/">My Research</a><a class="button" href="https://www.povertyactionlab.org/">J-PAL ↗</a></div>
+<p class="email"><a href="mailto:mbailey@povertyactionlab.org">mbailey@povertyactionlab.org</a></p>
+<p class="foot">The contact file includes my website, so you can find it later from your contacts too.</p></main></section></div></body></html>
